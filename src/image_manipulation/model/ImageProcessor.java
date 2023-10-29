@@ -8,13 +8,15 @@ import image_manipulation.model.enums.Component;
 
 public interface ImageProcessor {
 
-  void load(String imgName, InputStream is, int width, int height) throws IOException;
+  void load(String imgName, RGBImage rgbImage) throws IOException;
 
-  void save(String imgName);
+  ImageModel save(String imgName);
 
   void colorTransform(String imgName, String destImgName, double[][] transformer);
 
-  void colorRepresentation(String imgName, String destImgName, Component c);
+  void grayscale(String imgName, String destImgName, Component c);
+
+  void brighten(String imgName, String destImgName, int increment);
 
   void filter(String imgName, String destImgName, double[][] kernel);
 

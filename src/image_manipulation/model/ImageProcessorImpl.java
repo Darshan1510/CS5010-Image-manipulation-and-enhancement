@@ -1,8 +1,6 @@
 package image_manipulation.model;
 
 import java.io.IOException;
-import java.io.InputStream;
-import java.io.OutputStream;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -17,27 +15,13 @@ public class ImageProcessorImpl implements ImageProcessor {
   }
 
   @Override
-  public void load(String imgName, InputStream is, int height, int width) throws IOException {
-    RGBPixel[][] rgbPixels = new RGBPixel[height][width];
-    for (int i = 0; i < height; i++) {
-      for (int j = 0; j < width; j++) {
-        int red = is.read();
-        int green = is.read();
-        int blue = is.read();
-
-        if (red == -1 || green == -1 || blue == -1) {
-          throw new IOException("Unexpected end of stream while reading pixel data.");
-        }
-
-        rgbPixels[i][j] = new RGBPixel(red, green, blue);
-      }
-    }
-    this.images.put(imgName, new ImageModelImpl(rgbPixels));
+  public void load(String imgName, RGBImage rgbImage) throws IOException {
+    this.images.put(imgName, rgbImage);
   }
 
   @Override
-  public void save(String imgName) {
-
+  public ImageModel save(String imgName) {
+    return this.get(imgName);
   }
 
   @Override
@@ -46,8 +30,13 @@ public class ImageProcessorImpl implements ImageProcessor {
   }
 
   @Override
-  public void colorRepresentation(String imgName, String destImgName, Component c) {
-    this.images.put(destImgName, this.get(imgName).colorRepresentation(c));
+  public void grayscale(String imgName, String destImgName, Component c) {
+    this.images.put(destImgName, this.get(imgName).grayscale(c));
+  }
+
+  @Override
+  public void brighten(String imgName, String destImgName, int increment) {
+    this.images.put(destImgName, this.get(imgName).brighten(increment));
   }
 
   @Override
@@ -68,15 +57,34 @@ public class ImageProcessorImpl implements ImageProcessor {
   @Override
   public void rgbSplit(String imgName, String destRedImgName, String destGreenImageName,
                        String destBlueImgName) {
-    this.images.put(destRedImgName, this.get(imgName).colorRepresentation(Component.RED));
-    this.images.put(destGreenImageName, this.get(imgName).colorRepresentation(Component.GREEN));
-    this.images.put(destBlueImgName, this.get(imgName).colorRepresentation(Component.BLUE));
+    this.images.put(destRedImgName, this.get(imgName).grayscale(Component.RED));
+    this.images.put(destGreenImageName, this.get(imgName).grayscale(Component.GREEN));
+    this.images.put(destBlueImgName, this.get(imgName).grayscale(Component.BLUE));
   }
 
   @Override
   public void rgbCombine(String redImgName, String greenImageName, String blueImgName,
                          String destImgName) {
+    ImageModel red = this.get(redImgName);
+    ImageModel green = this.get(greenImageName);
+    ImageModel blue = this.get(blueImgName);
+    if (red.getHeight() == green.getHeight() && blue.getHeight() == red.getHeight()
+            && red.getWidth() == blue.getWidth() && red.getWidth() == green.getWidth()) {
 
+      RGBPixel[][] pixelResults = new RGBPixel[red.getHeight()][red.getWidth()];
+
+      for (int i = 0; i < red.getHeight(); i++) {
+        for (int j = 0; j < red.getWidth(); j++) {
+          pixelResults[i][j] = new RGBPixel(red.getPixelValues(i, j).getR(), green.getPixelValues(i,
+                  j).getG(), blue.getPixelValues(i, j).getB());
+        }
+      }
+
+      ImageModel combinedImage = new RGBImage(red.getHeight(), red.getWidth(), pixelResults);
+      this.images.put(destImgName, combinedImage);
+    } else {
+      throw new IllegalArgumentException("To combine, images should be of same dimensions");
+    }
   }
 
   private ImageModel get(String imgName) throws IllegalArgumentException {
@@ -85,7 +93,6 @@ public class ImageProcessorImpl implements ImageProcessor {
     if (this.images.get(imgName) == null) {
       throw new IllegalArgumentException("Image Not Found");
     }
-
     return this.images.get(imgName);
   }
 

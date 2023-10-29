@@ -7,7 +7,10 @@ import java.util.Scanner;
 
 import image_manipulation.controller.ImageProcessorCommand;
 import image_manipulation.controller.enums.Command;
+import image_manipulation.controller.helpers.AbstractImageHelper;
+import image_manipulation.controller.helpers.ImageHelper;
 import image_manipulation.model.ImageProcessor;
+import image_manipulation.model.RGBImage;
 
 public class Load implements ImageProcessorCommand {
 
@@ -23,28 +26,18 @@ public class Load implements ImageProcessorCommand {
   @Override
   public void process(ImageProcessor p) {
     try {
-      p.load(imgName, new FileInputStream(imgPath), 0, 0);
+      ImageHelper helper = new AbstractImageHelper();
+      RGBImage rgbImage = helper.readImage(imgPath);
+      p.load(imgName, rgbImage);
     } catch (IOException ex) {
-      throw new RuntimeException("File exception!");
+      // TODO: update the exception to the custom exception.
+      throw new RuntimeException("IO Exception");
     }
   }
 
   public static ImageProcessorCommand apply(Scanner s) {
-    String line = s.nextLine().trim();
-    String[] args = line.split(" ");
-    int numOfArgs = args.length;
-    System.out.println(Arrays.toString(args));
-    System.out.println("Args:"+ numOfArgs);
-
-    int requiredArgs = Command.LOAD.args();
-
-    if (numOfArgs != requiredArgs) {
-      throw new IllegalArgumentException("Invalid number of " +
-              "arguments, required arguments: " + requiredArgs);
-    }
-
-    String imgPath = args[0];
-    String imgName = args[1];
+    String imgPath = s.next();
+    String imgName = s.next();
     return new Load(imgPath, imgName);
   }
 }

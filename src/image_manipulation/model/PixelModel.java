@@ -30,4 +30,29 @@ public interface PixelModel {
    */
   int getB();
 
+  /**
+   * Sets the red component of the RGB color.
+   *
+   * @param value The new value for the red component (0 to 255).
+   *              Values outside this range may be clamped or produce unexpected results.
+   */
+  void setRed(int value);
+
+  /**
+   * Sets the green component of the RGB color.
+   *
+   * @param value The new value for the green component (0 to 255).
+   *              Values outside this range may be clamped or produce unexpected results.
+   */
+  void setGreen(int value);
+
+  /**
+   * Sets the blue component of the RGB color.
+   *
+   * @param value The new value for the blue component (0 to 255).
+   *              Values outside this range may be clamped or produce unexpected results.
+   */
+  void setBlue(int value);
+
+
 }

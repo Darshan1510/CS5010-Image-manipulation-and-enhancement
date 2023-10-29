@@ -20,23 +20,13 @@ public class BlueComponent implements ImageProcessorCommand {
 
   @Override
   public void process(ImageProcessor p) {
-    p.colorRepresentation(imgName, destImgName, Component.BLUE);
+    p.grayscale(imgName, destImgName, Component.BLUE);
   }
 
   public static ImageProcessorCommand apply(Scanner s) {
-    String line = s.nextLine().trim();
-    String[] args = line.split(" ");
-    int numOfArgs = args.length;
+    String imgName = s.next();
+    String destImgName = s.next();
 
-    int requiredArgs = Command.BLUE_COMPONENT.args();
-
-    if (numOfArgs != requiredArgs) {
-      throw new IllegalArgumentException("Invalid number of " +
-              "arguments, required arguments: " + requiredArgs);
-    }
-
-    String imgName = args[0];
-    String destImgName = args[1];
     return new BlueComponent(imgName, destImgName);
   }
 }

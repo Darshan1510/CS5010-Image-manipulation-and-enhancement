@@ -14,17 +14,17 @@ public class RGBPixel implements PixelModel {
   /**
    * The red component of the pixel.
    */
-  private final int r;
+  private int r;
 
   /**
    * The green component of the pixel.
    */
-  private final int g;
+  private int g;
 
   /**
    * The blue component of the pixel.
    */
-  private final int b;
+  private int b;
 
 
   /**
@@ -41,9 +41,9 @@ public class RGBPixel implements PixelModel {
     }
 
     // TODO: Please write the condition to check the upper bound of the pixel too.
-    this.r = r;
-    this.g = g;
-    this.b = b;
+    this.r = this.clamp(r);
+    this.g = this.clamp(g);
+    this.b = this.clamp(b);
   }
 
   @Override
@@ -59,5 +59,27 @@ public class RGBPixel implements PixelModel {
   @Override
   public int getB() {
     return b;
+  }
+
+  @Override
+  public void setRed(int value) {
+    this.r = value;
+  }
+
+  @Override
+  public void setGreen(int value) {
+    this.g = value;
+  }
+
+  @Override
+  public void setBlue(int value) {
+    this.b = value;
+  }
+
+  private int clamp(int value) {
+    if (value < 0) {
+      return 0;
+    }
+    return Math.min(255, value);
   }
 }
