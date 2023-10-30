@@ -1,5 +1,9 @@
 package image_manipulation.controller;
 
+import image_manipulation.model.ImageProcessor;
+
+import java.io.IOException;
+
 /**
  * The ImageControllerInterface is an interface that defines a contract for classes responsible
  * for handling image manipulation commands. Classes that implement this interface should
@@ -11,5 +15,5 @@ public interface ImageControllerInterface {
   /**
    * Execute image manipulation commands based on user input.
    */
-  void execute();
+  void execute(ImageProcessor processor) throws IOException;
 }

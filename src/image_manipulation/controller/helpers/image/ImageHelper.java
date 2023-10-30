@@ -1,11 +1,8 @@
-package image_manipulation.controller.helpers;
+package image_manipulation.controller.helpers.image;
 
-import java.io.FileNotFoundException;
 import java.io.IOException;
-import java.io.InputStream;
 
-import image_manipulation.model.ImageModel;
-import image_manipulation.model.RGBImage;
+import image_manipulation.model.image.ImageModel;
 
 /**
  * The ImageHelper interface defines a contract for classes that provide utility
@@ -19,10 +16,10 @@ public interface ImageHelper {
    * of the image.
    *
    * @param filepath The path to the image file to be read.
-   * @return An RGBImage object representing the image.
+   * @return An ImageModel object representing the image.
    * @throws IOException If an I/O error occurs during the reading process.
    */
-  RGBImage readImage(String filepath) throws IOException;
+  ImageModel readImage(String filepath) throws IOException;
 
   /**
    * Saves an ImageModel as an image file at the specified file path.
