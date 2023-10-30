@@ -49,6 +49,51 @@ public class ImageProcessorImpl implements ImageProcessor {
 
   @Override
   public void filter(String imgName, String destImgName, double[][] kernel) {
+    ImageModel sourceImage = get(imgName);
+    int width = sourceImage.getWidth();
+    int height = sourceImage.getHeight();
+
+    // Create a destination image with the same dimensions.
+    RGBPixel[][] filteredPixels = new RGBPixel[height][width];
+
+    // Apply the filter to each pixel in the source image.
+    int kernelSize = kernel.length;
+    int kernelHalf = kernelSize / 2;
+
+    for (int y = 0; y < height; y++) {
+      for (int x = 0; x < width; x++) {
+        double redSum = 0.0;
+        double greenSum = 0.0;
+        double blueSum = 0.0;
+
+        for (int j = -kernelHalf; j <= kernelHalf; j++) {
+          for (int i = -kernelHalf; i <= kernelHalf; i++) {
+            int newX = x + i;
+            int newY = y + j;
+
+            // Ensure the new coordinates are within the image bounds.
+            if (newX >= 0 && newX < width && newY >= 0 && newY < height) {
+              RGBPixel pixel = sourceImage.getPixelValues(newY, newX);
+              double kernelValue = kernel[j + kernelHalf][i + kernelHalf];
+              redSum += pixel.getR() * kernelValue;
+              greenSum += pixel.getG() * kernelValue;
+              blueSum += pixel.getB() * kernelValue;
+            }
+          }
+        }
+
+        // Set the filtered pixel in the destination image.
+        int redValue = (int) redSum;
+        int greenValue = (int) greenSum;
+        int blueValue = (int) blueSum;
+        filteredPixels[y][x] = new RGBPixel(redValue, greenValue, blueValue);
+      }
+    }
+
+    // Create a new image with the filtered pixel data and store it in the destination.
+    RGBImage filteredImage = new RGBImage(height, width, filteredPixels);
+    images.put(destImgName, filteredImage);
+
     this.images.put(destImgName, this.get(imgName).filter(kernel));
   }
 

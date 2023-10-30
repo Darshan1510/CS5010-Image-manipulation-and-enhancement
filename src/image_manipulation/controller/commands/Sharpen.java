@@ -16,7 +16,13 @@ public class Sharpen implements ImageProcessorCommand {
   private final String destImgName;
 
   // Sharpening convolution kernel
-  private static final double[][] kernel = new double[5][5];
+  private static final double[][] kernel = {
+          {-1.0 / 8.0, -1.0 / 8.0, -1.0 / 8.0, -1.0 / 8.0, -1.0 / 8.0},
+          {-1.0 / 8.0, 1.0 / 4.0, 1.0 / 4.0, 1.0 / 4.0, -1.0 / 8.0, },
+          {-1.0 / 8.0, 1.0 / 4.0, 1.0 , 1.0 / 4.0, -1.0 / 8.0, },
+          {-1.0 / 8.0, 1.0 / 4.0, 1.0 / 4.0, 1.0 / 4.0, -1.0 / 8.0, },
+          {-1.0 / 8.0, -1.0 / 8.0, -1.0 / 8.0, -1.0 / 8.0, -1.0 / 8.0}
+  };
 
   /**
    * Constructs a Sharpen command with the specified input image name and destination image name.
