@@ -1,10 +1,19 @@
 package image_manipulation.controller;
 
-import java.util.Scanner;
-
 import image_manipulation.model.ImageProcessor;
 
+/**
+ * The ImageProcessorCommand interface defines a contract for classes that represent
+ * specific image manipulation commands. Classes implementing this interface should
+ * provide an implementation for the process() method, which takes an ImageProcessor
+ * object as a parameter and applies the specific image manipulation command to it.
+ */
 public interface ImageProcessorCommand {
-  void process(ImageProcessor p);
 
+  /**
+   * Apply the image manipulation command to the given ImageProcessor object.
+   *
+   * @param p The ImageProcessor on which the command should be applied.
+   */
+  void process(ImageProcessor p);
 }

@@ -25,15 +25,31 @@ import image_manipulation.controller.enums.Command;
 import image_manipulation.model.ImageProcessor;
 import image_manipulation.model.ImageProcessorImpl;
 
+/**
+ * Responsible for handling image manipulation commands provided through user input.
+ * It utilizes a Scanner to read commands, maps these commands to specific ImageProcessorCommand
+ * functions, and applies them to an ImageProcessor object. The available commands and their
+ * associated functions are defined in the getImageProcessorCommand() method.
+ */
 public class ImageController implements ImageControllerInterface {
   private Readable in;
   private Appendable out;
 
+  /**
+   * Constructor for ImageController.
+   *
+   * @param in  A Readable source for user input.
+   * @param out An Appendable destination for program output.
+   */
   public ImageController(Readable in, Appendable out) {
     this.in = in;
     this.out = out;
   }
 
+  /**
+   * The execute() method reads user input, processes image manipulation commands,
+   * and applies them to an ImageProcessor object until the user exits.
+   */
   @Override
   public void execute() {
     Scanner scan = new Scanner(in);
@@ -58,6 +74,12 @@ public class ImageController implements ImageControllerInterface {
     }
   }
 
+  /**
+   * This method creates and populates a map of commands to their corresponding
+   * ImageProcessorCommand functions.
+   *
+   * @return A map containing command strings and associated functions.
+   */
   private static Map<String, Function<Scanner, ImageProcessorCommand>> getImageProcessorCommand() {
     Map<String, Function<Scanner, ImageProcessorCommand>> knownCommands = new HashMap<>();
 

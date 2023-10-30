@@ -1,11 +1,9 @@
 package image_manipulation.model;
 
 /**
- * <h6>Represents a model for RGB pixel values.</h6>
- * <p>
+ * Represents a model for RGB pixel values.
  * This interface provides methods to retrieve individual RGB color components of a pixel.
  * Implementing classes should define how these RGB values are stored and retrieved.
- * </p>
  */
 public interface PixelModel {
 

@@ -2,12 +2,9 @@ package image_manipulation.model;
 
 /**
  * Represents a concrete RGB pixel with individual red, green, and blue components.
- * <p>
  * This class implements the PixelModel interface, providing storage and retrieval mechanisms
  * for each RGB color component of a pixel.
- * <p>
  * RGB values are expected to be non-negative integers.
- * </p>
  */
 public class RGBPixel implements PixelModel {
 

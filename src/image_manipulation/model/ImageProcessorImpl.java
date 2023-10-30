@@ -6,10 +6,18 @@ import java.util.Map;
 
 import image_manipulation.model.enums.Component;
 
+/**
+ * The ImageProcessorImpl class implements the ImageProcessor interface, providing the core
+ * functionality for processing and manipulating images. It manages a collection of images and
+ * offers methods for loading, saving, transforming, and modifying these images.
+ */
 public class ImageProcessorImpl implements ImageProcessor {
 
   private final Map<String, ImageModel> images;
 
+  /**
+   * Constructs a new ImageProcessorImpl instance with an empty map to store images.
+   */
   public ImageProcessorImpl() {
     this.images = new HashMap<>();
   }
@@ -68,6 +76,7 @@ public class ImageProcessorImpl implements ImageProcessor {
     ImageModel red = this.get(redImgName);
     ImageModel green = this.get(greenImageName);
     ImageModel blue = this.get(blueImgName);
+
     if (red.getHeight() == green.getHeight() && blue.getHeight() == red.getHeight()
             && red.getWidth() == blue.getWidth() && red.getWidth() == green.getWidth()) {
 
@@ -75,25 +84,23 @@ public class ImageProcessorImpl implements ImageProcessor {
 
       for (int i = 0; i < red.getHeight(); i++) {
         for (int j = 0; j < red.getWidth(); j++) {
-          pixelResults[i][j] = new RGBPixel(red.getPixelValues(i, j).getR(), green.getPixelValues(i,
-                  j).getG(), blue.getPixelValues(i, j).getB());
+          pixelResults[i][j] = new RGBPixel(red.getPixelValues(i, j).getR(),
+                  green.getPixelValues(i, j).getG(),
+                  blue.getPixelValues(i, j).getB());
         }
       }
 
       ImageModel combinedImage = new RGBImage(red.getHeight(), red.getWidth(), pixelResults);
       this.images.put(destImgName, combinedImage);
     } else {
-      throw new IllegalArgumentException("To combine, images should be of same dimensions");
+      throw new IllegalArgumentException("To combine, images should be of the same dimensions");
     }
   }
 
   private ImageModel get(String imgName) throws IllegalArgumentException {
-
-    // TODO: Write a new Exception which throws when the image is not found.
     if (this.images.get(imgName) == null) {
       throw new IllegalArgumentException("Image Not Found");
     }
     return this.images.get(imgName);
   }
-
 }

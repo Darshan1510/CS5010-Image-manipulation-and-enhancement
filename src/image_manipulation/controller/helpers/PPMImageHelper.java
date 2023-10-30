@@ -10,12 +10,19 @@ import image_manipulation.model.ImageModel;
 import image_manipulation.model.RGBImage;
 import image_manipulation.model.RGBPixel;
 
-
 /**
- * This class contains utility methods to read a PPM, JPG and PNG images.
+ * The PPMImageHelper class provides utility methods for reading and saving
+ * PPM (Portable Pixmap Format) image files.
  */
 public class PPMImageHelper implements ImageHelper {
 
+  /**
+   * Reads a PPM image file and creates an RGBImage representation of the image.
+   *
+   * @param filePath The path to the PPM image file to be read.
+   * @return An RGBImage object representing the image.
+   * @throws FileNotFoundException If the specified file is not found.
+   */
   @Override
   public RGBImage readImage(String filePath) throws FileNotFoundException {
     Scanner sc = new Scanner(new FileInputStream(filePath));
@@ -58,6 +65,13 @@ public class PPMImageHelper implements ImageHelper {
     return new RGBImage(height, width, pixels);
   }
 
+  /**
+   * Saves an RGBImage as a PPM image file.
+   *
+   * @param image    The RGBImage to be saved.
+   * @param filepath The path to the PPM image file where the image will be saved.
+   * @throws IOException If an I/O error occurs during the save operation.
+   */
   @Override
   public void saveImage(ImageModel image, String filepath) throws IOException {
     try {

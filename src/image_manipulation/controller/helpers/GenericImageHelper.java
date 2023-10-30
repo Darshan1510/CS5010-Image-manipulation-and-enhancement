@@ -11,7 +11,21 @@ import image_manipulation.model.ImageModel;
 import image_manipulation.model.RGBImage;
 import image_manipulation.model.RGBPixel;
 
+/**
+ * The GenericImageHelper class provides utility methods for reading and saving image files
+ * in a generic format using the Java AWT and BufferedImage libraries. It can read and save
+ * images in various formats such as JPG and PNG.
+ */
 public class GenericImageHelper implements ImageHelper {
+
+  /**
+   * Reads an image file in a generic format (e.g., JPG or PNG) and returns an RGBImage
+   * representation of the image.
+   *
+   * @param filepath The path to the image file to be read.
+   * @return An RGBImage object representing the image.
+   * @throws IOException If an I/O error occurs during the reading process or if the file format is not supported.
+   */
   @Override
   public RGBImage readImage(String filepath) throws IOException {
 
@@ -37,10 +51,17 @@ public class GenericImageHelper implements ImageHelper {
         pixels[i][j] = rgbPixel;
       }
     }
-
     return new RGBImage(height, width, pixels);
   }
 
+  /**
+   * Saves an ImageModel as an image file in a generic format (e.g., JPG or PNG) at the
+   * specified file path.
+   *
+   * @param image    The ImageModel to be saved as an image.
+   * @param filepath The path where the image will be saved.
+   * @throws IOException If an I/O error occurs during the saving process or if the file format is not supported.
+   */
   @Override
   public void saveImage(ImageModel image, String filepath) throws IOException {
     int width = image.getWidth();
