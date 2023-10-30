@@ -32,19 +32,112 @@ public class ImageProcessorImpl implements ImageProcessor {
     return this.get(imgName);
   }
 
-  @Override
+  @OverridedestImgName
   public void colorTransform(String imgName, String destImgName, double[][] transformer) {
-    this.images.put(destImgName, this.get(imgName).colorTransform(transformer));
+    ImageModel inputImage = this.get(imgName);
+
+    int height = inputImage.getHeight();
+    int width = inputImage.getWidth();
+
+    // Create a new RGBPixel array to store the transformed image
+    RGBPixel[][] transformedPixels = new RGBPixel[height][width];
+
+    // Apply the color transformation to each pixel
+    for (int i = 0; i < height; i++) {
+      for (int j = 0; j < width; j++) {
+        RGBPixel pixel = inputImage.getPixelValues(i, j);
+
+        int newRed = (int) (transformer[0][0] * pixel.getR() + transformer[0][1] * pixel.getG()
+                + transformer[0][2] * pixel.getB());
+        int newGreen = (int) (transformer[1][0] * pixel.getR() + transformer[1][1] * pixel.getG()
+                + transformer[1][2] * pixel.getB());
+        int newBlue = (int) (transformer[2][0] * pixel.getR() + transformer[2][1] * pixel.getG()
+                + transformer[2][2] * pixel.getB());
+
+        newRed = Math.max(0, Math.min(newRed, 255)); // Clamp the values
+        newGreen = Math.max(0, Math.min(newGreen, 255));
+        newBlue = Math.max(0, Math.min(newBlue, 255));
+
+        transformedPixels[i][j] = new RGBPixel(newRed, newGreen, newBlue);
+      }
+    }
+
+    // Create a new RGBImage with the transformed pixels and update the destination image
+    this.images.put(destImgName, new RGBImage(height, width, transformedPixels));
+    // this.images.put(destImgName, this.get(imgName).colorTransform(transformer));
   }
 
   @Override
-  public void grayscale(String imgName, String destImgName, Component c) {
-    this.images.put(destImgName, this.get(imgName).grayscale(c));
+  public void grayscale(String imgName, String , Component c) {
+    // Get the input image
+    ImageModel inputImage = this.get(imgName);
+
+    int height = inputImage.getHeight();
+    int width = inputImage.getWidth();
+
+    // Create a new RGBPixel array to store the grayscale image
+    RGBPixel[][] grayscalePixels = new RGBPixel[height][width];
+
+    // Apply the grayscale transformation to each pixel
+    for (int i = 0; i < height; i++) {
+      for (int j = 0; j < width; j++) {
+        RGBPixel pixel = inputImage.getPixelValues(i, j);
+
+        int grayValue = 0;
+        switch (c) {
+          case RED:
+            grayValue = pixel.getR();
+            break;
+          case GREEN:
+            grayValue = pixel.getG();
+            break;
+          case BLUE:
+            grayValue = pixel.getB();
+            break;
+          case VALUE:
+          case INTENSITY:
+          case LUMA:
+            // For these cases, calculate the grayscale value as a weighted sum of RGB values
+            grayValue = (int) (0.2126 * pixel.getR() + 0.7152 * pixel.getG() + 0.0722 * pixel.getB());
+            break;
+        }
+        grayValue = Math.max(0, Math.min(grayValue, 255)); // Clamp the value
+
+        grayscalePixels[i][j] = new RGBPixel(grayValue, grayValue, grayValue);
+      }
+    }
+
+    // Create a new RGBImage with the grayscale pixels and update the destination image
+    this.images.put(destImgName, new RGBImage(height, width, grayscalePixels));
   }
 
   @Override
   public void brighten(String imgName, String destImgName, int increment) {
-    this.images.put(destImgName, this.get(imgName).brighten(increment));
+    // Get the input image
+    ImageModel inputImage = this.get(imgName);
+
+    int height = inputImage.getHeight();
+    int width = inputImage.getWidth();
+
+    // Create a new RGBPixel array to store the brightened image
+    RGBPixel[][] brightenedPixels = new RGBPixel[height][width];
+
+    // Brighten the image by adding the increment to each color component
+    for (int i = 0; i < height; i++) {
+      for (int j = 0; j < width; j++) {
+        RGBPixel pixel = inputImage.getPixelValues(i, j);
+
+        int newRed = Math.min(pixel.getR() + increment, 255);
+        int newGreen = Math.min(pixel.getG() + increment, 255);
+        int newBlue = Math.min(pixel.getB() + increment, 255);
+
+        brightenedPixels[i][j] = new RGBPixel(newRed, newGreen, newBlue);
+      }
+    }
+
+    // Create a new RGBImage with the brightened pixels and update the destination image
+    this.images.put(destImgName, new RGBImage(height, width, brightenedPixels));
+    //this.images.put(destImgName, this.get(imgName).brighten(increment));
   }
 
   @Override
@@ -99,12 +192,48 @@ public class ImageProcessorImpl implements ImageProcessor {
 
   @Override
   public void horizontalFlip(String imgName, String destImgName) {
-    this.images.put(destImgName, this.get(imgName).horizontalFlip());
+    // Get the input image
+    ImageModel inputImage = this.get(imgName);
+
+    int height = inputImage.getHeight();
+    int width = inputImage.getWidth();
+
+    // Create a new RGBPixel array to store the horizontally flipped image
+    RGBPixel[][] flippedPixels = new RGBPixel[height][width];
+
+    // Flip the image horizontally
+    for (int i = 0; i < height; i++) {
+      for (int j = 0; j < width; j++) {
+        flippedPixels[i][j] = inputImage.getPixelValues(i, width - 1 - j);
+      }
+    }
+
+    // Create a new RGBImage with the flipped pixels and update the destination image
+    this.images.put(destImgName, new RGBImage(height, width, flippedPixels));
+    //this.images.put(destImgName, this.get(imgName).horizontalFlip());
   }
 
   @Override
   public void verticalFlip(String imgName, String destImgName) {
-    this.images.put(destImgName, this.get(imgName).verticalFlip());
+    // Get the input image
+    ImageModel inputImage = this.get(imgName);
+
+    int height = inputImage.getHeight();
+    int width = inputImage.getWidth();
+
+    // Create a new RGBPixel array to store the vertically flipped image
+    RGBPixel[][] flippedPixels = new RGBPixel[height][width];
+
+    // Flip the image vertically
+    for (int i = 0; i < height; i++) {
+      for (int j = 0; j < width; j++) {
+        flippedPixels[i][j] = inputImage.getPixelValues(height - 1 - i, j);
+      }
+    }
+
+    // Create a new RGBImage with the flipped pixels and update the destination image
+    this.images.put(destImgName, new RGBImage(height, width, flippedPixels));
+    //this.images.put(destImgName, this.get(imgName).verticalFlip());
   }
 
   @Override
