@@ -1,13 +1,12 @@
 package image_manipulation.controller.commands;
 
-import java.io.IOException;
-import java.util.Scanner;
-
-import image_manipulation.controller.ImageProcessorCommand;
 import image_manipulation.controller.helpers.image.ImageHelper;
 import image_manipulation.controller.helpers.image.ImageHelperFactoryImpl;
-import image_manipulation.model.image.ImageModel;
 import image_manipulation.model.ImageProcessor;
+import image_manipulation.model.image.ImageModel;
+
+import java.io.IOException;
+import java.util.Scanner;
 
 /**
  * The Save class represents an image manipulation command that saves an image processed by the

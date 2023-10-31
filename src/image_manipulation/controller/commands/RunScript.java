@@ -1,17 +1,15 @@
 package image_manipulation.controller.commands;
 
-import java.io.IOException;
-import java.io.Reader;
-import java.io.StringReader;
-import java.util.Objects;
-import java.util.Scanner;
-
 import image_manipulation.controller.ImageController;
 import image_manipulation.controller.ImageControllerInterface;
-import image_manipulation.controller.ImageProcessorCommand;
 import image_manipulation.controller.helpers.file.FileHelper;
 import image_manipulation.controller.helpers.file.FileHelperImpl;
 import image_manipulation.model.ImageProcessor;
+
+import java.io.IOException;
+import java.io.Reader;
+import java.io.StringReader;
+import java.util.Scanner;
 
 /**
  * The RunScript class represents a command that executes a script from a specified file path.

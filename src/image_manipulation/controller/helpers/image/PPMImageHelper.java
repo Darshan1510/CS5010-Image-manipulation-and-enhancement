@@ -24,7 +24,7 @@ public class PPMImageHelper implements ImageHelper {
      * @throws FileNotFoundException If the specified file is not found.
      */
     @Override
-    public ImageModel readImage(String filePath) throws FileNotFoundException {
+    public ImageModel readImage(String filePath) throws IOException {
         Scanner sc = getScanner(filePath);
 
         String token;
@@ -53,7 +53,7 @@ public class PPMImageHelper implements ImageHelper {
         return new RGBImage(height, width, pixels);
     }
 
-    private static Scanner getScanner(String filePath) throws FileNotFoundException {
+    private static Scanner getScanner(String filePath) throws IOException {
         Scanner sc = new Scanner(new FileInputStream(filePath));
 
         StringBuilder builder = new StringBuilder();

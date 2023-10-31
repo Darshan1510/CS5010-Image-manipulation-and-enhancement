@@ -1,16 +1,15 @@
 package image_manipulation.controller.helpers.image;
 
-import java.awt.*;
-import java.awt.image.BufferedImage;
-import java.io.File;
-import java.io.IOException;
-
-import javax.imageio.ImageIO;
-
 import image_manipulation.controller.utils.ImageUtil;
 import image_manipulation.model.image.ImageModel;
 import image_manipulation.model.image.RGBImage;
 import image_manipulation.model.image.RGBPixel;
+
+import javax.imageio.ImageIO;
+import java.awt.*;
+import java.awt.image.BufferedImage;
+import java.io.File;
+import java.io.IOException;
 
 /**
  * The GenericImageHelper class provides utility methods for reading and saving image files

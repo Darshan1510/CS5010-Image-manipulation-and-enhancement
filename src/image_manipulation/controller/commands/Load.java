@@ -1,13 +1,12 @@
 package image_manipulation.controller.commands;
 
-import java.io.IOException;
-import java.util.Scanner;
-
-import image_manipulation.controller.ImageProcessorCommand;
 import image_manipulation.controller.helpers.image.ImageHelperFactory;
 import image_manipulation.controller.helpers.image.ImageHelperFactoryImpl;
-import image_manipulation.model.image.ImageModel;
 import image_manipulation.model.ImageProcessor;
+import image_manipulation.model.image.ImageModel;
+
+import java.io.IOException;
+import java.util.Scanner;
 
 /**
  * The Load class represents an image manipulation command that loads an image from a specified

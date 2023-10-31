@@ -1,8 +1,9 @@
 package image_manipulation.controller.helpers.image;
 
-import java.io.IOException;
-
 import image_manipulation.model.image.ImageModel;
+
+import java.io.IOException;
+import java.io.OutputStream;
 
 /**
  * The ImageHelper interface defines a contract for classes that provide utility
@@ -24,9 +25,9 @@ public interface ImageHelper {
   /**
    * Saves an ImageModel as an image file at the specified file path.
    *
-   * @param image    The ImageModel to be saved as an image.
+   * @param outputStream    The outputStream to be saved as an image.
    * @param filepath The path where the image will be saved.
    * @throws IOException If an I/O error occurs during the saving process.
    */
-  void saveImage(ImageModel image, String filepath) throws IOException;
+  void saveImage(ImageModel imageModel, String filepath) throws IOException;
 }

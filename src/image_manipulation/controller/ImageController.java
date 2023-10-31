@@ -1,31 +1,15 @@
 package image_manipulation.controller;
 
+import image_manipulation.controller.commands.*;
+import image_manipulation.controller.enums.Command;
+import image_manipulation.model.ImageProcessor;
+
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Scanner;
 import java.util.function.Function;
-
-import image_manipulation.controller.commands.BlueComponent;
-import image_manipulation.controller.commands.Blur;
-import image_manipulation.controller.commands.Brighten;
-import image_manipulation.controller.commands.GreenComponent;
-import image_manipulation.controller.commands.HorizontalFlip;
-import image_manipulation.controller.commands.IntensityComponent;
-import image_manipulation.controller.commands.Load;
-import image_manipulation.controller.commands.RGBCombine;
-import image_manipulation.controller.commands.RGBSplit;
-import image_manipulation.controller.commands.RedComponent;
-import image_manipulation.controller.commands.RunScript;
-import image_manipulation.controller.commands.Save;
-import image_manipulation.controller.commands.Sepia;
-import image_manipulation.controller.commands.Sharpen;
-import image_manipulation.controller.commands.ValueComponent;
-import image_manipulation.controller.commands.VerticalFlip;
-import image_manipulation.controller.enums.Command;
-import image_manipulation.model.ImageProcessor;
-import image_manipulation.model.ImageProcessorImpl;
 
 /**
  * Responsible for handling image manipulation commands provided through user input.
@@ -53,7 +37,7 @@ public class ImageController implements ImageControllerInterface {
      * and applies them to an ImageProcessor object until the user exits.
      */
     @Override
-    public void execute(ImageProcessor imageProcessor) throws IOException {
+    public void execute(ImageProcessor imageProcessor) {
         Objects.requireNonNull(imageProcessor);
         Scanner scan = new Scanner(in);
 
@@ -61,17 +45,26 @@ public class ImageController implements ImageControllerInterface {
                 = getImageProcessorCommand();
 
         while (scan.hasNext()) {
-            ImageProcessorCommand c;
-            String in = scan.next();
-            if (in.equalsIgnoreCase("q") || in.equalsIgnoreCase("quit"))
-                return;
-            Function<Scanner, ImageProcessorCommand> cmd =
-                    knownCommands.getOrDefault(in, null);
-            if (cmd == null) {
-                throw new IllegalArgumentException("Invalid command");
-            } else {
-                c = cmd.apply(scan);
-                c.process(imageProcessor);
+            try {
+                ImageProcessorCommand c;
+                String in = scan.next();
+                if (in.equalsIgnoreCase("q") || in.equalsIgnoreCase("quit"))
+                    return;
+                Function<Scanner, ImageProcessorCommand> cmd =
+                        knownCommands.getOrDefault(in, null);
+                if (cmd == null) {
+                    throw new IllegalArgumentException("Invalid command");
+                } else {
+                    c = cmd.apply(scan);
+                    c.process(imageProcessor);
+                    out.append("Command performed: ").append(in).append("\n");
+                }
+            } catch (IOException | IllegalArgumentException e) {
+                try {
+                    this.out.append(e.getMessage()).append("\n");
+                } catch (IOException ex) {
+                    throw new RuntimeException(ex.toString());
+                }
             }
         }
     }

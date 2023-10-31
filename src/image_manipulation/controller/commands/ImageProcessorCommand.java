@@ -1,4 +1,4 @@
-package image_manipulation.controller;
+package image_manipulation.controller.commands;
 
 import image_manipulation.model.ImageProcessor;
 

@@ -1,10 +1,9 @@
 package image_manipulation.controller.commands;
 
-import java.util.Scanner;
-
-import image_manipulation.controller.ImageProcessorCommand;
 import image_manipulation.model.ImageProcessor;
 import image_manipulation.model.enums.Component;
+
+import java.util.Scanner;
 
 /**
  * The GreenComponent class represents an image manipulation command that converts an input image

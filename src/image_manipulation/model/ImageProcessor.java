@@ -1,7 +1,7 @@
 package image_manipulation.model;
 
-import image_manipulation.model.image.ImageModel;
 import image_manipulation.model.enums.Component;
+import image_manipulation.model.image.ImageModel;
 
 /**
  * The ImageProcessor interface represents the core functionality for processing and manipulating

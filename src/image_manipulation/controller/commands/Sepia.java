@@ -1,9 +1,8 @@
 package image_manipulation.controller.commands;
 
-import java.util.Scanner;
-
-import image_manipulation.controller.ImageProcessorCommand;
 import image_manipulation.model.ImageProcessor;
+
+import java.util.Scanner;
 
 /**
  * The Sepia class represents an image manipulation command that applies a Sepia tone effect to

@@ -1,12 +1,12 @@
 package image_manipulation.model;
 
-import java.util.HashMap;
-import java.util.Map;
-
-import image_manipulation.model.image.ImageModel;
 import image_manipulation.model.enums.Component;
+import image_manipulation.model.image.ImageModel;
 import image_manipulation.model.image.RGBImage;
 import image_manipulation.model.image.RGBPixel;
+
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * The ImageProcessorImpl class implements the ImageProcessor interface, providing the core
