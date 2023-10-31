@@ -36,7 +36,7 @@ public class LumaComponent implements ImageProcessorCommand {
    */
   @Override
   public void process(ImageProcessor p) {
-    p.grayscale(imgName, destImgName, Component.INTENSITY);
+    p.grayscale(imgName, destImgName, Component.LUMA);
   }
 
   /**
