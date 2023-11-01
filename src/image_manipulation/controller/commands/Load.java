@@ -1,16 +1,12 @@
 package image_manipulation.controller.commands;
 
-import java.io.FileInputStream;
 import java.io.IOException;
-import java.util.Arrays;
+import java.io.InputStream;
 import java.util.Scanner;
 
-import image_manipulation.controller.ImageProcessorCommand;
-import image_manipulation.controller.enums.Command;
-import image_manipulation.controller.helpers.AbstractImageHelper;
-import image_manipulation.controller.helpers.ImageHelper;
+import image_manipulation.controller.helpers.image.ImageHelperFactory;
+import image_manipulation.controller.helpers.image.ImageHelperFactoryImpl;
 import image_manipulation.model.ImageProcessor;
-import image_manipulation.model.RGBImage;
 
 /**
  * The Load class represents an image manipulation command that loads an image from a specified
@@ -42,12 +38,12 @@ public class Load implements ImageProcessorCommand {
   @Override
   public void process(ImageProcessor p) {
     try {
-      ImageHelper helper = new AbstractImageHelper();
-      RGBImage rgbImage = helper.readImage(imgPath);
-      p.load(imgName, rgbImage);
+      ImageHelperFactory factory = new ImageHelperFactoryImpl();
+      InputStream inputStream = factory.getImageHelper(imgPath).readImage(imgPath);
+      p.load(imgName, inputStream);
     } catch (IOException ex) {
       // TODO: update the exception to the custom exception.
-      throw new RuntimeException("IO Exception");
+      throw new RuntimeException("IO Exception " + ex.getMessage());
     }
   }
 

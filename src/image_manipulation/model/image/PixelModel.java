@@ -1,4 +1,4 @@
-package image_manipulation.model;
+package image_manipulation.model.image;
 
 /**
  * Represents a model for RGB pixel values.

@@ -1,12 +1,11 @@
 package image_manipulation.controller.commands;
 
 import java.io.IOException;
+import java.io.OutputStream;
 import java.util.Scanner;
 
-import image_manipulation.controller.ImageProcessorCommand;
-import image_manipulation.controller.helpers.AbstractImageHelper;
-import image_manipulation.controller.helpers.ImageHelper;
-import image_manipulation.model.ImageModel;
+import image_manipulation.controller.helpers.image.ImageHelper;
+import image_manipulation.controller.helpers.image.ImageHelperFactoryImpl;
 import image_manipulation.model.ImageProcessor;
 
 /**
@@ -41,13 +40,12 @@ public class Save implements ImageProcessorCommand {
   public void process(ImageProcessor p) {
     try {
       // Get the image to be saved from the ImageProcessor
-      ImageModel image = p.save(imgName);
-      // Initialize an ImageHelper (e.g., AbstractImageHelper) to save the image
-      ImageHelper helper = new AbstractImageHelper();
-      helper.saveImage(image, imgPath);
+      OutputStream outputStream = p.save(imgName);
+      // Initialize an ImageHelper (e.g., ImageHelperFactoryImpl) to save the image
+      ImageHelper helper = new ImageHelperFactoryImpl().getImageHelper(imgPath);
+      helper.saveImage(outputStream, imgPath);
     } catch (IOException ex) {
-      // TODO: Update the exception to a custom exception if available.
-      throw new RuntimeException("IO Exception");
+      throw new RuntimeException("Issue occurred while saving the file.");
     }
   }
 

@@ -1,10 +1,17 @@
 package image_manipulation.model;
 
+import image_manipulation.model.enums.Component;
+import image_manipulation.model.image.ImageModel;
+import image_manipulation.model.image.RGBImage;
+import image_manipulation.model.image.RGBPixel;
+
+import java.io.ByteArrayOutputStream;
 import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
 import java.util.HashMap;
 import java.util.Map;
-
-import image_manipulation.model.enums.Component;
+import java.util.Scanner;
 
 /**
  * The ImageProcessorImpl class implements the ImageProcessor interface, providing the core
@@ -23,217 +30,87 @@ public class ImageProcessorImpl implements ImageProcessor {
   }
 
   @Override
-  public void load(String imgName, RGBImage rgbImage) throws IOException {
-    this.images.put(imgName, rgbImage);
-  }
+  public void load(String imgName, InputStream inputStream) {
+    Scanner sc = new Scanner(inputStream);
+    int width = sc.nextInt();
+    int height = sc.nextInt();
+    int max = sc.nextInt();
 
-  @Override
-  public ImageModel save(String imgName) {
-    return this.get(imgName);
-  }
-
-  @OverridedestImgName
-  public void colorTransform(String imgName, String destImgName, double[][] transformer) {
-    ImageModel inputImage = this.get(imgName);
-
-    int height = inputImage.getHeight();
-    int width = inputImage.getWidth();
-
-    // Create a new RGBPixel array to store the transformed image
-    RGBPixel[][] transformedPixels = new RGBPixel[height][width];
-
-    // Apply the color transformation to each pixel
-    for (int i = 0; i < height; i++) {
-      for (int j = 0; j < width; j++) {
-        RGBPixel pixel = inputImage.getPixelValues(i, j);
-
-        int newRed = (int) (transformer[0][0] * pixel.getR() + transformer[0][1] * pixel.getG()
-                + transformer[0][2] * pixel.getB());
-        int newGreen = (int) (transformer[1][0] * pixel.getR() + transformer[1][1] * pixel.getG()
-                + transformer[1][2] * pixel.getB());
-        int newBlue = (int) (transformer[2][0] * pixel.getR() + transformer[2][1] * pixel.getG()
-                + transformer[2][2] * pixel.getB());
-
-        newRed = Math.max(0, Math.min(newRed, 255)); // Clamp the values
-        newGreen = Math.max(0, Math.min(newGreen, 255));
-        newBlue = Math.max(0, Math.min(newBlue, 255));
-
-        transformedPixels[i][j] = new RGBPixel(newRed, newGreen, newBlue);
-      }
+    if (height < 0 || width < 0 || max < 0) {
+      throw new IllegalArgumentException("Invalid file");
     }
 
-    // Create a new RGBImage with the transformed pixels and update the destination image
-    this.images.put(destImgName, new RGBImage(height, width, transformedPixels));
-    // this.images.put(destImgName, this.get(imgName).colorTransform(transformer));
-  }
+    RGBPixel[][] pixels = new RGBPixel[height][width];
 
-  @Override
-  public void grayscale(String imgName, String , Component c) {
-    // Get the input image
-    ImageModel inputImage = this.get(imgName);
-
-    int height = inputImage.getHeight();
-    int width = inputImage.getWidth();
-
-    // Create a new RGBPixel array to store the grayscale image
-    RGBPixel[][] grayscalePixels = new RGBPixel[height][width];
-
-    // Apply the grayscale transformation to each pixel
     for (int i = 0; i < height; i++) {
       for (int j = 0; j < width; j++) {
-        RGBPixel pixel = inputImage.getPixelValues(i, j);
+        int r = sc.nextInt();
+        int g = sc.nextInt();
+        int b = sc.nextInt();
 
-        int grayValue = 0;
-        switch (c) {
-          case RED:
-            grayValue = pixel.getR();
-            break;
-          case GREEN:
-            grayValue = pixel.getG();
-            break;
-          case BLUE:
-            grayValue = pixel.getB();
-            break;
-          case VALUE:
-          case INTENSITY:
-          case LUMA:
-            // For these cases, calculate the grayscale value as a weighted sum of RGB values
-            grayValue = (int) (0.2126 * pixel.getR() + 0.7152 * pixel.getG() + 0.0722 * pixel.getB());
-            break;
+        if (r < 0 || g < 0 || b < 0) {
+          throw new IllegalArgumentException("Invalid file.");
         }
-        grayValue = Math.max(0, Math.min(grayValue, 255)); // Clamp the value
+        pixels[i][j] = new RGBPixel(r, g, b);
 
-        grayscalePixels[i][j] = new RGBPixel(grayValue, grayValue, grayValue);
       }
     }
+    images.put(imgName, new RGBImage(height, width, pixels));
+  }
 
-    // Create a new RGBImage with the grayscale pixels and update the destination image
-    this.images.put(destImgName, new RGBImage(height, width, grayscalePixels));
+  @Override
+  public OutputStream save(String imgName) throws IOException {
+    ImageModel imageModel = this.get(imgName);
+    StringBuilder sb = new StringBuilder();
+    int width = imageModel.getWidth();
+    int height = imageModel.getHeight();
+    int max = imageModel.getMaxValue();
+    sb.append(width).append(" ").append(height).append(System.lineSeparator());
+    sb.append(max).append(System.lineSeparator());
+    for (int i = 0; i < height; i++) {
+      for (int j = 0; j < width; j++) {
+        sb.append(imageModel.getPixelValues(i, j).getR()).append(System.lineSeparator());
+        sb.append(imageModel.getPixelValues(i, j).getG()).append(System.lineSeparator());
+        sb.append(imageModel.getPixelValues(i, j).getB()).append(System.lineSeparator());
+      }
+    }
+    ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
+    outputStream.write(sb.toString().getBytes());
+    return outputStream;
+  }
+
+  @Override
+  public void colorTransform(String imgName, String destImgName, double[][] transformer) {
+    this.images.put(destImgName, this.get(imgName).colorTransform(transformer));
+  }
+
+  @Override
+  public void grayscale(String imgName, String destImgName, Component c) {
+    this.images.put(destImgName, this.get(imgName).grayscale(c));
   }
 
   @Override
   public void brighten(String imgName, String destImgName, int increment) {
-    // Get the input image
-    ImageModel inputImage = this.get(imgName);
-
-    int height = inputImage.getHeight();
-    int width = inputImage.getWidth();
-
-    // Create a new RGBPixel array to store the brightened image
-    RGBPixel[][] brightenedPixels = new RGBPixel[height][width];
-
-    // Brighten the image by adding the increment to each color component
-    for (int i = 0; i < height; i++) {
-      for (int j = 0; j < width; j++) {
-        RGBPixel pixel = inputImage.getPixelValues(i, j);
-
-        int newRed = Math.min(pixel.getR() + increment, 255);
-        int newGreen = Math.min(pixel.getG() + increment, 255);
-        int newBlue = Math.min(pixel.getB() + increment, 255);
-
-        brightenedPixels[i][j] = new RGBPixel(newRed, newGreen, newBlue);
-      }
-    }
-
-    // Create a new RGBImage with the brightened pixels and update the destination image
-    this.images.put(destImgName, new RGBImage(height, width, brightenedPixels));
-    //this.images.put(destImgName, this.get(imgName).brighten(increment));
+    this.images.put(destImgName, this.get(imgName).brighten(increment));
   }
 
   @Override
   public void filter(String imgName, String destImgName, double[][] kernel) {
-    ImageModel sourceImage = get(imgName);
-    int width = sourceImage.getWidth();
-    int height = sourceImage.getHeight();
-
-    // Create a destination image with the same dimensions.
-    RGBPixel[][] filteredPixels = new RGBPixel[height][width];
-
-    // Apply the filter to each pixel in the source image.
-    int kernelSize = kernel.length;
-    int kernelHalf = kernelSize / 2;
-
-    for (int y = 0; y < height; y++) {
-      for (int x = 0; x < width; x++) {
-        double redSum = 0.0;
-        double greenSum = 0.0;
-        double blueSum = 0.0;
-
-        for (int j = -kernelHalf; j <= kernelHalf; j++) {
-          for (int i = -kernelHalf; i <= kernelHalf; i++) {
-            int newX = x + i;
-            int newY = y + j;
-
-            // Ensure the new coordinates are within the image bounds.
-            if (newX >= 0 && newX < width && newY >= 0 && newY < height) {
-              RGBPixel pixel = sourceImage.getPixelValues(newY, newX);
-              double kernelValue = kernel[j + kernelHalf][i + kernelHalf];
-              redSum += pixel.getR() * kernelValue;
-              greenSum += pixel.getG() * kernelValue;
-              blueSum += pixel.getB() * kernelValue;
-            }
-          }
-        }
-
-        // Set the filtered pixel in the destination image.
-        int redValue = (int) redSum;
-        int greenValue = (int) greenSum;
-        int blueValue = (int) blueSum;
-        filteredPixels[y][x] = new RGBPixel(redValue, greenValue, blueValue);
-      }
+    if (!validateKernel(kernel)) {
+      throw new IllegalArgumentException("Invalid kernel! Please provide the valid kernel " +
+              "with odd dimensions. (ex: 3*3, 5*5)");
     }
-
-    // Create a new image with the filtered pixel data and store it in the destination.
-    RGBImage filteredImage = new RGBImage(height, width, filteredPixels);
-    images.put(destImgName, filteredImage);
-
     this.images.put(destImgName, this.get(imgName).filter(kernel));
   }
 
   @Override
   public void horizontalFlip(String imgName, String destImgName) {
-    // Get the input image
-    ImageModel inputImage = this.get(imgName);
-
-    int height = inputImage.getHeight();
-    int width = inputImage.getWidth();
-
-    // Create a new RGBPixel array to store the horizontally flipped image
-    RGBPixel[][] flippedPixels = new RGBPixel[height][width];
-
-    // Flip the image horizontally
-    for (int i = 0; i < height; i++) {
-      for (int j = 0; j < width; j++) {
-        flippedPixels[i][j] = inputImage.getPixelValues(i, width - 1 - j);
-      }
-    }
-
-    // Create a new RGBImage with the flipped pixels and update the destination image
-    this.images.put(destImgName, new RGBImage(height, width, flippedPixels));
-    //this.images.put(destImgName, this.get(imgName).horizontalFlip());
+    this.images.put(destImgName, this.get(imgName).horizontalFlip());
   }
 
   @Override
   public void verticalFlip(String imgName, String destImgName) {
-    // Get the input image
-    ImageModel inputImage = this.get(imgName);
-
-    int height = inputImage.getHeight();
-    int width = inputImage.getWidth();
-
-    // Create a new RGBPixel array to store the vertically flipped image
-    RGBPixel[][] flippedPixels = new RGBPixel[height][width];
-
-    // Flip the image vertically
-    for (int i = 0; i < height; i++) {
-      for (int j = 0; j < width; j++) {
-        flippedPixels[i][j] = inputImage.getPixelValues(height - 1 - i, j);
-      }
-    }
-
-    // Create a new RGBImage with the flipped pixels and update the destination image
-    this.images.put(destImgName, new RGBImage(height, width, flippedPixels));
-    //this.images.put(destImgName, this.get(imgName).verticalFlip());
+    this.images.put(destImgName, this.get(imgName).verticalFlip());
   }
 
   @Override
@@ -267,7 +144,7 @@ public class ImageProcessorImpl implements ImageProcessor {
       ImageModel combinedImage = new RGBImage(red.getHeight(), red.getWidth(), pixelResults);
       this.images.put(destImgName, combinedImage);
     } else {
-      throw new IllegalArgumentException("To combine, images should be of the same dimensions");
+      throw new IllegalArgumentException("Images do not have the same dimension.");
     }
   }
 
@@ -276,5 +153,25 @@ public class ImageProcessorImpl implements ImageProcessor {
       throw new IllegalArgumentException("Image Not Found");
     }
     return this.images.get(imgName);
+  }
+
+  /**
+   * To validate the Kernel for filters.
+   * It should be of odd dimension for the operation.
+   *
+   * @param kernel a 2D matrix representing the kernel that will be used for filtering.
+   * @return returns true if the kernel is valid otherwise false.
+   */
+  private boolean validateKernel(double[][] kernel) {
+    int l = kernel.length;
+    if (l % 2 == 1) {
+      for (double[] doubles : kernel) {
+        if (doubles.length != l) {
+          return false;
+        }
+      }
+      return true;
+    }
+    return false;
   }
 }

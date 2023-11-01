@@ -1,6 +1,8 @@
-package image_manipulation.controller;
+package image_manipulation.controller.commands;
 
 import image_manipulation.model.ImageProcessor;
+
+import java.io.IOException;
 
 /**
  * The ImageProcessorCommand interface defines a contract for classes that represent
@@ -15,5 +17,5 @@ public interface ImageProcessorCommand {
    *
    * @param p The ImageProcessor on which the command should be applied.
    */
-  void process(ImageProcessor p);
+  void process(ImageProcessor p) throws IOException;
 }

@@ -1,5 +1,8 @@
 package image_manipulation.controller;
 
+import image_manipulation.model.ImageProcessor;
+import image_manipulation.model.ImageProcessorImpl;
+
 import java.io.IOException;
 import java.io.InputStreamReader;
 
@@ -13,16 +16,17 @@ import java.io.InputStreamReader;
  */
 public class SimpleImageController {
 
-  /**
-   * The main method creates an ImageControllerInterface instance and executes
-   * image manipulation commands using the standard input and output streams.
-   *
-   * @param args The command-line arguments (not used in this context).
-   * @throws IOException If an I/O error occurs during input or output operations.
-   */
-  public static void main(String[] args) throws IOException {
-    ImageControllerInterface controller = new ImageController(new InputStreamReader(System.in),
-            System.out);
-    controller.execute();
-  }
+    /**
+     * The main method creates an ImageControllerInterface instance and executes
+     * image manipulation commands using the standard input and output streams.
+     *
+     * @param args The command-line arguments (not used in this context).
+     * @throws IOException If an I/O error occurs during input or output operations.
+     */
+    public static void main(String[] args) throws IOException {
+        ImageProcessor imageProcessor = new ImageProcessorImpl();
+        ImageControllerInterface controller = new ImageController(new InputStreamReader(System.in),
+                System.out);
+        controller.execute(imageProcessor);
+    }
 }

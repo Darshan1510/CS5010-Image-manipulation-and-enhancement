@@ -1,9 +1,8 @@
 package image_manipulation.controller.commands;
 
-import java.util.Scanner;
-
-import image_manipulation.controller.ImageProcessorCommand;
 import image_manipulation.model.ImageProcessor;
+
+import java.util.Scanner;
 
 /**
  * The RGBSplit class represents an image manipulation command that splits an input RGB image
