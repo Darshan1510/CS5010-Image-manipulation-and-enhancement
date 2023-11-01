@@ -1,5 +1,9 @@
 package image_manipulation.model;
 
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
+
 import image_manipulation.model.enums.Component;
 import image_manipulation.model.image.ImageModel;
 
@@ -14,17 +18,17 @@ public interface ImageProcessor {
      * Loads an RGBImage into the image processor with the given name.
      *
      * @param imgName    The name under which the image is loaded.
-     * @param imageModel The ImageModel to be loaded.
+     * @param inputStream The inputStream to be loaded.
      */
-    void load(String imgName, ImageModel imageModel);
+    void load(String imgName, InputStream inputStream);
 
     /**
      * Saves the current state of an image with the given name as an ImageModel.
      *
      * @param imgName The name of the image to be saved.
-     * @return An ImageModel representing the saved image.
+     * @return An outputStream representing the saved image.
      */
-    ImageModel save(String imgName);
+    OutputStream save(String imgName) throws IOException;
 
     /**
      * Transforms an image using a specified color transformation matrix and saves the result as

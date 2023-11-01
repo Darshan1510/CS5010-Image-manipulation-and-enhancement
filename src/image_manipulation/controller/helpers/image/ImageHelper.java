@@ -3,6 +3,7 @@ package image_manipulation.controller.helpers.image;
 import image_manipulation.model.image.ImageModel;
 
 import java.io.IOException;
+import java.io.InputStream;
 import java.io.OutputStream;
 
 /**
@@ -17,10 +18,10 @@ public interface ImageHelper {
    * of the image.
    *
    * @param filepath The path to the image file to be read.
-   * @return An ImageModel object representing the image.
+   * @return A inputStream object representing the image.
    * @throws IOException If an I/O error occurs during the reading process.
    */
-  ImageModel readImage(String filepath) throws IOException;
+  InputStream readImage(String filepath) throws IOException;
 
   /**
    * Saves an ImageModel as an image file at the specified file path.
@@ -29,5 +30,5 @@ public interface ImageHelper {
    * @param filepath The path where the image will be saved.
    * @throws IOException If an I/O error occurs during the saving process.
    */
-  void saveImage(ImageModel imageModel, String filepath) throws IOException;
+  void saveImage(OutputStream outputStream, String filepath) throws IOException;
 }

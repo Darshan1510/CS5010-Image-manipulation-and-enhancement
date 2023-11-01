@@ -1,13 +1,12 @@
 package image_manipulation.controller.helpers.image;
 
+import image_manipulation.controller.helpers.file.FileHelper;
+import image_manipulation.controller.helpers.file.FileHelperImpl;
 import image_manipulation.model.image.ImageModel;
 import image_manipulation.model.image.RGBImage;
 import image_manipulation.model.image.RGBPixel;
 
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
-import java.io.FileWriter;
-import java.io.IOException;
+import java.io.*;
 import java.util.Scanner;
 
 /**
@@ -19,87 +18,77 @@ public class PPMImageHelper implements ImageHelper {
     /**
      * Reads a PPM image file and creates an RGBImage representation of the image.
      *
-     * @param filePath The path to the PPM image file to be read.
-     * @return An RGBImage object representing the image.
+     * @param filepath The path to the PPM image file to be read.
+     * @return A inputStream object representing the image.
      * @throws FileNotFoundException If the specified file is not found.
      */
     @Override
-    public ImageModel readImage(String filePath) throws IOException {
-        Scanner sc = getScanner(filePath);
+    public InputStream readImage(String filepath) throws IOException {
+        try {
+            FileHelper fileHelper = new FileHelperImpl();
+            String file = fileHelper.readFile(filepath);
 
-        String token;
+            Scanner sc = new Scanner(file);
+            String token;
 
-        token = sc.next();
-        if (!token.equals("P3")) {
-            throw new IllegalArgumentException("Invalid PPM file: plain RAW file should begin with P3");
-        }
-        int width = sc.nextInt();
-
-        int height = sc.nextInt();
-
-        int maxValue = sc.nextInt();
-
-        RGBPixel[][] pixels = new RGBPixel[height][width];
-
-        for (int i = 0; i < height; i++) {
-            for (int j = 0; j < width; j++) {
-                int r = sc.nextInt();
-                int g = sc.nextInt();
-                int b = sc.nextInt();
-                pixels[i][j] = new RGBPixel(r, g, b);
+            token = sc.next();
+            if (!token.equals("P3")) {
+                throw new IllegalArgumentException("Invalid PPM file: " +
+                        "plain RAW file should begin with P3");
             }
-        }
 
-        return new RGBImage(height, width, pixels);
-    }
-
-    private static Scanner getScanner(String filePath) throws IOException {
-        Scanner sc = new Scanner(new FileInputStream(filePath));
-
-        StringBuilder builder = new StringBuilder();
-        //read the file line by line, and populate a string. This will throw away any comment lines
-        while (sc.hasNextLine()) {
-            String s = sc.nextLine();
-            if (s.charAt(0) != '#') {
-                builder.append(s + System.lineSeparator());
+            StringBuilder builder = new StringBuilder();
+            //read the file line by line, and populate a string. This will throw away any comment lines
+            while (sc.hasNext()) {
+                String s = sc.next();
+                if (s.charAt(0) != '#') {
+                    builder.append(s + System.lineSeparator());
+                }
             }
-        }
 
-        //now set up the scanner to read from the string we just built
-        sc = new Scanner(builder.toString());
-        return sc;
+            return new ByteArrayInputStream(builder.toString().getBytes());
+        } catch (IOException ioe) {
+            throw new IOException("Invalid file path");
+        }
     }
 
     /**
      * Saves an RGBImage as a PPM image file.
      *
-     * @param image    The RGBImage to be saved.
-     * @param filepath The path to the PPM image file where the image will be saved.
+     * @param outputStream The OutputStream to be saved.
+     * @param filepath     The path to the PPM image file where the image will be saved.
      * @throws IOException If an I/O error occurs during the save operation.
      */
     @Override
-    public void saveImage(ImageModel image, String filepath) throws IOException {
+    public void saveImage(OutputStream outputStream, String filepath) throws IOException {
         try {
+            String data = outputStream.toString();
+            Scanner sc = new Scanner(data);
+
             StringBuilder sb = new StringBuilder();
 
-            int width = image.getWidth();
-            int height = image.getHeight();
-            RGBPixel[][] pixels = image.getPixels();
+            int width = sc.nextInt();
+            int height = sc.nextInt();
+            int maxValue = sc.nextInt();
 
             sb.append("P3").append(System.lineSeparator());
+
             sb.append(width).append(" ").append(height).append(System.lineSeparator());
+            sb.append(maxValue).append(System.lineSeparator());
+
             for (int i = 0; i < height; i++) {
                 for (int j = 0; j < width; j++) {
-                    sb.append(pixels[i][j].getR()).append(System.lineSeparator());
-                    sb.append(pixels[i][j].getG()).append(System.lineSeparator());
-                    sb.append(pixels[i][j].getB()).append(System.lineSeparator());
+                    sb.append(sc.nextInt()).append(System.lineSeparator());
+                    sb.append(sc.nextInt()).append(System.lineSeparator());
+                    sb.append(sc.nextInt()).append(System.lineSeparator());
                 }
             }
+
             FileWriter myWriter = new FileWriter(filepath);
             myWriter.write(sb.toString());
             myWriter.close();
         } catch (IOException e) {
-            throw new IOException("Invalid path");
+            throw new IOException("Invalid path! please provide the valid path");
         }
 
     }
