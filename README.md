@@ -7,15 +7,15 @@ loading, saving, and applying various image processing techniques. The applicati
 for image manipulation and transformation.
 
 ## Features:
-- Load Images: Easily load images in various formats (e.g., PPM, JPEG, PNG) into the application.
-- Save Images: Save the current state of an image as an ImageModel in a specified format.
-- Color Transformations: Apply color transformation matrices to change the colors of images.
-- Grayscale Conversion: Convert images to grayscale using different color components (e.g., RED, GREEN, BLUE).
-- Brightness Adjustment: Adjust pixel values to brighten or darken images.
-- Filtering: Apply custom filters to images for effects like blurring, sharpening, and edge detection.
-- Flipping: Perform horizontal or vertical flips on images.
-- RGB Component Splitting: Split RGB images into their red, green, and blue components.
-- RGB Component Combining: Combine red, green, and blue images to create a new RGB image.
+* **Load Images:** Easily load images in various formats (e.g., PPM, JPEG, PNG) into the application.
+* **Save Images:** Save the current state of an image as an ImageModel in a specified format.
+* **Color Transformations:** Apply color transformation matrices to change the colors of images.
+* **Grayscale Conversion:** Convert images to grayscale using different color components (e.g., RED, GREEN, BLUE).
+* **Brightness Adjustment:** Adjust pixel values to brighten or darken images.
+* **Filtering:** Apply custom filters to images for effects like blurring, sharpening, and edge detection.
+* **Flipping:** Perform horizontal or vertical flips on images.
+* **RGB Component Splitting:** Split RGB images into their red, green, and blue components.
+* **RGB Component Combining:** Combine red, green, and blue images to create a new RGB image.
 
 ## Installation:
 1. Clone this repository to your local machine:
@@ -31,9 +31,9 @@ We're using the MVC Pattern for our design:
 
 1. The **'Model'** is where our data and its related actions live.
 2. The **'Controller'** is like a manager; it talks to the user, the model, 
-and the view. Our controller uses the Command Design to work smoothly.
+and the view. Our controller uses the *Command Design* to work smoothly.
 3. Right now, we don't have a specific 'View'. The user just gives commands, 
-and the controller handles it using the Command design.
+and the controller handles it using the *Command design*.
 
 ![image-manipulation - MVC Design](res/class_diagram.png)
 
@@ -76,7 +76,7 @@ Such pixels are employed by classes that implement the `ImageModel` interface.
 
 ### Controller
 
-The controller in our setup adopts the "Command Design Pattern", aligning seamlessly with the program's needs.
+The controller in our setup adopts the **"Command Design Pattern"**, aligning seamlessly with the program's needs.
 
 Commands such as load, brighten, red-component, green-component, blue-component, save, run, luma, value, intensity, 
 blur, sharpen, rgb-split, rgb-combine and flips (both vertical and horizontal) are treated as individual commands.
@@ -144,7 +144,7 @@ the provided file path.
 
 ### Running the program.
 
-Navigate to *src -> image_manipulation -> controller -> * `SimpleImageController`  and execute the static main method. 
+Navigate to *src -> image_manipulation -> controller ->  `SimpleImageController`*  and execute the static main method. 
 This action initializes a `ImageController` object and triggers the program by invoking the `execute` method of the 
 controller.
 
@@ -243,7 +243,7 @@ blue-component paris paris-blue
 ###### Stores the output image under the given name
 
 ```
-save res/paris-blue.ppm paris-blue
+save res/paris-blue.png paris-blue
 ```
 
 ###### Generates a greyscale image based on the value component
@@ -291,9 +291,9 @@ rgb-split paris paris-red paris-green paris-blue
 ###### Stores the output image under the given name
 
 ```
-save res/paris-split-red.ppm paris-red
-save res/paris-split-green.ppm paris-green
-save res/paris-split-blue.ppm paris-blue
+save res/paris-split-red.png paris-red
+save res/paris-split-green.png paris-green
+save res/paris-split-blue.png paris-blue
 ```
 
 ###### Merges three greyscale images using their red, green, and blue components.
@@ -315,7 +315,7 @@ save res/paris-combined.png paris-combined
 Any or all of the above valid commands can execute successfully here.
 
 ```
-run res/script-test.txt
+run res/script.txt
 ```
 
 #### Exception handling
@@ -325,8 +325,11 @@ to the user.
 
 ### Image Citation:
 
-> Paris image
-> ![Paris](res/paris-test.png)
+
+>Paris image
+> 
+> ![Paris](res/paris-test.png) 
+
 
 Author: Darshan Jayeshbhai Shah
 
