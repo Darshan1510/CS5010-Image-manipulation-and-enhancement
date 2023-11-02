@@ -10,8 +10,8 @@ import image_manipulation.model.ImageProcessor;
  */
 public interface ImageControllerInterface {
 
-  /**
-   * Execute image manipulation commands based on user input.
-   */
-  void execute(ImageProcessor processor);
+    /**
+     * Execute image manipulation commands based on user input.
+     */
+    void execute(ImageProcessor processor);
 }

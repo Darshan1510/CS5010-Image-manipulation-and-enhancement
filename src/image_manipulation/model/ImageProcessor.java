@@ -14,7 +14,7 @@ public interface ImageProcessor {
     /**
      * Loads an RGBImage into the image processor with the given name.
      *
-     * @param imgName    The name under which the image is loaded.
+     * @param imgName     The name under which the image is loaded.
      * @param inputStream The inputStream to be loaded.
      */
     void load(String imgName, InputStream inputStream);
@@ -50,7 +50,7 @@ public interface ImageProcessor {
      *
      * @param imgName     The name of the input image to be converted to grayscale.
      * @param destImgName The name of the destination image where the grayscale image will be saved.
-      */
+     */
     void blueGrayscale(String imgName, String destImgName);
 
     /**

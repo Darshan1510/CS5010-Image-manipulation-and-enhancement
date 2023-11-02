@@ -15,8 +15,59 @@ public class ImageControllerTest {
     private Reader in;
     private Appendable out;
 
+    @Test(expected = RuntimeException.class)
+    public void testLoadCommandInvalidFilePath() throws RuntimeException {
+        StringBuilder logger = new StringBuilder();
+        ImageProcessor mockModel = new MockModel(logger);
+
+        String testCommand = "load";
+        String testArguments = " res/test.ppm test";
+
+        in = new StringReader(testCommand + testArguments);
+        out = new StringWriter();
+
+        controller = new ImageController(in, out);
+        controller.execute(mockModel);
+
+        assertEquals("Command:" + testArguments, logger.toString());
+    }
+
     @Test
-    public void testBrighten() throws IOException {
+    public void testLoadCommandValid() {
+        StringBuilder logger = new StringBuilder();
+        ImageProcessor mockModel = new MockModel(logger);
+
+        String testCommand = "load";
+        String testArguments = " res/paris-test.ppm paris-test";
+
+        in = new StringReader(testCommand + testArguments);
+        out = new StringWriter();
+
+        controller = new ImageController(in, out);
+        controller.execute(mockModel);
+
+        assertEquals("Command: " + testArguments.split(" ")[2], logger.toString());
+    }
+
+    @Test
+    public void testSaveCommandValid() {
+        StringBuilder logger = new StringBuilder();
+        ImageProcessor mockModel = new MockModel(logger);
+
+        String testCommand = "save";
+        String testArguments = " res/paris-test.ppm paris-test";
+
+        in = new StringReader(testCommand + testArguments);
+        out = new StringWriter();
+
+        controller = new ImageController(in, out);
+        controller.execute(mockModel);
+
+        assertEquals("Input: " + testArguments.split(" ")[2], logger.toString());
+    }
+
+    @Test
+    public void testBrightenCommand() {
         StringBuilder logger = new StringBuilder();
         ImageProcessor mockModel = new MockModel(logger);
 
@@ -29,7 +80,194 @@ public class ImageControllerTest {
         controller = new ImageController(in, out);
         controller.execute(mockModel);
 
-        assertEquals(logger.toString(), "Command:" + testArguments);
+        assertEquals("Command:" + testArguments, logger.toString());
+    }
+
+    //    @Test
+    //    public void testBrightenCommandInvalid() throws IllegalArgumentException {
+    //        StringBuilder logger = new StringBuilder();
+    //        ImageProcessor mockModel = new MockModel(logger);
+    //
+    //        String testCommand = "brigten";
+    //        String testArguments = " 50 test test-brighter";
+    //
+    //        in = new StringReader(testCommand + testArguments);
+    //        out = new StringWriter();
+    //
+    //        controller = new ImageController(in, out);
+    //        controller.execute(mockModel);
+    //
+    //        assertEquals("Invalid command", logger.toString());
+    //    }
+
+    @Test
+    public void testBrightenCommandWithNegativeValues() {
+        StringBuilder logger = new StringBuilder();
+        ImageProcessor mockModel = new MockModel(logger);
+
+        String testCommand = "brighten";
+        String testArguments = " -50 test test-brighter";
+
+        in = new StringReader(testCommand + testArguments);
+        out = new StringWriter();
+
+        controller = new ImageController(in, out);
+        controller.execute(mockModel);
+
+        assertEquals("Command:" + testArguments, logger.toString());
+    }
+
+    @Test
+    public void testBrightenRedOnly() {
+        StringBuilder logger = new StringBuilder();
+        ImageProcessor mockModel = new MockModel(logger);
+
+        String testCommand = "brighten";
+        String testArguments = " 50 test-red test-red";
+
+        in = new StringReader(testCommand + testArguments);
+        out = new StringWriter();
+
+        controller = new ImageController(in, out);
+        controller.execute(mockModel);
+
+        assertEquals("Command:" + testArguments, logger.toString());
+    }
+
+    @Test
+    public void testBrightenGreenOnly() {
+        StringBuilder logger = new StringBuilder();
+        ImageProcessor mockModel = new MockModel(logger);
+
+        String testCommand = "brighten";
+        String testArguments = " 50 test-green test-green";
+
+        in = new StringReader(testCommand + testArguments);
+        out = new StringWriter();
+
+        controller = new ImageController(in, out);
+        controller.execute(mockModel);
+
+        assertEquals("Command:" + testArguments, logger.toString());
+    }
+
+    @Test
+    public void testBrightenBlueOnly() {
+        StringBuilder logger = new StringBuilder();
+        ImageProcessor mockModel = new MockModel(logger);
+
+        String testCommand = "brighten";
+        String testArguments = " 50 test-blue test-blue";
+
+        in = new StringReader(testCommand + testArguments);
+        out = new StringWriter();
+
+        controller = new ImageController(in, out);
+        controller.execute(mockModel);
+
+        assertEquals("Command:" + testArguments, logger.toString());
+    }
+
+    @Test
+    public void testRgbSplitCommand() {
+        StringBuilder logger = new StringBuilder();
+        ImageProcessor mockModel = new MockModel(logger);
+
+        String testCommand = "rgb-split";
+        String testArguments = " test test-red test-green test-blue";
+
+        in = new StringReader(testCommand + testArguments);
+        out = new StringWriter();
+
+        controller = new ImageController(in, out);
+        controller.execute(mockModel);
+
+        assertEquals("Command:" + testArguments, logger.toString());
+    }
+
+    @Test
+    public void testVerticalFlipCommand() {
+        StringBuilder logger = new StringBuilder();
+        ImageProcessor mockModel = new MockModel(logger);
+
+        String testCommand = "vertical-flip";
+        String testArguments = " test test-vertical";
+
+        in = new StringReader(testCommand + testArguments);
+        out = new StringWriter();
+
+        controller = new ImageController(in, out);
+        controller.execute(mockModel);
+
+        assertEquals("Command:" + testArguments, logger.toString());
+    }
+
+    @Test
+    public void testHorizontalFlipCommand() {
+        StringBuilder logger = new StringBuilder();
+        ImageProcessor mockModel = new MockModel(logger);
+
+        String testCommand = "horizontal-flip";
+        String testArguments = " test test-horizontal";
+
+        in = new StringReader(testCommand + testArguments);
+        out = new StringWriter();
+
+        controller = new ImageController(in, out);
+        controller.execute(mockModel);
+
+        assertEquals("Command:" + testArguments, logger.toString());
+    }
+
+    @Test
+    public void testHorizontalFlipCommandOnVerticallyFlipped() {
+        StringBuilder logger = new StringBuilder();
+        ImageProcessor mockModel = new MockModel(logger);
+
+        String testCommand = "vertical-flip";
+        String testArguments = " test-vertical test-horizontal-vertical";
+
+        in = new StringReader(testCommand + testArguments);
+        out = new StringWriter();
+
+        controller = new ImageController(in, out);
+        controller.execute(mockModel);
+
+        assertEquals("Command:" + testArguments, logger.toString());
+    }
+
+    @Test
+    public void testRgbCombineCommand() {
+        StringBuilder logger = new StringBuilder();
+        ImageProcessor mockModel = new MockModel(logger);
+
+        String testCommand = "rgb-combine";
+        String testArguments = " test test-red test-green test-blue";
+
+        in = new StringReader(testCommand + testArguments);
+        out = new StringWriter();
+
+        controller = new ImageController(in, out);
+        controller.execute(mockModel);
+
+        assertEquals("Command:" + testArguments, logger.toString());
+    }
+
+    @Test
+    public void testGreyscaleCommand() {
+        StringBuilder logger = new StringBuilder();
+        ImageProcessor mockModel = new MockModel(logger);
+
+        String testCommand = "value-component";
+        String testArguments = " test test-greyscale";
+
+        in = new StringReader(testCommand + testArguments);
+        out = new StringWriter();
+
+        controller = new ImageController(in, out);
+        controller.execute(mockModel);
+
+        assertEquals("Command:" + testArguments, logger.toString());
     }
 
     /**

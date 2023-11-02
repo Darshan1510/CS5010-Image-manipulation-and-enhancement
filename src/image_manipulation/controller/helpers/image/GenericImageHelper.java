@@ -41,7 +41,6 @@ public class GenericImageHelper implements ImageHelper {
             StringBuilder sbBeforeMax = new StringBuilder();
             StringBuilder sbAfterMax = new StringBuilder();
 
-
             int height = image.getHeight();
             int width = image.getWidth();
             int max = 0;
