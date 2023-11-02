@@ -4,7 +4,7 @@
  * component or color space, such as RGB (Red, Green, Blue), YUV (Luma and Chroma), or other
  * color-related attributes.
  */
-package image_manipulation.model.enums;
+package image_manipulation.enums;
 
 public enum Component {
   RED,       // Represents the Red color component in RGB

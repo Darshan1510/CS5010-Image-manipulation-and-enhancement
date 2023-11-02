@@ -17,11 +17,7 @@ public class FileHelperImpl implements FileHelper {
         // read the file line by line, and populate a string and throw away any comment lines
         while (sc.hasNextLine()) {
             String s = sc.nextLine();
-            // empty lines will be ignored.
-            if (s.isEmpty()) {
-                continue;
-            }
-            if (s.charAt(0) != '#') {
+            if (!s.isEmpty() && s.charAt(0) != '#') {
                 builder.append(s).append(System.lineSeparator());
             }
         }

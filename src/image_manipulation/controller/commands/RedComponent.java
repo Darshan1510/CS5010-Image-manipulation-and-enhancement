@@ -6,48 +6,47 @@
 package image_manipulation.controller.commands;
 
 import image_manipulation.model.ImageProcessor;
-import image_manipulation.model.enums.Component;
 
 import java.util.Scanner;
 
 public class RedComponent implements ImageProcessorCommand {
 
-  private final String imgName;
-  private final String destImgName;
+    private final String imgName;
+    private final String destImgName;
 
-  /**
-   * Constructs a RedComponent command with the specified input image name and destination image
-   * name.
-   *
-   * @param imgName      The name of the input image.
-   * @param destImgName  The name of the destination image where the result will be saved.
-   */
-  public RedComponent(String imgName, String destImgName) {
-    this.imgName = imgName;
-    this.destImgName = destImgName;
-  }
+    /**
+     * Constructs a RedComponent command with the specified input image name and destination image
+     * name.
+     *
+     * @param imgName     The name of the input image.
+     * @param destImgName The name of the destination image where the result will be saved.
+     */
+    public RedComponent(String imgName, String destImgName) {
+        this.imgName = imgName;
+        this.destImgName = destImgName;
+    }
 
-  /**
-   * Executes the RedComponent command by applying the 'grayscale' operation with the
-   * 'Component.RED' option on the input image and saving the result to the destination image.
-   *
-   * @param p The ImageProcessor used to process the command.
-   */
-  @Override
-  public void process(ImageProcessor p) {
-    p.grayscale(imgName, destImgName, Component.RED);
-  }
+    /**
+     * Executes the RedComponent command by applying the 'grayscale' operation with the
+     * 'Component.RED' option on the input image and saving the result to the destination image.
+     *
+     * @param p The ImageProcessor used to process the command.
+     */
+    @Override
+    public void process(ImageProcessor p) {
+        p.redGrayscale(imgName, destImgName);
+    }
 
-  /**
-   * Creates and returns a RedComponent command based on the input provided through a Scanner.
-   *
-   * @param s The Scanner used to read the input parameters for the command.
-   * @return A RedComponent command with the specified input and destination image names.
-   */
-  public static ImageProcessorCommand apply(Scanner s) {
-    String imgName = s.next();
-    String destImgName = s.next();
+    /**
+     * Creates and returns a RedComponent command based on the input provided through a Scanner.
+     *
+     * @param s The Scanner used to read the input parameters for the command.
+     * @return A RedComponent command with the specified input and destination image names.
+     */
+    public static ImageProcessorCommand apply(Scanner s) {
+        String imgName = s.next();
+        String destImgName = s.next();
 
-    return new RedComponent(imgName, destImgName);
-  }
+        return new RedComponent(imgName, destImgName);
+    }
 }

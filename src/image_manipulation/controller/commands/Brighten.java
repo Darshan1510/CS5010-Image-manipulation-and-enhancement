@@ -16,7 +16,7 @@ public class Brighten implements ImageProcessorCommand {
   private final String destImgName;
 
   /**
-   * Constructs a Brighten command with the specified brightness increment, input image name,
+   * Constructs a Bright command with the specified brightness increment, input image name,
    * and destination image name.
    *
    * @param increment    The brightness increment to apply to the image (positive values
