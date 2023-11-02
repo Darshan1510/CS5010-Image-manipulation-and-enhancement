@@ -33,6 +33,23 @@ public class ImageControllerTest {
     }
 
     @Test
+    public void testInvalidCommand() {
+        StringBuilder logger = new StringBuilder();
+        ImageProcessor mockModel = new MockModel(logger);
+
+        String testCommand = "brigten ";
+        String testArguments = "";
+
+        in = new StringReader(testCommand + testArguments);
+        out = new StringWriter();
+
+        controller = new ImageController(in, out);
+        controller.execute(mockModel);
+
+        assertEquals("Invalid command", out.toString().trim());
+    }
+
+    @Test
     public void testLoadCommandValid() {
         StringBuilder logger = new StringBuilder();
         ImageProcessor mockModel = new MockModel(logger);
@@ -63,7 +80,7 @@ public class ImageControllerTest {
         controller = new ImageController(in, out);
         controller.execute(mockModel);
 
-        assertEquals("Input: " + testArguments.split(" ")[2], logger.toString());
+        assertEquals("Command: " + testArguments.split(" ")[2], logger.toString());
     }
 
     @Test
@@ -82,23 +99,6 @@ public class ImageControllerTest {
 
         assertEquals("Command:" + testArguments, logger.toString());
     }
-
-    //    @Test
-    //    public void testBrightenCommandInvalid() throws IllegalArgumentException {
-    //        StringBuilder logger = new StringBuilder();
-    //        ImageProcessor mockModel = new MockModel(logger);
-    //
-    //        String testCommand = "brigten";
-    //        String testArguments = " 50 test test-brighter";
-    //
-    //        in = new StringReader(testCommand + testArguments);
-    //        out = new StringWriter();
-    //
-    //        controller = new ImageController(in, out);
-    //        controller.execute(mockModel);
-    //
-    //        assertEquals("Invalid command", logger.toString());
-    //    }
 
     @Test
     public void testBrightenCommandWithNegativeValues() {
@@ -283,9 +283,9 @@ public class ImageControllerTest {
 
         @Override
         public OutputStream save(String imageName) throws IOException {
-            sb.append("Input: ").append(imageName);
+            sb.append("Command: ").append(imageName);
             // Return does not matter as this is a controller test.
-            String newImage = "2 2 230 10 10 15 90 10 12 10 10 15 12 10 10";
+            String newImage = "2 2 183 10 10 15 90 10 12 10 10 15 12 10 10";
             ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
             byte[] strBytes = newImage.getBytes(); // Convert string to byte array
             outputStream.write(strBytes);
