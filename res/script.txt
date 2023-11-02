@@ -1,0 +1,11 @@
+load images/paris-test.ppm paris-test
+vertical-flip paris-test paris-test-vertical
+horizontal-flip paris-test-vertical paris-test-vertical-horizontal
+value-component paris-test paris-test-greyscale
+save images/paris-test-brighter.ppm paris-test-brighter
+save images/paris-test-gs.ppm paris-test-greyscale
+load images/upper.ppm paris-test
+rgb-split paris-test paris-test-red paris-test-green paris-test-blue
+brighten 50 paris-test-red paris-test-red
+rgb-combine paris-test-red-tint paris-test-red paris-test-green paris-test-blue
+save images/paris-test-red-tint.ppm paris-test-red-tint
