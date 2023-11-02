@@ -23,7 +23,7 @@ public class ImageControllerTest {
   private Appendable out;
 
   @Test(expected = RuntimeException.class)
-  public void testLoadCommandInvalidFilePath() throws RuntimeException {
+  public void testLoadCommandInvalidFilePath() throws RuntimeException, IOException {
     StringBuilder logger = new StringBuilder();
     ImageProcessor mockModel = new MockModel(logger);
 
@@ -40,7 +40,7 @@ public class ImageControllerTest {
   }
 
   @Test
-  public void testInvalidCommand() {
+  public void testInvalidCommand() throws IOException {
     StringBuilder logger = new StringBuilder();
     ImageProcessor mockModel = new MockModel(logger);
 
@@ -57,7 +57,7 @@ public class ImageControllerTest {
   }
 
   @Test
-  public void testLoadCommandValid() {
+  public void testLoadCommandValid() throws IOException {
     StringBuilder logger = new StringBuilder();
     ImageProcessor mockModel = new MockModel(logger);
 
@@ -74,7 +74,7 @@ public class ImageControllerTest {
   }
 
   @Test
-  public void testSaveCommandValid() {
+  public void testSaveCommandValid() throws IOException {
     StringBuilder logger = new StringBuilder();
     ImageProcessor mockModel = new MockModel(logger);
 
@@ -91,7 +91,7 @@ public class ImageControllerTest {
   }
 
   @Test
-  public void testBrightenCommand() {
+  public void testBrightenCommand() throws IOException {
     StringBuilder logger = new StringBuilder();
     ImageProcessor mockModel = new MockModel(logger);
 
@@ -108,7 +108,7 @@ public class ImageControllerTest {
   }
 
   @Test
-  public void testBrightenCommandWithNegativeValues() {
+  public void testBrightenCommandWithNegativeValues() throws IOException {
     StringBuilder logger = new StringBuilder();
     ImageProcessor mockModel = new MockModel(logger);
 
@@ -125,7 +125,7 @@ public class ImageControllerTest {
   }
 
   @Test
-  public void testBrightenRedOnly() {
+  public void testBrightenRedOnly() throws IOException {
     StringBuilder logger = new StringBuilder();
     ImageProcessor mockModel = new MockModel(logger);
 
@@ -142,7 +142,7 @@ public class ImageControllerTest {
   }
 
   @Test
-  public void testBrightenGreenOnly() {
+  public void testBrightenGreenOnly() throws IOException {
     StringBuilder logger = new StringBuilder();
     ImageProcessor mockModel = new MockModel(logger);
 
@@ -159,7 +159,7 @@ public class ImageControllerTest {
   }
 
   @Test
-  public void testBrightenBlueOnly() {
+  public void testBrightenBlueOnly() throws IOException {
     StringBuilder logger = new StringBuilder();
     ImageProcessor mockModel = new MockModel(logger);
 
@@ -176,7 +176,7 @@ public class ImageControllerTest {
   }
 
   @Test
-  public void testRgbSplitCommand() {
+  public void testRgbSplitCommand() throws IOException {
     StringBuilder logger = new StringBuilder();
     ImageProcessor mockModel = new MockModel(logger);
 
@@ -193,7 +193,7 @@ public class ImageControllerTest {
   }
 
   @Test
-  public void testVerticalFlipCommand() {
+  public void testVerticalFlipCommand() throws IOException {
     StringBuilder logger = new StringBuilder();
     ImageProcessor mockModel = new MockModel(logger);
 
@@ -210,7 +210,7 @@ public class ImageControllerTest {
   }
 
   @Test
-  public void testHorizontalFlipCommand() {
+  public void testHorizontalFlipCommand() throws IOException {
     StringBuilder logger = new StringBuilder();
     ImageProcessor mockModel = new MockModel(logger);
 
@@ -227,7 +227,7 @@ public class ImageControllerTest {
   }
 
   @Test
-  public void testHorizontalFlipCommandOnVerticallyFlipped() {
+  public void testHorizontalFlipCommandOnVerticallyFlipped() throws IOException {
     StringBuilder logger = new StringBuilder();
     ImageProcessor mockModel = new MockModel(logger);
 
@@ -244,7 +244,7 @@ public class ImageControllerTest {
   }
 
   @Test
-  public void testRgbCombineCommand() {
+  public void testRgbCombineCommand() throws IOException {
     StringBuilder logger = new StringBuilder();
     ImageProcessor mockModel = new MockModel(logger);
 
@@ -261,7 +261,7 @@ public class ImageControllerTest {
   }
 
   @Test
-  public void testGreyscaleCommand() {
+  public void testGreyscaleCommand() throws IOException {
     StringBuilder logger = new StringBuilder();
     ImageProcessor mockModel = new MockModel(logger);
 
