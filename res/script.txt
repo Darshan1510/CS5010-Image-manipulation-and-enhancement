@@ -1,11 +1,45 @@
-load images/paris-test.ppm paris-test
-vertical-flip paris-test paris-test-vertical
-horizontal-flip paris-test-vertical paris-test-vertical-horizontal
-value-component paris-test paris-test-greyscale
-save images/paris-test-brighter.ppm paris-test-brighter
-save images/paris-test-gs.ppm paris-test-greyscale
-load images/upper.ppm paris-test
-rgb-split paris-test paris-test-red paris-test-green paris-test-blue
-brighten 50 paris-test-red paris-test-red
-rgb-combine paris-test-red-tint paris-test-red paris-test-green paris-test-blue
-save images/paris-test-red-tint.ppm paris-test-red-tint
+#load paris.ppm and call it 'paris'
+load D:\test_images\paris-test.png paris
+
+#brighten paris by adding 10  
+brighten 10 paris paris-brighter 
+
+#flip paris vertically
+vertical-flip paris paris-vertical
+
+#luma paris vertical
+luma paris-vertical paris-vertical-luma
+
+#save paris-sepia
+save D:\test_images\paris-luma.png paris-luma
+
+#sepia paris
+sepia paris paris-sepia
+
+#save paris-sepia
+save D:\test_images\paris-sepia.png paris-sepia
+
+#flip the vertically flipped paris horizontally
+horizontal-flip paris-vertical paris-vertical-horizontal
+
+#create a greyscale using only the value component, as an image paris-greyscale
+value-component paris paris-greyscale
+
+#save paris-brighter
+save D:\test_images\paris-brighter.png paris-brighter
+
+#save paris-greyscale
+save D:\test_images\paris-gs.jpg paris-greyscale
+
+#overwrite paris with another file
+load D:\test_images\tower.jpeg paris
+
+#give the paris a red tint
+rgb-split paris paris-red paris-green paris-blue
+
+#brighten just the red image
+brighten 50 paris-red paris-red
+
+#combine them back, but by using the brightened red we get a red tint
+rgb-combine paris-red-tint paris-red paris-green paris-blue
+save D:\test_images\paris-red-tint.ppm paris-red-tint
