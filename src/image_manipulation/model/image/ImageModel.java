@@ -1,6 +1,6 @@
 package image_manipulation.model.image;
 
-import image_manipulation.model.enums.Component;
+import image_manipulation.enums.Component;
 
 public interface ImageModel {
 

@@ -4,9 +4,6 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 
-import image_manipulation.model.enums.Component;
-import image_manipulation.model.image.ImageModel;
-
 /**
  * The ImageProcessor interface represents the core functionality for processing and manipulating
  * images. It defines methods for loading, saving, transforming, and modifying images using
@@ -31,25 +28,63 @@ public interface ImageProcessor {
     OutputStream save(String imgName) throws IOException;
 
     /**
-     * Transforms an image using a specified color transformation matrix and saves the result as
+     * Transforms an image using to sepia and saves the result as
      * a new image.
      *
      * @param imgName     The name of the input image.
      * @param destImgName The name of the destination image where the transformed image will be
      *                    saved.
-     * @param transformer A color transformation matrix to apply to the input image.
      */
-    void colorTransform(String imgName, String destImgName, double[][] transformer);
+    void sepia(String imgName, String destImgName);
 
     /**
-     * Converts an input image to grayscale using the specified component (e.g., RED, GREEN, BLUE,
-     * INTENSITY, VALUE, etc.).
+     * Converts an input image to grayscale using the red component.
      *
      * @param imgName     The name of the input image to be converted to grayscale.
      * @param destImgName The name of the destination image where the grayscale image will be saved.
-     * @param c           The component to use for the grayscale conversion.
      */
-    void grayscale(String imgName, String destImgName, Component c);
+    void redGrayscale(String imgName, String destImgName);
+
+    /**
+     * Converts an input image to grayscale using the blue component.
+     *
+     * @param imgName     The name of the input image to be converted to grayscale.
+     * @param destImgName The name of the destination image where the grayscale image will be saved.
+      */
+    void blueGrayscale(String imgName, String destImgName);
+
+    /**
+     * Converts an input image to grayscale using the green component.
+     *
+     * @param imgName     The name of the input image to be converted to grayscale.
+     * @param destImgName The name of the destination image where the grayscale image will be saved.
+     */
+    void greenGrayscale(String imgName, String destImgName);
+
+    /**
+     * Converts an input image to grayscale using the luma component.
+     *
+     * @param imgName     The name of the input image to be converted to grayscale.
+     * @param destImgName The name of the destination image where the grayscale image will be saved.
+     */
+    void lumaGrayscale(String imgName, String destImgName);
+
+    /**
+     * Converts an input image to grayscale using the value component.
+     *
+     * @param imgName     The name of the input image to be converted to grayscale.
+     * @param destImgName The name of the destination image where the grayscale image will be saved.
+     */
+    void valueGrayscale(String imgName, String destImgName);
+
+    /**
+     * Converts an input image to grayscale using the intensity component.
+     *
+     * @param imgName     The name of the input image to be converted to grayscale.
+     * @param destImgName The name of the destination image where the grayscale image will be saved.
+     */
+    void intensityGrayscale(String imgName, String destImgName);
+
 
     /**
      * Brightens an image by adding an increment value to each pixel's color components.
@@ -61,13 +96,20 @@ public interface ImageProcessor {
     void brighten(String imgName, String destImgName, int increment);
 
     /**
-     * Applies a filter with a specified kernel to the input image, resulting in a modified image.
+     * Applies a blur filter with a specified kernel to the input image, resulting in a modified image.
      *
      * @param imgName     The name of the input image to which the filter will be applied.
      * @param destImgName The name of the destination image where the filtered image will be saved.
-     * @param kernel      The kernel representing the filter to apply.
      */
-    void filter(String imgName, String destImgName, double[][] kernel);
+    void blur(String imgName, String destImgName);
+
+    /**
+     * Applies a sharpen filter with a specified kernel to the input image, resulting in a modified image.
+     *
+     * @param imgName     The name of the input image to which the filter will be applied.
+     * @param destImgName The name of the destination image where the filtered image will be saved.
+     */
+    void sharpen(String imgName, String destImgName);
 
     /**
      * Performs a horizontal flip on the input image and saves the flipped image as a new image.

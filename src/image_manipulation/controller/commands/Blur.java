@@ -15,12 +15,6 @@ public class Blur implements ImageProcessorCommand {
     private final String imgName;
     private final String destImgName;
 
-    // A 3x3 kernel used for blurring the image
-    private static final double[][] kernel = new double[][]{
-            {0.0625, 0.125, 0.0625},
-            {0.125, 0.25, 0.125},
-            {0.0625, 0.125, 0.0625}};
-
     /**
      * Constructs a Blur command with the specified input image name and destination image name.
      *
@@ -40,7 +34,7 @@ public class Blur implements ImageProcessorCommand {
      */
     @Override
     public void process(ImageProcessor p) {
-        p.filter(imgName, destImgName, kernel);
+        p.blur(imgName, destImgName);
     }
 
     /**

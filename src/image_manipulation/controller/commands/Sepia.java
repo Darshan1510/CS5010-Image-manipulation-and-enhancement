@@ -14,12 +14,6 @@ public class Sepia implements ImageProcessorCommand {
     private final String imgName;
     private final String destImgName;
 
-    // Sepia transformation matrix
-    private static final double[][] transformer = {
-            {0.393, 0.769, 0.189},
-            {0.349, 0.686, 0.168},
-            {0.272, 0.534, 0.131}
-    };
 
     /**
      * Constructs a Sepia command with the specified input image name and destination image name.
@@ -42,7 +36,7 @@ public class Sepia implements ImageProcessorCommand {
      */
     @Override
     public void process(ImageProcessor p) {
-        p.colorTransform(imgName, destImgName, transformer);
+        p.sepia(imgName, destImgName);
     }
 
     /**

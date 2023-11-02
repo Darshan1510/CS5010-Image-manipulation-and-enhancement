@@ -2,9 +2,6 @@ package image_manipulation.controller.helpers.image;
 
 import image_manipulation.controller.helpers.file.FileHelper;
 import image_manipulation.controller.helpers.file.FileHelperImpl;
-import image_manipulation.model.image.ImageModel;
-import image_manipulation.model.image.RGBImage;
-import image_manipulation.model.image.RGBPixel;
 
 import java.io.*;
 import java.util.Scanner;
