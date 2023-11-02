@@ -35,7 +35,7 @@ public class Brighten implements ImageProcessorCommand {
    *
    * @param s The Scanner used to read the input parameters for the command.
    * @return A Brighten command with the specified brightness increment, input and destination
-   * image names.
+   *         image names.
    */
   public static ImageProcessorCommand apply(Scanner s) {
     int increment = s.nextInt();

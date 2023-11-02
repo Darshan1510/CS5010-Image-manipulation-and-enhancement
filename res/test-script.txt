@@ -1,0 +1,5 @@
+blue-component paris paris-blue
+
+green-component paris paris-green
+
+value-component paris paris-value

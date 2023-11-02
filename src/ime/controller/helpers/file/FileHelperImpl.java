@@ -5,6 +5,11 @@ import java.io.FileInputStream;
 import java.io.IOException;
 import java.util.Scanner;
 
+/**
+ * Implementation of the {@link FileHelper} interface.
+ * Provides a concrete implementation to read files while ignoring lines starting with
+ * the '#' character.
+ */
 public class FileHelperImpl implements FileHelper {
   @Override
   public String readFile(String filepath) throws IOException {

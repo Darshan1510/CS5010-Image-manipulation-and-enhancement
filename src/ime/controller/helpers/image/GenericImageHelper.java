@@ -1,6 +1,7 @@
 package ime.controller.helpers.image;
 
-import java.awt.*;
+
+import java.awt.Color;
 import java.awt.image.BufferedImage;
 import java.awt.image.WritableRaster;
 import java.io.ByteArrayInputStream;
@@ -25,7 +26,8 @@ public class GenericImageHelper implements ImageHelper {
    *
    * @param filepath The path to the image file to be read.
    * @return A inputStream object representing the image.
-   * @throws IOException If an I/O error occurs during the reading process or if the file format is not supported.
+   * @throws IOException If an I/O error occurs during the reading process or if the file format
+   *         is not supported.
    */
   @Override
   public InputStream readImage(String filepath) throws IOException {
@@ -61,7 +63,8 @@ public class GenericImageHelper implements ImageHelper {
       }
 
       // Append max value after the image dimensions
-      imageData.insert(imageData.indexOf(System.lineSeparator()) + 1, max + System.lineSeparator());
+      imageData.insert(imageData.indexOf(System.lineSeparator()) + 1,
+              max + System.lineSeparator());
 
       return new ByteArrayInputStream(imageData.toString().getBytes());
     } catch (IOException e) {
@@ -76,7 +79,8 @@ public class GenericImageHelper implements ImageHelper {
    *
    * @param outputStream The outputStream to be saved as an image.
    * @param filepath     The path where the image will be saved.
-   * @throws IOException If an I/O error occurs during the saving process or if the file format is not supported.
+   * @throws IOException If an I/O error occurs during the saving process or if the file
+   *                     format is not supported.
    */
   @Override
   public void saveImage(OutputStream outputStream, String filepath) throws IOException {

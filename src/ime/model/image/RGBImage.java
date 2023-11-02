@@ -25,8 +25,8 @@ public class RGBImage implements ImageModel {
    */
   public RGBImage(int height, int width, RGBPixel[][] pixels) {
     if (pixels == null || pixels.length == 0 || pixels[0].length == 0) {
-      throw new IllegalArgumentException("pixels cannot be null or length of the " +
-              "pixels must not be zero.");
+      throw new IllegalArgumentException("pixels cannot be null or length of the "
+              + "pixels must not be zero.");
     }
     this.height = height;
     this.width = width;
@@ -62,6 +62,7 @@ public class RGBImage implements ImageModel {
       throw new IllegalArgumentException("Pixel indices are out of bound!");
     }
   }
+
   @Override
   public ImageModel horizontalFlip() {
     RGBPixel[][] result = new RGBPixel[height][width];
@@ -91,7 +92,9 @@ public class RGBImage implements ImageModel {
 
     for (int i = 0; i < height; i++) {
       for (int j = 0; j < width; j++) {
-        double redValue = 0, greenValue = 0, blueValue = 0;
+        double redValue = 0;
+        double greenValue = 0;
+        double blueValue = 0;
         PixelModel rgb;
 
         for (int k = i - kernelLength, x = 0; k <= i + kernelLength; k++, x++) {

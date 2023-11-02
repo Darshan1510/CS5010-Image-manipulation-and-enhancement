@@ -1,7 +1,8 @@
 package ime.utils;
 
 /**
- * The ImageProcessorUtil class provides utility methods and constants for image processing operations.
+ * The ImageProcessorUtil class provides utility methods and constants for image processing
+ * operations.
  */
 public class ImageProcessorUtil {
 

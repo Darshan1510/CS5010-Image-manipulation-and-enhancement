@@ -1,45 +1,65 @@
-#load paris.ppm and call it 'paris'
-load D:\test_images\paris-test.png paris
+load D:\test_images\paris-small.png paris
 
-#brighten paris by adding 10  
-brighten 10 paris paris-brighter 
+blue-component paris paris-blue
 
-#flip paris vertically
+green-component paris paris-green
+
+red-component paris paris-red
+
+value-component paris paris-value
+
+intensity-component paris paris-intensity
+
+luma-component paris paris-luma
+
 vertical-flip paris paris-vertical
 
-#luma paris vertical
-luma paris-vertical paris-vertical-luma
+horizontal-flip paris paris-horizontal
 
-#save paris-sepia
-save D:\test_images\paris-luma.png paris-luma
-
-#sepia paris
 sepia paris paris-sepia
 
-#save paris-sepia
-save D:\test_images\paris-sepia.png paris-sepia
+rgb-split paris paris-split-red paris-split-green paris-split-blue
 
-#flip the vertically flipped paris horizontally
-horizontal-flip paris-vertical paris-vertical-horizontal
+brighten 20 paris paris-brighten
 
-#create a greyscale using only the value component, as an image paris-greyscale
-value-component paris paris-greyscale
+brighten -20 paris paris-darken
 
-#save paris-brighter
-save D:\test_images\paris-brighter.png paris-brighter
+rgb-combine paris-combine paris-split-red paris-split-green paris-split-blue
 
-#save paris-greyscale
-save D:\test_images\paris-gs.jpg paris-greyscale
+blur paris paris-blur
 
-#overwrite paris with another file
-load D:\test_images\tower.jpeg paris
+sharpen paris paris-sharpen
 
-#give the paris a red tint
-rgb-split paris paris-red paris-green paris-blue
+save D:/test_images/final/paris-green.png paris-green
 
-#brighten just the red image
-brighten 50 paris-red paris-red
+save D:/test_images/final/paris-blue.png paris-blue
 
-#combine them back, but by using the brightened red we get a red tint
-rgb-combine paris-red-tint paris-red paris-green paris-blue
-save D:\test_images\paris-red-tint.ppm paris-red-tint
+save D:/test_images/final/paris-red.png paris-red
+
+save D:/test_images/final/paris-value.png paris-value
+
+save D:/test_images/final/paris-intensity.png paris-intensity
+
+save D:/test_images/final/paris-brighten.png paris-brighten
+
+save D:/test_images/final/paris-darken.png paris-darken
+
+save D:/test_images/final/paris-blur.png paris-blur
+
+save D:/test_images/final/paris-sharpen.png paris-sharpen
+
+save D:/test_images/final/paris-sepia.png paris-sepia
+
+save D:/test_images/final/paris-vertical.png paris-vertical
+
+save D:/test_images/final/paris-horizontal.png paris-horizontal
+
+save D:/test_images/final/paris-luma.png paris-luma
+
+save D:/test_images/final/paris-combine.png paris-combine
+
+save D:/test_images/final/paris-split-red.png paris-split-red
+
+save D:/test_images/final/paris-split-blue.png paris-split-blue
+
+save D:/test_images/final/paris-split-green.png paris-split-green

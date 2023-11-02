@@ -35,8 +35,8 @@ public class PPMImageHelper implements ImageHelper {
 
       token = sc.next();
       if (!token.equals("P3")) {
-        throw new IllegalArgumentException("Invalid PPM file: " +
-                "plain RAW file should begin with P3");
+        throw new IllegalArgumentException("Invalid PPM file: "
+                + "plain RAW file should begin with P3");
       }
 
       StringBuilder builder = new StringBuilder();

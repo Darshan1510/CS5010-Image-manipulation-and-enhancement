@@ -1,14 +1,14 @@
-/**
- * The RedComponent class represents an image manipulation command that converts an input image
- * to grayscale while preserving the red component. It utilizes the 'grayscale' operation with
- * the 'Component.RED' option from an ImageProcessor to perform this transformation.
- */
 package ime.controller.commands;
 
 import java.util.Scanner;
 
 import ime.model.ImageProcessor;
 
+/**
+ * The RedComponent class represents an image manipulation command that converts an input image
+ * to grayscale while preserving the red component. It utilizes the 'grayscale' operation with
+ * the 'Component.RED' option from an ImageProcessor to perform this transformation.
+ */
 public class RedComponent implements ImageProcessorCommand {
 
   private final String imgName;

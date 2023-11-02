@@ -35,11 +35,6 @@ public class RGBPixel implements PixelModel {
    * @throws IllegalArgumentException if any of the RGB values are negative.
    */
   public RGBPixel(int r, int g, int b) throws IllegalArgumentException {
-    if (r < 0 || g < 0 || b < 0) {
-      throw new IllegalArgumentException("r, g or b values cannot be negative.");
-    }
-
-    // TODO: Please write the condition to check the upper bound of the pixel too.
     this.r = this.clamp(r);
     this.g = this.clamp(g);
     this.b = this.clamp(b);

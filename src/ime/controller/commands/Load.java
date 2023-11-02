@@ -54,7 +54,6 @@ public class Load implements ImageProcessorCommand {
       InputStream inputStream = factory.getImageHelper(imgPath).readImage(imgPath);
       p.load(imgName, inputStream);
     } catch (IOException ex) {
-      // TODO: update the exception to the custom exception.
       throw new RuntimeException("IO Exception " + ex.getMessage());
     }
   }

@@ -16,7 +16,8 @@ public class ImageUtil {
    *
    * @param fileName the name of the file from which the extension is to be extracted.
    * @return the file extension as a string.
-   * @throws IllegalArgumentException if the file name does not contain a dot, indicating no extension.
+   * @throws IllegalArgumentException if the file name does not contain a dot, indicating
+   *                                  no extension.
    */
   public static String getExtension(String fileName) throws IllegalArgumentException {
     int lastIndexOfDot = fileName.lastIndexOf('.');

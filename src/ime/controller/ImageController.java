@@ -15,6 +15,7 @@ import ime.controller.commands.HorizontalFlip;
 import ime.controller.commands.ImageProcessorCommand;
 import ime.controller.commands.IntensityComponent;
 import ime.controller.commands.Load;
+import ime.controller.commands.LumaComponent;
 import ime.controller.commands.RGBCombine;
 import ime.controller.commands.RGBSplit;
 import ime.controller.commands.RedComponent;
@@ -58,7 +59,7 @@ public class ImageController implements ImageControllerInterface {
     Map<String, Function<Scanner, ImageProcessorCommand>> knownCommands = new HashMap<>();
 
     knownCommands.put(Command.BLUE_COMPONENT.command(), BlueComponent::apply);
-
+    knownCommands.put(Command.LUMA_COMPONENT.command(), LumaComponent::apply);
     knownCommands.put(Command.RED_COMPONENT.command(), RedComponent::apply);
     knownCommands.put(Command.GREEN_COMPONENT.command(), GreenComponent::apply);
     knownCommands.put(Command.SAVE.command(), Save::apply);
@@ -94,12 +95,14 @@ public class ImageController implements ImageControllerInterface {
       try {
         ImageProcessorCommand c;
         String in = scan.next();
-        if (in.equalsIgnoreCase("q") || in.equalsIgnoreCase("quit"))
+        if (in.equalsIgnoreCase("q") || in.equalsIgnoreCase("quit")) {
           return;
+        }
+
         Function<Scanner, ImageProcessorCommand> cmd =
                 knownCommands.getOrDefault(in, null);
         if (cmd == null) {
-          throw new IllegalArgumentException("Invalid command");
+          throw new IllegalArgumentException("Invalid command: " + in);
         } else {
           c = cmd.apply(scan);
           c.process(imageProcessor);

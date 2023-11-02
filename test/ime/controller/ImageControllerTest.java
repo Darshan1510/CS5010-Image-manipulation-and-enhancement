@@ -9,18 +9,25 @@ import java.io.OutputStream;
 import java.io.Reader;
 import java.io.StringReader;
 import java.io.StringWriter;
+import java.util.ArrayList;
+import java.util.List;
 
+import ime.controller.helpers.image.ImageHelperFactory;
+import ime.controller.helpers.image.ImageHelperFactoryImpl;
 import ime.model.ImageProcessor;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.fail;
 
 /**
- * A JUnit test class for the SimpleImageController
+ * A JUnit test class for the SimpleImageController.
  */
 public class ImageControllerTest {
   private ImageControllerInterface controller;
   private Reader in;
   private Appendable out;
+
+  private ImageHelperFactory imageHelperFactory = new ImageHelperFactoryImpl();
 
   @Test(expected = RuntimeException.class)
   public void testLoadCommandInvalidFilePath() throws RuntimeException, IOException {
@@ -53,7 +60,7 @@ public class ImageControllerTest {
     controller = new ImageController(in, out);
     controller.execute(mockModel);
 
-    assertEquals("Invalid command", out.toString().trim());
+    assertEquals("Invalid command: brigten", out.toString().trim());
   }
 
   @Test
@@ -277,6 +284,101 @@ public class ImageControllerTest {
     assertEquals("Command:" + testArguments, logger.toString());
   }
 
+  @Test
+  public void testMixOps() throws IOException {
+
+    List<String> expectedFileName = new ArrayList<>(List.of(
+            "png/paris-green-split-png.png",
+            "ppm/paris-red-split-ppm.ppm",
+            "jpg/paris-blue-split-jpg.jpg",
+            "jpg/paris-combined-jpg.jpg",
+            "ppm/paris-value-greyscale-ppm.ppm",
+            "jpg/paris-luma-greyscale-jpg.jpg",
+            "ppm/paris-red-greyscale-ppm.ppm",
+            "png/paris-green-greyscale-png.png",
+            "ppm/paris-horizontal-ppm.ppm",
+            "png/paris-horizontal-vertical-png.png",
+            "ppm/paris-blur-ppm.ppm",
+            "png/paris-sharpen-png.png",
+            "jpg/paris-luma-greyscale-jpg.jpg",
+            "jpg/paris-sepia-jpg.jpg"
+    ));
+    in = new StringReader("load test_images/ppm/paris-test.ppm paris-ppm\n" +
+            "load res/png/paris.png paris-png\n" +
+            "load res/jpg/paris.jpg paris-jpg\n" +
+            "brighten 50 paris-ppm paris-brighter\n" +
+            "brighten -50 paris-ppm paris-darken\n" +
+            "rgb-split paris-ppm paris-red paris-green paris-blue\n" +
+            "save res/png/paris-green-split-png.png paris-green\n" +
+            "save res/ppm/paris-red-split-ppm.ppm paris-red\n" +
+            "save res/jpg/paris-blue-split-jpg.jpg paris-blue\n" +
+            "load res/png/paris-green-split-png.png paris-green\n" +
+            "load res/ppm/paris-red-split-ppm.ppm paris-red\n" +
+            "load res/jpg/paris-blue-split-jpg.jpg paris-blue\n" +
+            "rgb-combine paris-combined paris-red paris-green paris-blue\n" +
+            "save res/jpg/paris-combined-jpg.jpg paris-combined\n" +
+            "value-component paris-png paris-value\n" +
+            "save res/ppm/paris-value-greyscale-ppm.ppm paris-value\n" +
+            "luma-component paris-png paris-luma\n" +
+            "intensity-component paris-png paris-intensity\n" +
+            "red-component paris-jpg paris-red\n" +
+            "save res/ppm/paris-red-greyscale-ppm.ppm paris-red\n"
+    );
+
+    StringBuilder logger = new StringBuilder();
+    ImageProcessor mockModel = new MockModel(logger);
+
+    out = new StringWriter();
+    controller = new ImageController(in, out);
+    controller.execute(mockModel);
+
+    try {
+      for (int i = 0; i < expectedFileName.size(); i++) {
+        String outputImagePath = "res/" + expectedFileName.get(i);
+        String expectedImagePath = "test/" + expectedFileName.get(i);
+        assertEquals(imageHelperFactory.getImageHelper(outputImagePath)
+                        .readImage(outputImagePath).toString(),
+                imageHelperFactory.getImageHelper(outputImagePath)
+                        .readImage(expectedImagePath).toString()
+        );
+      }
+    } catch (Exception e) {
+      fail("Path doesn't have any files.");
+    }
+  }
+
+  @Test
+  public void testMixScriptCommandFileController() throws IOException {
+    String filepath = "res/paris-test.png";
+
+    String expectedOutput =
+            "Command: paris\n"
+                    + "Command: paris paris-horizontal\n"
+                    + "Command: paris\n"
+                    + "Command: paris paris-red\n"
+                    + "Command: paris paris-blue\n"
+                    + "Command: paris paris-green\n"
+                    + "Command: paris paris-value\n";
+
+    String inputCommand =
+            "load res/paris-test.png paris\n"
+                    + "horizontal-flip paris paris-horizontal\n"
+                    + "load res/paris-test.png paris\n"
+                    + "red-component paris paris-red\n"
+                    + "run res/test-script.txt";
+
+
+    StringBuilder logger = new StringBuilder();
+    ImageProcessor mockModel = new MockModel(logger);
+
+    in = new StringReader(inputCommand);
+    out = new StringWriter();
+    controller = new ImageController(in, out);
+    controller.execute(mockModel);
+
+    assertEquals(expectedOutput, logger.toString());
+  }
+
   /**
    * Represents a MockModel of the ImageProcessor to test the controller..
    */
@@ -301,65 +403,66 @@ public class ImageControllerTest {
 
     @Override
     public void sepia(String imgName, String destImgName) {
-      sb.append("Command: ").append(imgName).append(" ").append(destImgName);
+      sb.append("Command: ").append(imgName).append(" ").append(destImgName).append("\n");
     }
 
     @Override
     public void redGrayscale(String imgName, String destImgName) {
-      sb.append("Command: ").append(imgName).append(" ").append(destImgName);
+      sb.append("Command: ").append(imgName).append(" ").append(destImgName).append("\n");
     }
 
     @Override
     public void blueGrayscale(String imgName, String destImgName) {
-      sb.append("Command: ").append(imgName).append(" ").append(destImgName);
+      sb.append("Command: ").append(imgName).append(" ").append(destImgName).append("\n");
     }
 
     @Override
     public void greenGrayscale(String imgName, String destImgName) {
-      sb.append("Command: ").append(imgName).append(" ").append(destImgName);
+      sb.append("Command: ").append(imgName).append(" ").append(destImgName).append("\n");
     }
 
     @Override
     public void lumaGrayscale(String imgName, String destImgName) {
-      sb.append("Command: ").append(imgName).append(" ").append(destImgName);
+      sb.append("Command: ").append(imgName).append(" ").append(destImgName).append("\n");
     }
 
     @Override
     public void valueGrayscale(String imgName, String destImgName) {
-      sb.append("Command: ").append(imgName).append(" ").append(destImgName);
+      sb.append("Command: ").append(imgName).append(" ").append(destImgName).append("\n");
     }
 
     @Override
     public void intensityGrayscale(String imgName, String destImgName) {
-      sb.append("Command: ").append(imgName).append(" ").append(destImgName);
+      sb.append("Command: ").append(imgName).append(" ").append(destImgName).append("\n");
     }
 
     @Override
     public void verticalFlip(String image, String result) {
-      sb.append("Command: ").append(image).append(" ").append(result);
+      sb.append("Command: ").append(image).append(" ").append(result).append("\n");
     }
 
     @Override
     public void load(String imgName, InputStream inputStream) {
-      sb.append("Command: ").append(imgName);
+      sb.append("Command: ").append(imgName).append("\n");
     }
 
 
     @Override
     public void brighten(String imgName, String destImgName, int increment) {
-      sb.append("Command: ").append(increment).append(" ").append(imgName).append(" ").append(destImgName);
+      sb.append("Command: ").append(increment).append(" ").append(imgName).append(" ")
+              .append(destImgName).append("\n");
     }
 
     @Override
     public void horizontalFlip(String image, String result) {
-      sb.append("Command: ").append(image).append(" ").append(result);
+      sb.append("Command: ").append(image).append(" ").append(result).append("\n");
     }
 
 
     @Override
     public void rgbSplit(String image, String redResult, String greenResult, String blueResult) {
       sb.append("Command: ").append(image).append(" ").append(redResult).append(" ")
-              .append(greenResult).append(" ").append(blueResult);
+              .append(greenResult).append(" ").append(blueResult).append("\n");
 
     }
 
@@ -367,17 +470,17 @@ public class ImageControllerTest {
     public void rgbCombine(String redImage, String greenImage,
                            String blueImage, String resultImage) {
       sb.append("Command: ").append(resultImage).append(" ").append(redImage).append(" ")
-              .append(greenImage).append(" ").append(blueImage);
+              .append(greenImage).append(" ").append(blueImage).append("\n");
     }
 
     @Override
     public void blur(String image, String result) {
-      sb.append("Command: ").append(image).append(" ").append(result);
+      sb.append("Command: ").append(image).append(" ").append(result).append("\n");
     }
 
     @Override
     public void sharpen(String image, String result) {
-      sb.append("Command: ").append(image).append(" ").append(result);
+      sb.append("Command: ").append(image).append(" ").append(result).append("\n");
     }
 
 

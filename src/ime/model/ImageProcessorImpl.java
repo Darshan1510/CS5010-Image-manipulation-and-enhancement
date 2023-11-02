@@ -158,8 +158,8 @@ public class ImageProcessorImpl implements ImageProcessor {
   public void sharpen(String imgName, String destImgName) {
     double[][] kernel = ImageProcessorUtil.SHARPEN_KERNEL;
     if (validateKernel(kernel)) {
-      throw new IllegalArgumentException("Invalid kernel! Please provide the valid kernel " +
-              "with odd dimensions. (ex: 3*3, 5*5)");
+      throw new IllegalArgumentException("Invalid kernel! Please provide the valid kernel "
+              + "with odd dimensions. (ex: 3*3, 5*5)");
     }
     this.images.put(destImgName, this.get(imgName).filter(kernel));
   }
@@ -168,8 +168,8 @@ public class ImageProcessorImpl implements ImageProcessor {
   public void blur(String imgName, String destImgName) {
     double[][] kernel = ImageProcessorUtil.BLUR_KERNEL;
     if (validateKernel(kernel)) {
-      throw new IllegalArgumentException("Invalid kernel! Please provide the valid kernel " +
-              "with odd dimensions. (ex: 3*3, 5*5)");
+      throw new IllegalArgumentException("Invalid kernel! Please provide the valid kernel "
+              + "with odd dimensions. (ex: 3*3, 5*5)");
     }
     this.images.put(destImgName, this.get(imgName).filter(kernel));
   }
@@ -229,14 +229,16 @@ public class ImageProcessorImpl implements ImageProcessor {
   /**
    * Applies a color transformation to the given RGB values using a specified transform row.
    *
-   * @param transformRow An array of three doubles representing the transformation coefficients for the RGB values.
+   * @param transformRow An array of three doubles representing the transformation coefficients
+   *                     for the RGB values.
    * @param r            The red value of the pixel.
    * @param g            The green value of the pixel.
    * @param b            The blue value of the pixel.
    * @return The transformed color value, capped at a maximum of 255.
    */
   private int applyTransformation(double[] transformRow, int r, int g, int b) {
-    return (int) Math.min(255, Math.round(transformRow[0] * r + transformRow[1] * g + transformRow[2] * b));
+    return (int) Math.min(255, Math.round(transformRow[0] * r + transformRow[1] * g
+            + transformRow[2] * b));
   }
 
   /**

@@ -96,7 +96,8 @@ public interface ImageProcessor {
   void brighten(String imgName, String destImgName, int increment);
 
   /**
-   * Applies a blur filter with a specified kernel to the input image, resulting in a modified image.
+   * Applies a blur filter with a specified kernel to the input image, resulting in a modified
+   * image.
    *
    * @param imgName     The name of the input image to which the filter will be applied.
    * @param destImgName The name of the destination image where the filtered image will be saved.
@@ -104,7 +105,8 @@ public interface ImageProcessor {
   void blur(String imgName, String destImgName);
 
   /**
-   * Applies a sharpen filter with a specified kernel to the input image, resulting in a modified image.
+   * Applies a sharpen filter with a specified kernel to the input image, resulting in a modified
+   * image.
    *
    * @param imgName     The name of the input image to which the filter will be applied.
    * @param destImgName The name of the destination image where the filtered image will be saved.
