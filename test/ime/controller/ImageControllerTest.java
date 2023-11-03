@@ -285,6 +285,37 @@ public class ImageControllerTest {
   }
 
   @Test
+  public void testInvalidCommandError() throws IOException {
+
+    String expectedOutput =
+            "Command: paris\n"
+                    + "Invalid Command: horizo-flip\n"
+                    + "Command: paris\n"
+                    + "Command: paris paris-red\n"
+                    + "Command: paris paris-blue\n"
+                    + "Command: paris paris-green\n"
+                    + "Command: paris paris-value\n";
+
+    String inputCommand =
+            "load res/paris-test.png paris\n"
+                    + "loading\n"
+                    + "load res/paris-test.png paris\n"
+                    + "red-component paris paris-red\n"
+                    + "run res/test-script.txt";
+
+
+    StringBuilder logger = new StringBuilder();
+    ImageProcessor mockModel = new MockModel(logger);
+
+    in = new StringReader(inputCommand);
+    out = new StringWriter();
+    controller = new ImageController(in, out);
+    controller.execute(mockModel);
+
+    assertEquals(expectedOutput, logger.toString());
+  }
+
+  @Test
   public void testMixOps() throws IOException {
 
     List<String> expectedFileName = new ArrayList<>(List.of(
