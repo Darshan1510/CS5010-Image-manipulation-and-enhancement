@@ -3,6 +3,8 @@ package ime.controller;
 import java.io.IOException;
 import java.io.InputStreamReader;
 
+import ime.model.ExtensibleImageProcessor;
+import ime.model.ExtensibleImageProcessorImpl;
 import ime.model.ImageProcessor;
 import ime.model.ImageProcessorImpl;
 
@@ -24,8 +26,13 @@ public class SimpleImageController {
    * @throws IOException If an I/O error occurs during input or output operations.
    */
   public static void main(String[] args) throws IOException {
-    ImageProcessor imageProcessor = new ImageProcessorImpl();
-    ImageControllerInterface controller = new ImageController(new InputStreamReader(System.in),
+//    ImageProcessor imageProcessor = new ImageProcessorImpl();
+//    ImageControllerInterface controller = new ImageController(new InputStreamReader(System.in),
+//            System.out);
+//    controller.execute(imageProcessor);
+
+    ExtensibleImageProcessor imageProcessor = new ExtensibleImageProcessorImpl();
+    ExtensibleImageControllerInterface controller = new ExtensibleImageController(new InputStreamReader(System.in),
             System.out);
     controller.execute(imageProcessor);
   }

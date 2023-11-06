@@ -1,2 +1,0 @@
-package ime.model.image;
-

@@ -21,7 +21,7 @@ import ime.utils.ImageProcessorUtil;
  */
 public class ImageProcessorImpl implements ImageProcessor {
 
-  private final Map<String, ImageModel> images;
+  protected final Map<String, ImageModel> images;
 
   /**
    * Constructs a new ImageProcessorImpl instance with an empty map to store images.
