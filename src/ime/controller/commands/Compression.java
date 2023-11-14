@@ -2,11 +2,11 @@ package ime.controller.commands;
 
 import java.io.IOException;
 
-import ime.model.ImageProcessor;
+import ime.model.ExtendedImageProcessor;
 
-public class Compression implements ImageProcessorCommand{
+public class Compression implements ImageProcessorCommand {
   @Override
-  public void process(ImageProcessor p) throws IOException {
+  public void process(ExtendedImageProcessor p) throws IOException {
 
   }
 }

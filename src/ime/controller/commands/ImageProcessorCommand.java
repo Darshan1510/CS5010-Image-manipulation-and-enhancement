@@ -2,7 +2,7 @@ package ime.controller.commands;
 
 import java.io.IOException;
 
-import ime.model.ImageProcessor;
+import ime.model.ExtendedImageProcessor;
 
 /**
  * The ImageProcessorCommand interface defines a contract for classes that represent
@@ -17,5 +17,5 @@ public interface ImageProcessorCommand {
    *
    * @param p The ImageProcessor on which the command should be applied.
    */
-  void process(ImageProcessor p) throws IOException;
+  void process(ExtendedImageProcessor p) throws IOException;
 }

@@ -1,8 +1,10 @@
 package ime.controller.commands;
 
-import java.util.Scanner;
+import java.util.InputMismatchException;
 
-import ime.model.ImageProcessor;
+import ime.controller.enums.Command;
+import ime.model.ExtendedImageProcessor;
+import ime.utils.MessageUtil;
 
 /**
  * The HorizontalFlip class represents an image manipulation command that flips an input
@@ -27,26 +29,35 @@ public class HorizontalFlip implements ImageProcessorCommand {
   }
 
   /**
-   * Creates and returns a HorizontalFlip command based on the input provided through a Scanner.
+   * Creates and returns a HorizontalFlip command based on the input provided through an array
+   * of arguments. Throws an InputMismatchException if the number of arguments is not valid for
+   * the horizontal flip operation.
    *
-   * @param s The Scanner used to read the input parameters for the command.
+   * @param args Arguments provided by the user to perform the horizontal flip operation.
    * @return A HorizontalFlip command with the specified input and destination image names.
+   * @throws InputMismatchException If the number of arguments is invalid for the horizontal flip
+   *                                operation.
    */
-  public static ImageProcessorCommand apply(Scanner s) {
-    String imgName = s.next();
-    String destImgName = s.next();
+  public static ImageProcessorCommand apply(String[] args) throws InputMismatchException {
+    if (args.length != Command.HORIZONTAL_FLIP.requiredArgs()) {
+      throw new InputMismatchException(
+              MessageUtil.getInvalidNumberOfArgsMessage(Command.HORIZONTAL_FLIP));
+    }
+    String imgName = args[0];
+    String destImgName = args[1];
 
     return new HorizontalFlip(imgName, destImgName);
   }
 
   /**
    * Executes the HorizontalFlip command by applying a horizontal flip operation to the
-   * input image and saving the result to the destination image.
+   * input image and saving the result to the destination image using the provided ImageProcessor.
    *
-   * @param p The ImageProcessor used to process the command.
+   * @param p The ExtendedImageProcessor used to process the horizontal flip command.
    */
   @Override
-  public void process(ImageProcessor p) {
+  public void process(ExtendedImageProcessor p) {
     p.horizontalFlip(imgName, destImgName);
   }
 }
+

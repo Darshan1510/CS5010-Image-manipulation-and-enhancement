@@ -2,11 +2,13 @@ package ime.controller.commands;
 
 import java.io.IOException;
 import java.io.OutputStream;
-import java.util.Scanner;
+import java.util.InputMismatchException;
 
+import ime.controller.enums.Command;
 import ime.controller.helpers.image.ImageHelper;
 import ime.controller.helpers.image.ImageHelperFactoryImpl;
-import ime.model.ImageProcessor;
+import ime.model.ExtendedImageProcessor;
+import ime.utils.MessageUtil;
 
 /**
  * The Save class represents an image manipulation command that saves an image processed by the
@@ -31,12 +33,16 @@ public class Save implements ImageProcessorCommand {
   /**
    * Creates and returns a Save command based on the input provided through a Scanner.
    *
-   * @param s The Scanner used to read the input parameters for the command.
+   * @param args The args used to read the input parameters for the command.
    * @return A Save command with the specified file path and image name.
    */
-  public static ImageProcessorCommand apply(Scanner s) {
-    String imgPath = s.next();
-    String imgName = s.next();
+  public static ImageProcessorCommand apply(String[] args) {
+    if (args.length != Command.SAVE.requiredArgs()) {
+      throw new InputMismatchException(
+              MessageUtil.getInvalidNumberOfArgsMessage(Command.SAVE));
+    }
+    String imgPath = args[0];
+    String imgName = args[1];
     return new Save(imgPath, imgName);
   }
 
@@ -49,7 +55,7 @@ public class Save implements ImageProcessorCommand {
    * @throws RuntimeException if an IO Exception occurs during the image saving process.
    */
   @Override
-  public void process(ImageProcessor p) {
+  public void process(ExtendedImageProcessor p) {
     try {
       // Get the image to be saved from the ImageProcessor
       OutputStream outputStream = p.save(imgName);

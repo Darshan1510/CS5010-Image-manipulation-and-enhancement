@@ -31,59 +31,58 @@ public interface ImageProcessor {
    * Transforms an image using to sepia and saves the result as
    * a new image.
    *
-   * @param imgName     The name of the input image.
-   * @param destImgName The name of the destination image where the transformed image will be
-   *                    saved.
+   * @param args The args contains the arguments to perform the sepia operation.
+   *             be applied
    */
-  void sepia(String imgName, String destImgName);
+  void sepia(String[] args);
 
   /**
-   * Converts an input image to grayscale using the red component.
+   * Converts an input image to the red component.
    *
-   * @param imgName     The name of the input image to be converted to grayscale.
-   * @param destImgName The name of the destination image where the grayscale image will be saved.
+   * @param args The args contains the arguments to perform the sepia operation.
+   *             be applied
    */
-  void redGrayscale(String imgName, String destImgName);
+  void redComponent(String[] args);
 
   /**
-   * Converts an input image to grayscale using the blue component.
+   * Converts an input image to the blue component.
    *
-   * @param imgName     The name of the input image to be converted to grayscale.
-   * @param destImgName The name of the destination image where the grayscale image will be saved.
+   * @param args The args contains the arguments to perform the sepia operation.
+   *             be applied
    */
-  void blueGrayscale(String imgName, String destImgName);
+  void blueComponent(String[] args);
 
   /**
-   * Converts an input image to grayscale using the green component.
+   * Converts an input image to the green component.
    *
-   * @param imgName     The name of the input image to be converted to grayscale.
-   * @param destImgName The name of the destination image where the grayscale image will be saved.
+   * @param args The args contains the arguments to perform the sepia operation.
+   *             be applied
    */
-  void greenGrayscale(String imgName, String destImgName);
+  void greenComponent(String[] args);
 
   /**
-   * Converts an input image to grayscale using the luma component.
+   * Converts an input image to greyscale using the luma component.
    *
-   * @param imgName     The name of the input image to be converted to grayscale.
-   * @param destImgName The name of the destination image where the grayscale image will be saved.
+   * @param args The args contains the arguments to perform the sepia operation.
+   *             be applied
    */
-  void lumaGrayscale(String imgName, String destImgName);
+  void lumaGreyscale(String[] args);
 
   /**
-   * Converts an input image to grayscale using the value component.
+   * Converts an input image to greyscale using the value component.
    *
-   * @param imgName     The name of the input image to be converted to grayscale.
-   * @param destImgName The name of the destination image where the grayscale image will be saved.
+   * @param args The args contains the arguments to perform the sepia operation.
+   *             be applied
    */
-  void valueGrayscale(String imgName, String destImgName);
+  void valueGreyscale(String[] args);
 
   /**
-   * Converts an input image to grayscale using the intensity component.
+   * Converts an input image to greyscale using the intensity component.
    *
-   * @param imgName     The name of the input image to be converted to grayscale.
-   * @param destImgName The name of the destination image where the grayscale image will be saved.
+   * @param args The args contains the arguments to perform the sepia operation.
+   *             be applied
    */
-  void intensityGrayscale(String imgName, String destImgName);
+  void intensityGreyscale(String[] args);
 
 
   /**
@@ -99,19 +98,19 @@ public interface ImageProcessor {
    * Applies a blur filter with a specified kernel to the input image, resulting in a modified
    * image.
    *
-   * @param imgName     The name of the input image to which the filter will be applied.
-   * @param destImgName The name of the destination image where the filtered image will be saved.
+   * @param args The args contains the arguments to perform the sepia operation.
+   *             be applied
    */
-  void blur(String imgName, String destImgName);
+  void blur(String[] args);
 
   /**
    * Applies a sharpen filter with a specified kernel to the input image, resulting in a modified
    * image.
    *
-   * @param imgName     The name of the input image to which the filter will be applied.
-   * @param destImgName The name of the destination image where the filtered image will be saved.
+   * @param args The args contains the arguments to perform the sepia operation.
+   *             be applied
    */
-  void sharpen(String imgName, String destImgName);
+  void sharpen(String[] args);
 
   /**
    * Performs a horizontal flip on the input image and saves the flipped image as a new image.
@@ -150,4 +149,5 @@ public interface ImageProcessor {
    *                       be saved.
    */
   void rgbCombine(String redImgName, String greenImageName, String blueImgName, String destImgName);
+
 }

@@ -5,6 +5,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.util.HashMap;
+import java.util.InputMismatchException;
 import java.util.Map;
 import java.util.Scanner;
 import java.util.function.Function;
@@ -21,7 +22,7 @@ import ime.utils.ImageProcessorUtil;
  */
 public class ImageProcessorImpl implements ImageProcessor {
 
-  protected final Map<String, ImageModel> images;
+  private final Map<String, ImageModel> images;
 
   /**
    * Constructs a new ImageProcessorImpl instance with an empty map to store images.
@@ -56,12 +57,12 @@ public class ImageProcessorImpl implements ImageProcessor {
 
       }
     }
-    images.put(imgName, new RGBImage(height, width, pixels));
+    this.putImage(imgName, new RGBImage(height, width, pixels));
   }
 
   @Override
   public OutputStream save(String imgName) throws IOException {
-    ImageModel imageModel = this.get(imgName);
+    ImageModel imageModel = this.getImage(imgName);
     StringBuilder sb = new StringBuilder();
     int width = imageModel.getWidth();
     int height = imageModel.getHeight();
@@ -81,7 +82,9 @@ public class ImageProcessorImpl implements ImageProcessor {
   }
 
   @Override
-  public void sepia(String imgName, String destImgName) {
+  public void sepia(String[] args) {
+    String imgName = args[0];
+    String destImgName = args[1];
     double[][] transformer = ImageProcessorUtil.SEPIA_TRANSFORMER;
     Function<RGBPixel, RGBPixel> transformerFunc = pixel -> {
       int r = pixel.getR();
@@ -94,52 +97,116 @@ public class ImageProcessorImpl implements ImageProcessor {
 
       return new RGBPixel(transformedR, transformedG, transformedB);
     };
-    this.images.put(destImgName, this.get(imgName).applyTransform(transformerFunc));
+
+    ImageModel currentImage = this.getImage(imgName);
+    ImageModel filteredImage = currentImage.applyTransform(transformerFunc);
+
+    if (args.length > 2) {
+      String split = args[2];
+      if (!split.equals("split")) {
+        throw new InputMismatchException("Invalid args for Split view for Sepia.");
+      }
+      float widthPercentage = Float.parseFloat(args[3]);
+      filteredImage = this.split(currentImage, filteredImage, widthPercentage);
+    }
+
+    this.putImage(destImgName, filteredImage);
   }
 
   @Override
-  public void redGrayscale(String imgName, String destImgName) {
-    Function<RGBPixel, RGBPixel> transformerFunc = p -> new RGBPixel(p.getR(), p.getR(), p.getR());
-    this.images.put(destImgName, this.get(imgName).applyTransform(transformerFunc));
+  public void redComponent(String[] args) {
+    String imgName = args[0];
+    String destImgName = args[1];
+    Function<RGBPixel, RGBPixel> transformerFunc = p -> new RGBPixel(p.getR(), 0, 0);
+    this.putImage(destImgName, this.getImage(imgName).applyTransform(transformerFunc));
   }
 
   @Override
-  public void blueGrayscale(String imgName, String destImgName) {
-    Function<RGBPixel, RGBPixel> blueTransform = p -> new RGBPixel(p.getB(), p.getB(), p.getB());
-    this.images.put(destImgName, this.get(imgName).applyTransform(blueTransform));
+  public void blueComponent(String[] args) {
+    String imgName = args[0];
+    String destImgName = args[1];
+    Function<RGBPixel, RGBPixel> blueTransform = p -> new RGBPixel(0, 0, p.getB());
+    this.putImage(destImgName, this.getImage(imgName).applyTransform(blueTransform));
   }
 
   @Override
-  public void greenGrayscale(String imgName, String destImgName) {
-    Function<RGBPixel, RGBPixel> greenTransform = p -> new RGBPixel(p.getG(), p.getG(), p.getG());
-    this.images.put(destImgName, this.get(imgName).applyTransform(greenTransform));
+  public void greenComponent(String[] args) {
+    String imgName = args[0];
+    String destImgName = args[1];
+    Function<RGBPixel, RGBPixel> greenTransform = p -> new RGBPixel(0, p.getG(), 0);
+    this.putImage(destImgName, this.getImage(imgName).applyTransform(greenTransform));
   }
 
   @Override
-  public void lumaGrayscale(String imgName, String destImgName) {
+  public void lumaGreyscale(String[] args) {
+    String imgName = args[0];
+    String destImgName = args[1];
     Function<RGBPixel, RGBPixel> lumaTransform = p -> {
       int weightedSumPixelVal = (int) (0.2126 * p.getR() + 0.7152 * p.getG() + 0.0722 * p.getB());
       return new RGBPixel(weightedSumPixelVal, weightedSumPixelVal, weightedSumPixelVal);
     };
-    this.images.put(destImgName, this.get(imgName).applyTransform(lumaTransform));
+
+    ImageModel currentImage = this.getImage(imgName);
+    ImageModel filteredImage = currentImage.applyTransform(lumaTransform);
+
+    if (args.length > 2) {
+      String split = args[2];
+      if (!split.equals("split")) {
+        throw new InputMismatchException("Invalid args for Split view for Luma.");
+      }
+      float widthPercentage = Float.parseFloat(args[3]);
+      filteredImage = this.split(currentImage, filteredImage, widthPercentage);
+    }
+
+    this.putImage(destImgName, filteredImage);
   }
 
   @Override
-  public void valueGrayscale(String imgName, String destImgName) {
+  public void valueGreyscale(String[] args) {
+    String imgName = args[0];
+    String destImgName = args[1];
     Function<RGBPixel, RGBPixel> valueTransform = p -> {
       int maxPixelVal = Math.max(p.getR(), Math.max(p.getB(), p.getG()));
       return new RGBPixel(maxPixelVal, maxPixelVal, maxPixelVal);
     };
-    this.images.put(destImgName, this.get(imgName).applyTransform(valueTransform));
+
+    ImageModel currentImage = this.getImage(imgName);
+    ImageModel filteredImage = currentImage.applyTransform(valueTransform);
+
+    if (args.length > 2) {
+      String split = args[2];
+      if (!split.equals("split")) {
+        throw new InputMismatchException("Invalid args for Split view for Luma.");
+      }
+      float widthPercentage = Float.parseFloat(args[3]);
+      filteredImage = this.split(currentImage, filteredImage, widthPercentage);
+    }
+
+    this.putImage(destImgName, filteredImage);
   }
 
   @Override
-  public void intensityGrayscale(String imgName, String destImgName) {
+  public void intensityGreyscale(String[] args) {
+    String imgName = args[0];
+    String destImgName = args[1];
     Function<RGBPixel, RGBPixel> intensityTransform = p -> {
       int avgPixelVal = (p.getR() + p.getG() + p.getB()) / 3;
       return new RGBPixel(avgPixelVal, avgPixelVal, avgPixelVal);
     };
-    this.images.put(destImgName, this.get(imgName).applyTransform(intensityTransform));
+
+    ImageModel currentImage = this.getImage(imgName);
+    ImageModel filteredImage = currentImage.applyTransform(intensityTransform);
+
+    if (args.length > 2) {
+      String split = args[2];
+      if (!split.equals("split")) {
+        throw new InputMismatchException("Invalid args for Split view for Luma.");
+      }
+      float widthPercentage = Float.parseFloat(args[3]);
+      filteredImage = this.split(currentImage, filteredImage, widthPercentage);
+    }
+
+    this.putImage(destImgName, filteredImage);
   }
 
   @Override
@@ -151,53 +218,84 @@ public class ImageProcessorImpl implements ImageProcessor {
 
       return new RGBPixel(r, g, b);
     };
-    this.images.put(destImgName, this.get(imgName).applyTransform(brightenTransform));
+    this.putImage(destImgName, this.getImage(imgName).applyTransform(brightenTransform));
   }
 
   @Override
-  public void sharpen(String imgName, String destImgName) {
+  public void sharpen(String[] args) {
+    String imgName = args[0];
+    String destImgName = args[1];
     double[][] kernel = ImageProcessorUtil.SHARPEN_KERNEL;
     if (validateKernel(kernel)) {
       throw new IllegalArgumentException("Invalid kernel! Please provide the valid kernel "
               + "with odd dimensions. (ex: 3*3, 5*5)");
     }
-    this.images.put(destImgName, this.get(imgName).filter(kernel));
+
+    ImageModel currentImage = this.getImage(imgName);
+    ImageModel filteredImage = currentImage.filter(kernel);
+
+    if (args.length > 2) {
+      String split = args[2];
+      if (!split.equals("split")) {
+        throw new InputMismatchException("Invalid args for Split view for Sharpen.");
+      }
+      float widthPercentage = Float.parseFloat(args[3]);
+      filteredImage = this.split(currentImage, filteredImage, widthPercentage);
+    }
+
+    this.putImage(destImgName, filteredImage);
+
   }
 
   @Override
-  public void blur(String imgName, String destImgName) {
+  public void blur(String[] args) {
+    String imgName = args[0];
+    String destImgName = args[1];
     double[][] kernel = ImageProcessorUtil.BLUR_KERNEL;
     if (validateKernel(kernel)) {
       throw new IllegalArgumentException("Invalid kernel! Please provide the valid kernel "
               + "with odd dimensions. (ex: 3*3, 5*5)");
     }
-    this.images.put(destImgName, this.get(imgName).filter(kernel));
+
+    ImageModel currentImage = this.getImage(imgName);
+    ImageModel filteredImage = currentImage.filter(kernel);
+
+    if (args.length > 2) {
+      String split = args[2];
+      if (!split.equals("split")) {
+        throw new InputMismatchException("Invalid args for Split view for Blur.");
+      }
+      float widthPercentage = Float.parseFloat(args[3]);
+      filteredImage = this.split(currentImage, filteredImage, widthPercentage);
+    }
+
+    this.putImage(destImgName, filteredImage);
   }
 
   @Override
   public void horizontalFlip(String imgName, String destImgName) {
-    this.images.put(destImgName, this.get(imgName).horizontalFlip());
+    this.putImage(destImgName, this.getImage(imgName).horizontalFlip());
   }
 
   @Override
   public void verticalFlip(String imgName, String destImgName) {
-    this.images.put(destImgName, this.get(imgName).verticalFlip());
+    this.putImage(destImgName, this.getImage(imgName).verticalFlip());
   }
 
   @Override
   public void rgbSplit(String imgName, String destRedImgName, String destGreenImageName,
                        String destBlueImgName) {
-    this.redGrayscale(imgName, destRedImgName);
-    this.greenGrayscale(imgName, destGreenImageName);
-    this.blueGrayscale(imgName, destBlueImgName);
+    this.redComponent(new String[]{imgName, destRedImgName});
+    this.greenComponent(new String[]{imgName, destGreenImageName});
+    this.blueComponent(new String[]{imgName, destBlueImgName});
   }
 
   @Override
   public void rgbCombine(String redImgName, String greenImageName, String blueImgName,
                          String destImgName) {
-    ImageModel red = this.get(redImgName);
-    ImageModel green = this.get(greenImageName);
-    ImageModel blue = this.get(blueImgName);
+    ImageModel red = this.getImage(redImgName);
+    ImageModel green = this.getImage(greenImageName);
+    ImageModel blue = this.getImage(blueImgName);
 
     if (red.getHeight() == green.getHeight() && blue.getHeight() == red.getHeight()
             && red.getWidth() == blue.getWidth() && red.getWidth() == green.getWidth()) {
@@ -213,17 +311,21 @@ public class ImageProcessorImpl implements ImageProcessor {
       }
 
       ImageModel combinedImage = new RGBImage(red.getHeight(), red.getWidth(), pixelResults);
-      this.images.put(destImgName, combinedImage);
+      this.putImage(destImgName, combinedImage);
     } else {
       throw new IllegalArgumentException("Images do not have the same dimension.");
     }
   }
 
-  ImageModel get(String imgName) throws IllegalArgumentException {
+  ImageModel getImage(String imgName) throws IllegalArgumentException {
     if (this.images.get(imgName) == null) {
-      throw new IllegalArgumentException("Image Not Found");
+      throw new IllegalArgumentException("Image Not Found: " + imgName);
     }
     return this.images.get(imgName);
+  }
+
+  void putImage(String imgName, ImageModel image) throws IllegalArgumentException {
+    this.images.put(imgName, image);
   }
 
   /**
@@ -239,6 +341,38 @@ public class ImageProcessorImpl implements ImageProcessor {
   private int applyTransformation(double[] transformRow, int r, int g, int b) {
     return (int) Math.min(255, Math.round(transformRow[0] * r + transformRow[1] * g
             + transformRow[2] * b));
+  }
+
+  /**
+   * This protected method splits two images based on a specified width percentage.
+   * It combines pixels from the filtered image up to a certain percentage of the width,
+   * and the remaining pixels are taken from the current image.
+   *
+   * @param current         The original image to be split.
+   * @param filtered        The filtered image used for blending up to a certain width percentage.
+   * @param widthPercentage The percentage of the width up to which pixels are taken from the
+   *                        filtered image.
+   * @return An ImageModel representing the result of splitting and combining the two images.
+   */
+  protected ImageModel split(ImageModel current, ImageModel filtered, float widthPercentage) {
+    int percentageWidth = (int) (current.getWidth() * (widthPercentage / 100));
+    RGBPixel[][] splitImagePixels = new RGBPixel[current.getHeight()][current.getWidth()];
+
+    for (int i = 0; i < current.getHeight(); i++) {
+      for (int j = 0; j < current.getWidth(); j++) {
+        if (j <= percentageWidth) {
+          splitImagePixels[i][j] = new RGBPixel(filtered.getPixelValues(i, j).getR(),
+                  filtered.getPixelValues(i, j).getG(),
+                  filtered.getPixelValues(i, j).getB());
+        } else {
+          splitImagePixels[i][j] = new RGBPixel(current.getPixelValues(i, j).getR(),
+                  current.getPixelValues(i, j).getG(),
+                  current.getPixelValues(i, j).getB());
+        }
+      }
+    }
+
+    return new RGBImage(current.getHeight(), current.getWidth(), splitImagePixels);
   }
 
   /**
@@ -260,4 +394,5 @@ public class ImageProcessorImpl implements ImageProcessor {
     }
     return true;
   }
+
 }

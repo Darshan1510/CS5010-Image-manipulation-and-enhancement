@@ -1,55 +1,59 @@
 package ime.controller.commands;
 
-import java.util.Scanner;
+import java.util.InputMismatchException;
 
-import ime.model.ImageProcessor;
+import ime.controller.enums.Command;
+import ime.model.ExtendedImageProcessor;
+import ime.utils.MessageUtil;
 
 /**
  * The ValueComponent class represents an image manipulation command that converts an input
- * image to grayscale based on its value component (brightness). This command retains the
- * brightness information and discards color.
+ * image to grayscale by extracting the value (brightness) component. It implements the
+ * ImageProcessorCommand interface and defines methods to construct, apply, and execute the
+ * value component conversion.
  */
 public class ValueComponent implements ImageProcessorCommand {
 
-  private final String imgName;
-  private final String destImgName;
+  private final String[] args;
 
   /**
    * Constructs a ValueComponent command with the specified input image name and destination
    * image name.
    *
-   * @param imgName     The name of the input image from which the value (brightness) component
-   *                    will be extracted.
-   * @param destImgName The name of the destination image where the value component image will
-   *                    be saved.
+   * @param args The arguments to perform the value component conversion on the input image.
    */
-  public ValueComponent(String imgName, String destImgName) {
-    this.imgName = imgName;
-    this.destImgName = destImgName;
+  public ValueComponent(String[] args) {
+    this.args = args;
   }
 
   /**
-   * Creates and returns a ValueComponent command based on the input provided through a Scanner.
+   * Creates and returns a ValueComponent command based on the input provided through an array of
+   * arguments. Throws an InputMismatchException if the number of arguments is not valid for the
+   * value component conversion operation.
    *
-   * @param s The Scanner used to read the input parameters for the command.
+   * @param args Arguments provided by the user to perform the value component conversion operation.
    * @return A ValueComponent command with the specified input and destination image names.
+   * @throws InputMismatchException If the number of arguments is invalid for the value
+   *                                component conversion operation.
    */
-  public static ImageProcessorCommand apply(Scanner s) {
-    String imgName = s.next();
-    String destImgName = s.next();
+  public static ImageProcessorCommand apply(String[] args) {
+    if (!(args.length == Command.VALUE_COMPONENT.requiredArgs() || args.length == 4)) {
+      throw new InputMismatchException(
+              MessageUtil.getInvalidNumberOfArgsMessage(Command.VALUE_COMPONENT));
+    }
 
-    return new ValueComponent(imgName, destImgName);
+    return new ValueComponent(args);
   }
 
   /**
    * Executes the ValueComponent command by converting the input image to grayscale based on its
-   * value component.
-   * The resulting image retains the brightness information while discarding color information.
+   * value component. The resulting image retains the brightness information while discarding color
+   * information.
    *
-   * @param p The ImageProcessor used to process the command.
+   * @param p The ExtendedImageProcessor used to process the value component conversion command.
    */
   @Override
-  public void process(ImageProcessor p) {
-    p.valueGrayscale(imgName, destImgName);
+  public void process(ExtendedImageProcessor p) {
+    p.valueGreyscale(args);
   }
 }

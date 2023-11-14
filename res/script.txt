@@ -30,6 +30,12 @@ blur paris paris-blur
 
 sharpen paris paris-sharpen
 
+histogram paris paris-histo
+
+save D:/test_images/final/paris-histogram.png paris-histo
+
+run D:/test_images/scripts/histogram-script.txt
+
 save D:/test_images/final/paris-green.png paris-green
 
 save D:/test_images/final/paris-blue.png paris-blue

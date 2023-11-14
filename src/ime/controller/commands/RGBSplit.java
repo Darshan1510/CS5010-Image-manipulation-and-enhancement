@@ -1,8 +1,10 @@
 package ime.controller.commands;
 
-import java.util.Scanner;
+import java.util.InputMismatchException;
 
-import ime.model.ImageProcessor;
+import ime.controller.enums.Command;
+import ime.model.ExtendedImageProcessor;
+import ime.utils.MessageUtil;
 
 /**
  * The RGBSplit class represents an image manipulation command that splits an input RGB image
@@ -35,15 +37,19 @@ public class RGBSplit implements ImageProcessorCommand {
   /**
    * Creates and returns an RGBSplit command based on the input provided through a Scanner.
    *
-   * @param s The Scanner used to read the input parameters for the command.
+   * @param args The args used to read the input parameters for the command.
    * @return An RGBSplit command with the specified input and destination image names for
-   *         the RGB channels.
+   * the RGB channels.
    */
-  public static ImageProcessorCommand apply(Scanner s) {
-    String imgName = s.next();
-    String destRedImg = s.next();
-    String destGreenImg = s.next();
-    String destBlueImg = s.next();
+  public static ImageProcessorCommand apply(String[] args) {
+    if (args.length != Command.RGB_SPLIT.requiredArgs()) {
+      throw new InputMismatchException(
+              MessageUtil.getInvalidNumberOfArgsMessage(Command.RGB_SPLIT));
+    }
+    String imgName = args[0];
+    String destRedImg = args[1];
+    String destGreenImg = args[2];
+    String destBlueImg = args[3];
 
     return new RGBSplit(imgName, destRedImg, destGreenImg, destBlueImg);
   }
@@ -55,7 +61,7 @@ public class RGBSplit implements ImageProcessorCommand {
    * @param p The ImageProcessor used to process the command.
    */
   @Override
-  public void process(ImageProcessor p) {
+  public void process(ExtendedImageProcessor p) {
     p.rgbSplit(imgName, destRedImg, destGreenImg, destBlueImg);
   }
 }

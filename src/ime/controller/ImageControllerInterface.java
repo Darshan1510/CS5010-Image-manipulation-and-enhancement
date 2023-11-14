@@ -2,7 +2,7 @@ package ime.controller;
 
 import java.io.IOException;
 
-import ime.model.ImageProcessor;
+import ime.model.ExtendedImageProcessor;
 
 /**
  * The ImageControllerInterface is an interface that defines a contract for classes responsible
@@ -15,5 +15,5 @@ public interface ImageControllerInterface {
   /**
    * Execute image manipulation commands based on user input.
    */
-  void execute(ImageProcessor processor) throws IOException;
+  void execute(ExtendedImageProcessor processor) throws IOException;
 }

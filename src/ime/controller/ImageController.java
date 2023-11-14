@@ -2,6 +2,7 @@ package ime.controller;
 
 import java.io.IOException;
 import java.util.HashMap;
+import java.util.InputMismatchException;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Scanner;
@@ -10,10 +11,13 @@ import java.util.function.Function;
 import ime.controller.commands.BlueComponent;
 import ime.controller.commands.Blur;
 import ime.controller.commands.Brighten;
+import ime.controller.commands.ColorCorrect;
 import ime.controller.commands.GreenComponent;
+import ime.controller.commands.Histogram;
 import ime.controller.commands.HorizontalFlip;
 import ime.controller.commands.ImageProcessorCommand;
 import ime.controller.commands.IntensityComponent;
+import ime.controller.commands.LevelAdjust;
 import ime.controller.commands.Load;
 import ime.controller.commands.LumaComponent;
 import ime.controller.commands.RGBCombine;
@@ -26,7 +30,8 @@ import ime.controller.commands.Sharpen;
 import ime.controller.commands.ValueComponent;
 import ime.controller.commands.VerticalFlip;
 import ime.controller.enums.Command;
-import ime.model.ImageProcessor;
+import ime.controller.utils.ScriptParser;
+import ime.model.ExtendedImageProcessor;
 
 /**
  * Responsible for handling image manipulation commands provided through user input.
@@ -35,8 +40,8 @@ import ime.model.ImageProcessor;
  * associated functions are defined in the getImageProcessorCommand() method.
  */
 public class ImageController implements ImageControllerInterface {
-  private Readable in;
-  private Appendable out;
+  protected Readable in;
+  protected Appendable out;
 
   /**
    * Constructor for ImageController.
@@ -55,8 +60,9 @@ public class ImageController implements ImageControllerInterface {
    *
    * @return A map containing command strings and associated functions.
    */
-  private static Map<String, Function<Scanner, ImageProcessorCommand>> getImageProcessorCommand() {
-    Map<String, Function<Scanner, ImageProcessorCommand>> knownCommands = new HashMap<>();
+  protected static Map<String, Function<String[],
+          ImageProcessorCommand>> getImageProcessorCommand() {
+    Map<String, Function<String[], ImageProcessorCommand>> knownCommands = new HashMap<>();
 
     knownCommands.put(Command.BLUE_COMPONENT.command(), BlueComponent::apply);
     knownCommands.put(Command.LUMA_COMPONENT.command(), LumaComponent::apply);
@@ -75,6 +81,10 @@ public class ImageController implements ImageControllerInterface {
     knownCommands.put(Command.BLUR.command(), Blur::apply);
     knownCommands.put(Command.RGB_COMBINE.command(), RGBCombine::apply);
     knownCommands.put(Command.RGB_SPLIT.command(), RGBSplit::apply);
+    knownCommands.put(Command.LEVEL_ADJUST.command(), LevelAdjust::apply);
+    knownCommands.put(Command.COLOR_CORRECT.command(), ColorCorrect::apply);
+    knownCommands.put(Command.HISTOGRAM.command(), Histogram::apply);
+    knownCommands.put(Command.COMPRESS.command(), RedComponent::apply);
 
     return knownCommands;
   }
@@ -84,31 +94,44 @@ public class ImageController implements ImageControllerInterface {
    * and applies them to an ImageProcessor object until the user exits.
    */
   @Override
-  public void execute(ImageProcessor imageProcessor) throws IOException {
+  public void execute(ExtendedImageProcessor imageProcessor) throws IOException {
     Objects.requireNonNull(imageProcessor);
     Scanner scan = new Scanner(in);
 
-    Map<String, Function<Scanner, ImageProcessorCommand>> knownCommands
+    Map<String, Function<String[], ImageProcessorCommand>> knownCommands
             = getImageProcessorCommand();
 
-    while (scan.hasNext()) {
+    while (scan.hasNextLine()) {
       try {
         ImageProcessorCommand c;
-        String in = scan.next();
+        String in = scan.nextLine();
+
         if (in.equalsIgnoreCase("q") || in.equalsIgnoreCase("quit")) {
           return;
         }
 
-        Function<Scanner, ImageProcessorCommand> cmd =
-                knownCommands.getOrDefault(in, null);
+        String[] parsedScript = ScriptParser.parseScript(in);
+
+        // Every script has at least 2 arguments including command.
+        if (parsedScript.length < 2) {
+          throw new InputMismatchException("Invalid command!");
+        }
+
+        String command = parsedScript[0];
+        Function<String[], ImageProcessorCommand> cmd =
+                knownCommands.getOrDefault(command, null);
+
+        String[] args = new String[parsedScript.length - 1];
+        System.arraycopy(parsedScript, 1, args, 0, parsedScript.length - 1);
+
         if (cmd == null) {
           throw new IllegalArgumentException("Invalid command: " + in);
         } else {
-          c = cmd.apply(scan);
+          c = cmd.apply(args);
           c.process(imageProcessor);
           out.append("Command performed: ").append(in).append("\n");
         }
-      } catch (IOException | IllegalArgumentException e) {
+      } catch (IOException | IllegalArgumentException | InputMismatchException e) {
         this.out.append(e.getMessage()).append("\n");
       }
     }

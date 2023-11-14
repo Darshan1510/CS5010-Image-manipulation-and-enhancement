@@ -1,8 +1,10 @@
 package ime.controller.commands;
 
-import java.util.Scanner;
+import java.util.InputMismatchException;
 
-import ime.model.ImageProcessor;
+import ime.controller.enums.Command;
+import ime.model.ExtendedImageProcessor;
+import ime.utils.MessageUtil;
 
 /**
  * The Blur class represents an image manipulation command that applies a blur filter to an
@@ -12,41 +14,41 @@ import ime.model.ImageProcessor;
  */
 public class Blur implements ImageProcessorCommand {
 
-  private final String imgName;
-  private final String destImgName;
+  private final String[] args;
 
   /**
    * Constructs a Blur command with the specified input image name and destination image name.
    *
-   * @param imgName     The name of the input image.
-   * @param destImgName The name of the destination image where the result will be saved.
+   * @param args The args to perform the specified operation.
    */
-  public Blur(String imgName, String destImgName) {
-    this.imgName = imgName;
-    this.destImgName = destImgName;
+  public Blur(String[] args) {
+    this.args = args;
   }
 
   /**
    * Creates and returns a Blur command based on the input provided through a Scanner.
    *
-   * @param s The Scanner used to read the input parameters for the command.
+   * @param args args provided by the user to perform the operation.
    * @return A Blur command with the specified input and destination image names.
    */
-  public static ImageProcessorCommand apply(Scanner s) {
-    String imgName = s.next();
-    String destImgName = s.next();
+  public static ImageProcessorCommand apply(String[] args) {
 
-    return new Blur(imgName, destImgName);
+    if (!(args.length == Command.BLUR.requiredArgs() || args.length == 4)) {
+      throw new InputMismatchException(
+              MessageUtil.getInvalidNumberOfArgsMessage(Command.BLUR));
+    }
+
+    return new Blur(args);
   }
 
   /**
-   * Executes the Blur command by applying a blur filter to the input image using a specified kernel
-   * and saving the result to the destination image.
+   * Executes the Blur command by applying a blur filter to the input image using a specified
+   * kernel and saving the result to the destination image.
    *
    * @param p The ImageProcessor used to process the command.
    */
   @Override
-  public void process(ImageProcessor p) {
-    p.blur(imgName, destImgName);
+  public void process(ExtendedImageProcessor p) {
+    p.blur(args);
   }
 }

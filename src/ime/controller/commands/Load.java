@@ -2,11 +2,13 @@ package ime.controller.commands;
 
 import java.io.IOException;
 import java.io.InputStream;
-import java.util.Scanner;
+import java.util.InputMismatchException;
 
+import ime.controller.enums.Command;
 import ime.controller.helpers.image.ImageHelperFactory;
 import ime.controller.helpers.image.ImageHelperFactoryImpl;
-import ime.model.ImageProcessor;
+import ime.model.ExtendedImageProcessor;
+import ime.utils.MessageUtil;
 
 /**
  * The Load class represents an image manipulation command that loads an image from a specified
@@ -32,12 +34,16 @@ public class Load implements ImageProcessorCommand {
   /**
    * Creates and returns a Load command based on the input provided through a Scanner.
    *
-   * @param s The Scanner used to read the input parameters for the command.
+   * @param args The arguments used to read the input parameters for the command.
    * @return A Load command with the specified image file path and image name.
    */
-  public static ImageProcessorCommand apply(Scanner s) {
-    String imgPath = s.next();
-    String imgName = s.next();
+  public static ImageProcessorCommand apply(String[] args) {
+    if (args.length != Command.LOAD.requiredArgs()) {
+      throw new InputMismatchException(
+              MessageUtil.getInvalidNumberOfArgsMessage(Command.LOAD));
+    }
+    String imgPath = args[0];
+    String imgName = args[1];
     return new Load(imgPath, imgName);
   }
 
@@ -48,7 +54,7 @@ public class Load implements ImageProcessorCommand {
    * @param p The ImageProcessor used to process the command.
    */
   @Override
-  public void process(ImageProcessor p) {
+  public void process(ExtendedImageProcessor p) {
     try {
       ImageHelperFactory factory = new ImageHelperFactoryImpl();
       InputStream inputStream = factory.getImageHelper(imgPath).readImage(imgPath);

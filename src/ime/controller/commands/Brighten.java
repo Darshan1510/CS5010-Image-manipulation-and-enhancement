@@ -1,8 +1,10 @@
 package ime.controller.commands;
 
-import java.util.Scanner;
+import java.util.InputMismatchException;
 
-import ime.model.ImageProcessor;
+import ime.controller.enums.Command;
+import ime.model.ExtendedImageProcessor;
+import ime.utils.MessageUtil;
 
 /**
  * The Brighten class represents an image manipulation command that increases the brightness of
@@ -33,14 +35,19 @@ public class Brighten implements ImageProcessorCommand {
   /**
    * Creates and returns a Brighten command based on the input provided through a Scanner.
    *
-   * @param s The Scanner used to read the input parameters for the command.
+   * @param args args provided by the user to perform the operation.
    * @return A Brighten command with the specified brightness increment, input and destination
-   *         image names.
+   * image names.
    */
-  public static ImageProcessorCommand apply(Scanner s) {
-    int increment = s.nextInt();
-    String imgName = s.next();
-    String destImgName = s.next();
+  public static ImageProcessorCommand apply(String[] args) {
+    if (args.length != Command.BRIGHTEN.requiredArgs()) {
+      throw new InputMismatchException(
+              MessageUtil.getInvalidNumberOfArgsMessage(Command.BRIGHTEN));
+    }
+
+    int increment = Integer.parseInt(args[0]);
+    String imgName = args[1];
+    String destImgName = args[2];
 
     return new Brighten(increment, imgName, destImgName);
   }
@@ -52,7 +59,7 @@ public class Brighten implements ImageProcessorCommand {
    * @param p The ImageProcessor used to process the command.
    */
   @Override
-  public void process(ImageProcessor p) {
+  public void process(ExtendedImageProcessor p) {
     p.brighten(imgName, destImgName, increment);
   }
 }

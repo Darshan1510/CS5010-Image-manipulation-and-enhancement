@@ -64,6 +64,11 @@ public class RGBImage implements ImageModel {
   }
 
   @Override
+  public RGBPixel[][] getPixels() {
+    return this.pixels;
+  }
+
+  @Override
   public ImageModel horizontalFlip() {
     RGBPixel[][] result = new RGBPixel[height][width];
     for (int i = 0; i < height; i++) {

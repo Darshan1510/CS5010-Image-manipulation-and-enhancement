@@ -37,6 +37,8 @@ public interface ImageModel {
    */
   PixelModel getPixelValues(int i, int j);
 
+  RGBPixel[][] getPixels();
+
 
   /**
    * Create a new image by horizontally flipping the current image.

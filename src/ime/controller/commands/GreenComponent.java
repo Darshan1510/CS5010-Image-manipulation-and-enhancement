@@ -1,53 +1,58 @@
 package ime.controller.commands;
 
-import java.util.Scanner;
+import java.util.InputMismatchException;
 
-import ime.model.ImageProcessor;
+import ime.controller.enums.Command;
+import ime.model.ExtendedImageProcessor;
+import ime.utils.MessageUtil;
 
 /**
- * The GreenComponent class represents an image manipulation command that converts an input image
- * to grayscale while preserving the green component. It utilizes the 'grayscale' operation with
- * the 'Component.GREEN' option from an ImageProcessor to perform this transformation.
+ * The GreenComponent class represents an image manipulation command that extracts the green
+ * component from the input image. It implements the ImageProcessorCommand interface and defines
+ * methods to construct, apply, and execute the extraction of the green component on an input image.
  */
 public class GreenComponent implements ImageProcessorCommand {
 
-  private final String imgName;
-  private final String destImgName;
+  private final String[] args;
 
   /**
    * Constructs a GreenComponent command with the specified input image name and destination
    * image name.
    *
-   * @param imgName     The name of the input image.
-   * @param destImgName The name of the destination image where the result will be saved.
+   * @param args The arguments to perform the specified green component extraction operation.
    */
-  public GreenComponent(String imgName, String destImgName) {
-    this.imgName = imgName;
-    this.destImgName = destImgName;
+  public GreenComponent(String[] args) {
+    this.args = args;
   }
 
   /**
-   * Creates and returns a GreenComponent command based on the input provided through a Scanner.
+   * Creates and returns a GreenComponent command based on the input provided through an array
+   * of arguments.
+   * Throws an InputMismatchException if the number of arguments is not valid for the green
+   * component extraction operation.
    *
-   * @param s The Scanner used to read the input parameters for the command.
+   * @param args Arguments provided by the user to perform the green component extraction operation.
    * @return A GreenComponent command with the specified input and destination image names.
+   * @throws InputMismatchException If the number of arguments is invalid for the green component
+   *                                extraction operation.
    */
-  public static ImageProcessorCommand apply(Scanner s) {
-    String imgName = s.next();
-    String destImgName = s.next();
-
-    return new GreenComponent(imgName, destImgName);
+  public static ImageProcessorCommand apply(String[] args) throws InputMismatchException {
+    if (!(args.length == Command.GREEN_COMPONENT.requiredArgs() || args.length == 4)) {
+      throw new InputMismatchException(
+              MessageUtil.getInvalidNumberOfArgsMessage(Command.GREEN_COMPONENT));
+    }
+    return new GreenComponent(args);
   }
 
   /**
-   * Executes the GreenComponent command by applying the 'grayscale' operation with
-   * the 'Component.GREEN' option on the input image and saving the result to the destination
-   * image.
+   * Executes the GreenComponent command by extracting the green component
+   * on the input image and saving the result to the destination
+   * image using the provided ImageProcessor.
    *
-   * @param p The ImageProcessor used to process the command.
+   * @param p The ExtendedImageProcessor used to process the green component extraction command.
    */
   @Override
-  public void process(ImageProcessor p) {
-    p.greenGrayscale(imgName, destImgName);
+  public void process(ExtendedImageProcessor p) {
+    p.greenComponent(args);
   }
 }
