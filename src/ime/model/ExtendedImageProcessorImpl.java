@@ -2,10 +2,11 @@ package ime.model;
 
 import java.awt.image.BufferedImage;
 import java.util.InputMismatchException;
-import java.util.function.Function;
 
 import ime.model.image.ImageModel;
+import ime.model.image.ImageModelV2;
 import ime.model.image.RGBImage;
+import ime.model.image.RGBImageV2;
 import ime.model.image.RGBPixel;
 import ime.utils.HistogramGenerator;
 
@@ -17,6 +18,10 @@ import ime.utils.HistogramGenerator;
 public class ExtendedImageProcessorImpl extends ImageProcessorImpl
         implements ExtendedImageProcessor {
 
+  /**
+   * Constructs an ExtendedImageProcessorImpl, inheriting from the base ImageProcessorImpl class.
+   * This class extends the basic image processing functionality to provide additional features.
+   */
   public ExtendedImageProcessorImpl() {
     super();
   }
@@ -26,19 +31,27 @@ public class ExtendedImageProcessorImpl extends ImageProcessorImpl
     String imgName = args[0];
     String destImgName = args[1];
     ImageModel sourceImg = this.getImage(imgName);
-    HistogramGenerator histogramGenerator = new HistogramGenerator();
-    BufferedImage histogram = histogramGenerator.createHistogram(sourceImg);
 
-    ImageModel rgbImage = this.convertBufferedImageToImageModel(histogram);
+    ImageModelV2 imageV2 = this.getImageModelV2(sourceImg);
+    ImageModel filteredImage = imageV2.colorCorrect();
 
+    if (args.length > 2) {
+      String split = args[2];
+      if (!split.equals("split")) {
+        throw new InputMismatchException("Invalid args for Split view for Color correct.");
+      }
+      float widthPercentage = Float.parseFloat(args[3]);
+      filteredImage = this.split(sourceImg, filteredImage, widthPercentage);
+    }
+
+    this.putImage(destImgName, filteredImage);
   }
 
   @Override
-  public void compression(double percentage, String imgName, String destImgName) {
-    //check absolute value while setting zero
-    // implement Haar -> test it clearly if it's working or not (1st)
-    // implement inverse Haar -> do the same
-    // RGBPixel[][] -> R -> G -> B (you can do it together) -
+  public void compress(double percentage, String imgName, String destImgName) {
+    ImageModel sourceImg = this.getImage(imgName);
+    ImageModelV2 imageV2 = this.getImageModelV2(sourceImg);
+    this.putImage(destImgName, imageV2.compress(percentage));
   }
 
 
@@ -63,17 +76,9 @@ public class ExtendedImageProcessorImpl extends ImageProcessorImpl
       throw new InputMismatchException("b, m and w should be in (0, 255) range.");
     }
 
-
-    Function<RGBPixel, RGBPixel> levelAdjust = p -> {
-      int updatedR = this.fittingProcess(black, mid, white, p.getR());
-      int updatedG = this.fittingProcess(black, mid, white, p.getG());
-      int updatedB = this.fittingProcess(black, mid, white, p.getB());
-
-      return new RGBPixel(updatedR, updatedG, updatedB);
-    };
-
     ImageModel currentImage = this.getImage(imgName);
-    ImageModel filteredImage = currentImage.applyTransform(levelAdjust);
+    ImageModelV2 imageV2 = this.getImageModelV2(currentImage);
+    ImageModel filteredImage = imageV2.levelsAdjust(black, mid, white);
 
     if (args.length > 5) {
       String split = args[5];
@@ -88,38 +93,6 @@ public class ExtendedImageProcessorImpl extends ImageProcessorImpl
   }
 
   /**
-   * This private method performs a fitting process based on the given parameters.
-   * It calculates and returns a fitted value using a quadratic equation.
-   *
-   * @param black  The black level parameter for the fitting process.
-   * @param mid    The mid-level parameter for the fitting process.
-   * @param white  The white level parameter for the fitting process.
-   * @param signal The input signal value for which the fitting process is performed.
-   * @return The fitted value calculated using the quadratic equation.
-   */
-  private int fittingProcess(int black, int mid, int white, int signal) {
-    double A = Math.pow(black, 2) * (mid - white) - black * (Math.pow(mid, 2)
-            - Math.pow(white, 2)) + white * Math.pow(mid, 2) - mid * Math.pow(white, 2);
-
-    double Aa = -black * (128 - 255) + 128 * white - 255 * mid;
-
-    double Ab = Math.pow(black, 2) * (128 - 255) + 255 * Math.pow(mid, 2)
-            - 128 * Math.pow(white, 2);
-
-
-    double Ac = Math.pow(black, 2) * (255 * mid - 128 * white)
-            - black * (255 * Math.pow(mid, 2) - 128 * Math.pow(white, 2));
-
-    double a = Aa / A;
-
-    double b = Ab / A;
-
-    double c = Ac / A;
-
-    return (int) (a * Math.pow(signal, 2) + b * signal + c);
-  }
-
-  /**
    * This private method converts a BufferedImage to an ImageModel.
    *
    * @param image The BufferedImage to be converted.
@@ -130,16 +103,27 @@ public class ExtendedImageProcessorImpl extends ImageProcessorImpl
     int height = image.getHeight();
     RGBPixel[][] pixels = new RGBPixel[height][width];
 
-    for (int y = 0; y < height; y++) {
-      for (int x = 0; x < width; x++) {
-        int color = image.getRGB(x, y);
+    for (int i = 0; i < height; i++) {
+      for (int j = 0; j < width; j++) {
+        int color = image.getRGB(j, i);
         int red = (color >> 16) & 0xff;
         int green = (color >> 8) & 0xff;
         int blue = color & 0xff;
-        pixels[y][x] = new RGBPixel(red, green, blue);
+        pixels[i][j] = new RGBPixel(red, green, blue);
       }
     }
 
     return new RGBImage(height, width, pixels);
   }
+
+  /**
+   * Converts an {@code ImageModel} to {@code ImageModelV2} (specifically, {@code RGBImageV2}).
+   *
+   * @param image The original {@code ImageModel} to convert.
+   * @return A new {@code ImageModelV2} instance with the same dimensions and pixel data.
+   */
+  public ImageModelV2 getImageModelV2(ImageModel image) {
+    return new RGBImageV2(image.getHeight(), image.getWidth(), image.getPixels());
+  }
+
 }

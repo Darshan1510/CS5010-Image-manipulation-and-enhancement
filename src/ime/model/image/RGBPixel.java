@@ -57,17 +57,17 @@ public class RGBPixel implements PixelModel {
 
   @Override
   public void setRed(int value) {
-    this.r = value;
+    this.r = this.clamp(value);
   }
 
   @Override
   public void setGreen(int value) {
-    this.g = value;
+    this.g = this.clamp(value);
   }
 
   @Override
   public void setBlue(int value) {
-    this.b = value;
+    this.b = this.clamp(value);
   }
 
   private int clamp(int value) {

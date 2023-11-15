@@ -18,7 +18,7 @@ public interface ExtendedImageProcessor extends ImageProcessor {
    * @param imgName     The name of the input image.
    * @param destImgName The name of the destination image where the compressed result will be saved.
    */
-  void compression(double percentage, String imgName, String destImgName);
+  void compress(double percentage, String imgName, String destImgName);
 
   /**
    * Generates a histogram for the input image and saves it to the destination image.

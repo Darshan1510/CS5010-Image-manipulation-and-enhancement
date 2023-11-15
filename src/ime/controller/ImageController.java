@@ -12,6 +12,7 @@ import ime.controller.commands.BlueComponent;
 import ime.controller.commands.Blur;
 import ime.controller.commands.Brighten;
 import ime.controller.commands.ColorCorrect;
+import ime.controller.commands.Compress;
 import ime.controller.commands.GreenComponent;
 import ime.controller.commands.Histogram;
 import ime.controller.commands.HorizontalFlip;
@@ -84,7 +85,7 @@ public class ImageController implements ImageControllerInterface {
     knownCommands.put(Command.LEVEL_ADJUST.command(), LevelAdjust::apply);
     knownCommands.put(Command.COLOR_CORRECT.command(), ColorCorrect::apply);
     knownCommands.put(Command.HISTOGRAM.command(), Histogram::apply);
-    knownCommands.put(Command.COMPRESS.command(), RedComponent::apply);
+    knownCommands.put(Command.COMPRESS.command(), Compress::apply);
 
     return knownCommands;
   }

@@ -11,6 +11,7 @@ import java.util.Scanner;
 import java.util.function.Function;
 
 import ime.model.image.ImageModel;
+import ime.model.image.PixelModel;
 import ime.model.image.RGBImage;
 import ime.model.image.RGBPixel;
 import ime.utils.ImageProcessorUtil;
@@ -86,7 +87,7 @@ public class ImageProcessorImpl implements ImageProcessor {
     String imgName = args[0];
     String destImgName = args[1];
     double[][] transformer = ImageProcessorUtil.SEPIA_TRANSFORMER;
-    Function<RGBPixel, RGBPixel> transformerFunc = pixel -> {
+    Function<PixelModel, PixelModel> transformerFunc = pixel -> {
       int r = pixel.getR();
       int g = pixel.getG();
       int b = pixel.getB();
@@ -117,7 +118,7 @@ public class ImageProcessorImpl implements ImageProcessor {
   public void redComponent(String[] args) {
     String imgName = args[0];
     String destImgName = args[1];
-    Function<RGBPixel, RGBPixel> transformerFunc = p -> new RGBPixel(p.getR(), 0, 0);
+    Function<PixelModel, PixelModel> transformerFunc = p -> new RGBPixel(p.getR(), 0, 0);
     this.putImage(destImgName, this.getImage(imgName).applyTransform(transformerFunc));
   }
 
@@ -125,7 +126,7 @@ public class ImageProcessorImpl implements ImageProcessor {
   public void blueComponent(String[] args) {
     String imgName = args[0];
     String destImgName = args[1];
-    Function<RGBPixel, RGBPixel> blueTransform = p -> new RGBPixel(0, 0, p.getB());
+    Function<PixelModel, PixelModel> blueTransform = p -> new RGBPixel(0, 0, p.getB());
     this.putImage(destImgName, this.getImage(imgName).applyTransform(blueTransform));
   }
 
@@ -133,7 +134,7 @@ public class ImageProcessorImpl implements ImageProcessor {
   public void greenComponent(String[] args) {
     String imgName = args[0];
     String destImgName = args[1];
-    Function<RGBPixel, RGBPixel> greenTransform = p -> new RGBPixel(0, p.getG(), 0);
+    Function<PixelModel, PixelModel> greenTransform = p -> new RGBPixel(0, p.getG(), 0);
     this.putImage(destImgName, this.getImage(imgName).applyTransform(greenTransform));
   }
 
@@ -141,7 +142,7 @@ public class ImageProcessorImpl implements ImageProcessor {
   public void lumaGreyscale(String[] args) {
     String imgName = args[0];
     String destImgName = args[1];
-    Function<RGBPixel, RGBPixel> lumaTransform = p -> {
+    Function<PixelModel, PixelModel> lumaTransform = p -> {
       int weightedSumPixelVal = (int) (0.2126 * p.getR() + 0.7152 * p.getG() + 0.0722 * p.getB());
       return new RGBPixel(weightedSumPixelVal, weightedSumPixelVal, weightedSumPixelVal);
     };
@@ -165,7 +166,7 @@ public class ImageProcessorImpl implements ImageProcessor {
   public void valueGreyscale(String[] args) {
     String imgName = args[0];
     String destImgName = args[1];
-    Function<RGBPixel, RGBPixel> valueTransform = p -> {
+    Function<PixelModel, PixelModel> valueTransform = p -> {
       int maxPixelVal = Math.max(p.getR(), Math.max(p.getB(), p.getG()));
       return new RGBPixel(maxPixelVal, maxPixelVal, maxPixelVal);
     };
@@ -189,7 +190,7 @@ public class ImageProcessorImpl implements ImageProcessor {
   public void intensityGreyscale(String[] args) {
     String imgName = args[0];
     String destImgName = args[1];
-    Function<RGBPixel, RGBPixel> intensityTransform = p -> {
+    Function<PixelModel, PixelModel> intensityTransform = p -> {
       int avgPixelVal = (p.getR() + p.getG() + p.getB()) / 3;
       return new RGBPixel(avgPixelVal, avgPixelVal, avgPixelVal);
     };
@@ -211,7 +212,7 @@ public class ImageProcessorImpl implements ImageProcessor {
 
   @Override
   public void brighten(String imgName, String destImgName, int increment) {
-    Function<RGBPixel, RGBPixel> brightenTransform = p -> {
+    Function<PixelModel, PixelModel> brightenTransform = p -> {
       int r = p.getR() + increment;
       int g = p.getG() + increment;
       int b = p.getB() + increment;

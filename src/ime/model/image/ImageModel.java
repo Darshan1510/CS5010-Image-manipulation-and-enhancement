@@ -37,7 +37,7 @@ public interface ImageModel {
    */
   PixelModel getPixelValues(int i, int j);
 
-  RGBPixel[][] getPixels();
+  PixelModel[][] getPixels();
 
 
   /**
@@ -70,5 +70,5 @@ public interface ImageModel {
    * @param transformFunction The transformationFunction to apply on the pixels.
    * @return A new greyscale image based on the provided transformation.
    */
-  ImageModel applyTransform(Function<RGBPixel, RGBPixel> transformFunction);
+  ImageModel applyTransform(Function<PixelModel, PixelModel> transformFunction);
 }

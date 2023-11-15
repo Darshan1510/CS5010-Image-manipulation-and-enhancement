@@ -10,7 +10,7 @@ import java.util.function.Function;
  */
 public class RGBImage implements ImageModel {
 
-  private final RGBPixel[][] pixels;
+  private final PixelModel[][] pixels;
   private final int height;
   private final int width;
   private final int maxValue;
@@ -23,7 +23,7 @@ public class RGBImage implements ImageModel {
    * @param pixels The 2D array of RGB pixels.
    * @throws IllegalArgumentException If the pixel array is null or empty.
    */
-  public RGBImage(int height, int width, RGBPixel[][] pixels) {
+  public RGBImage(int height, int width, PixelModel[][] pixels) {
     if (pixels == null || pixels.length == 0 || pixels[0].length == 0) {
       throw new IllegalArgumentException("pixels cannot be null or length of the "
               + "pixels must not be zero.");
@@ -64,13 +64,13 @@ public class RGBImage implements ImageModel {
   }
 
   @Override
-  public RGBPixel[][] getPixels() {
+  public PixelModel[][] getPixels() {
     return this.pixels;
   }
 
   @Override
   public ImageModel horizontalFlip() {
-    RGBPixel[][] result = new RGBPixel[height][width];
+    PixelModel[][] result = new RGBPixel[height][width];
     for (int i = 0; i < height; i++) {
       for (int j = 0; j < width; j++) {
         result[i][j] = this.pixels[i][width - 1 - j];
@@ -122,10 +122,10 @@ public class RGBImage implements ImageModel {
   }
 
   @Override
-  public ImageModel applyTransform(Function<RGBPixel, RGBPixel> transformFunction) {
+  public ImageModel applyTransform(Function<PixelModel, PixelModel> transformFunction) {
     int height = this.pixels.length;
     int width = this.pixels[0].length;
-    RGBPixel[][] result = new RGBPixel[height][width];
+    PixelModel[][] result = new RGBPixel[height][width];
 
     for (int i = 0; i < height; i++) {
       for (int j = 0; j < width; j++) {
