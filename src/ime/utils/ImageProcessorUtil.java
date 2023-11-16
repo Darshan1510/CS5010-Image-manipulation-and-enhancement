@@ -101,16 +101,19 @@ public class ImageProcessorUtil {
     int c = s;
 
     while (c > 1) {
-      for (int i = 0; i < c; i++) {
-        X[i] = transformSequence(X[i]);
+      for (int i = 0; i < s; i++) {
+        double[] row = new double[c];
+        System.arraycopy(X[i], 0, row, 0, c);
+        row = transformSequence1D(row);
+        System.arraycopy(row, 0, X[i], 0, c);
       }
 
-      for (int j = 0; j < c; j++) {
+      for (int j = 0; j < s; j++) {
         double[] column = new double[c];
         for (int i = 0; i < c; i++) {
           column[i] = X[i][j];
         }
-        column = transformSequence(column);
+        column = transformSequence1D(column);
         for (int i = 0; i < c; i++) {
           X[i][j] = column[i];
         }
@@ -132,19 +135,22 @@ public class ImageProcessorUtil {
     int c = 2;
 
     while (c <= s) {
-      for (int j = 0; j < c; j++) {
+      for (int j = 0; j < s; j++) {
         double[] column = new double[c];
         for (int i = 0; i < c; i++) {
           column[i] = X[i][j];
         }
-        column = inverseTransformSequence(column);
+        column = inverseTransform1D(column);
         for (int i = 0; i < c; i++) {
           X[i][j] = column[i];
         }
       }
 
-      for (int i = 0; i < c; i++) {
-        X[i] = inverseTransformSequence(X[i]);
+      for (int i = 0; i < s; i++) {
+        double[] row = new double[c];
+        System.arraycopy(X[i], 0, row, 0, c);
+        row = inverseTransform1D(row);
+        System.arraycopy(row, 0, X[i], 0, c);
       }
 
       c = c * 2;
@@ -159,7 +165,7 @@ public class ImageProcessorUtil {
    * @param s The input sequence.
    * @return The transformed sequence.
    */
-  public static double[] transformSequence(double[] s) {
+  public static double[] transformSequence1D(double[] s) {
     List<Double> avg = new ArrayList<>();
     List<Double> diff = new ArrayList<>();
 
@@ -184,7 +190,7 @@ public class ImageProcessorUtil {
    * @param s The transformed sequence.
    * @return The inverted sequence.
    */
-  public static double[] inverseTransformSequence(double[] s) {
+  public static double[] inverseTransform1D(double[] s) {
     List<Double> values = DoubleStream.of(s).boxed().collect(Collectors.toList());
     List<Double> avg = values.subList(0, values.size() / 2);
     List<Double> diff = values.subList(values.size() / 2, values.size());
