@@ -5,8 +5,6 @@ import java.util.Arrays;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
-import java.util.stream.Collectors;
-import java.util.stream.DoubleStream;
 
 /**
  * The ImageProcessorUtil class provides utility methods and constants for image processing
@@ -45,7 +43,7 @@ public class ImageProcessorUtil {
   /**
    * Pads a 2D channel array to a specified size.
    *
-   * @param channel The original channel array to pad.
+   * @param channel    The original channel array to pad.
    * @param paddedSize The size to which the channel should be padded.
    * @return The padded channel array.
    */
@@ -60,9 +58,9 @@ public class ImageProcessorUtil {
   /**
    * Unpads a padded channel array to its original dimensions.
    *
-   * @param paddedImage The padded channel array to unpad.
+   * @param paddedImage    The padded channel array to unpad.
    * @param originalHeight The original height of the channel.
-   * @param originalWidth The original width of the channel.
+   * @param originalWidth  The original width of the channel.
    * @return The unpadded channel array.
    */
   public static double[][] unpadChannel(double[][] paddedImage, int originalHeight,
@@ -191,16 +189,17 @@ public class ImageProcessorUtil {
    * @return The inverted sequence.
    */
   public static double[] inverseTransform1D(double[] s) {
-    List<Double> values = DoubleStream.of(s).boxed().collect(Collectors.toList());
-    List<Double> avg = values.subList(0, values.size() / 2);
-    List<Double> diff = values.subList(values.size() / 2, values.size());
+    double[] avg = Arrays.copyOfRange(s, 0, s.length / 2);
+    double[] diff = Arrays.copyOfRange(s, s.length / 2, s.length);
 
     List<Double> result = new ArrayList<>();
-    for (int i = 0, j = 0; i < avg.size(); i++, j++) {
-      double a = avg.get(i) / Math.sqrt(2);
-      double d = diff.get(j) / Math.sqrt(2);
-      result.add(a + d);
-      result.add(a - d);
+    for (int i = 0, j = 0; i < avg.length; i++, j++) {
+      double a = avg[i];
+      double b = diff[j];
+      double av = (a + b) / Math.sqrt(2);
+      double di = (a - b) / Math.sqrt(2);
+      result.add(av);
+      result.add(di);
     }
 
     return result.stream().mapToDouble(Double::doubleValue).toArray();
@@ -229,7 +228,7 @@ public class ImageProcessorUtil {
   /**
    * Finds the threshold for channel compression based on a given percentage of unique values.
    *
-   * @param values The array of unique values.
+   * @param values     The array of unique values.
    * @param percentage The percentage of values to keep.
    * @return The calculated threshold.
    */
