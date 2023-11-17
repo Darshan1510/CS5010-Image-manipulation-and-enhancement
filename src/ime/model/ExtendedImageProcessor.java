@@ -1,5 +1,10 @@
 package ime.model;
 
+/**
+ * The ExtendedImageProcessor interface represents the new functionality for manipulating
+ * images. It defines methods for color correct, compress, histogram, and adjusting levels using
+ * various image processing operations.
+ */
 public interface ExtendedImageProcessor extends ImageProcessor {
 
   /**

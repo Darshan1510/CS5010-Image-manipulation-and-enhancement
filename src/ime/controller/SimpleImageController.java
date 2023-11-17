@@ -42,7 +42,7 @@ public class SimpleImageController {
    * @return An instance of ImageControllerInterface configured based on the specified conditions.
    */
   private static ImageControllerInterface getController(String[] args) {
-    if (args != null && args.length == 2 && args[0].equals("-file")) {
+    if (args != null && args.length == 2 && (args[0].equals("-file") || args[0].equals("-f"))) {
       // If the "-file" option is present, create an ImageControllerInterface for script execution.
       Reader in = new StringReader("run " + args[1] + "\nq");
       return new ImageController(in, System.out);

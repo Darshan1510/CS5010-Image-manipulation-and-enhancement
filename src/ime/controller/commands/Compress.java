@@ -46,7 +46,12 @@ public class Compress implements ImageProcessorCommand {
               MessageUtil.getInvalidNumberOfArgsMessage(Command.COMPRESS));
     }
 
-    double percentage = Double.parseDouble(args[0]);
+    double percentage = 0d;
+    try {
+      percentage = Double.parseDouble(args[0]);
+    } catch (NumberFormatException e) {
+      throw new InputMismatchException("Invalid argument for percentage");
+    }
 
     if (percentage < 0 || percentage > 100) {
       throw new IllegalArgumentException("Compression percentage must be between 0 and 100");

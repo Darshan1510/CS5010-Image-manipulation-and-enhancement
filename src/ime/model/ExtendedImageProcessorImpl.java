@@ -66,9 +66,17 @@ public class ExtendedImageProcessorImpl extends ImageProcessorImpl
 
   @Override
   public void levelsAdjust(String[] args) {
-    int black = Integer.parseInt(args[0]);
-    int mid = Integer.parseInt(args[1]);
-    int white = Integer.parseInt(args[2]);
+    int black = 0;
+    int mid = 0;
+    int white = 0;
+    try {
+      black = Integer.parseInt(args[0]);
+      mid = Integer.parseInt(args[1]);
+      white = Integer.parseInt(args[2]);
+    } catch (NumberFormatException e) {
+      throw new InputMismatchException("Invalid arguments for black, mid or white.");
+    }
+
     String imgName = args[3];
     String destImgName = args[4];
 

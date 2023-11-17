@@ -39,7 +39,7 @@ public class RGBSplit implements ImageProcessorCommand {
    *
    * @param args The args used to read the input parameters for the command.
    * @return An RGBSplit command with the specified input and destination image names for
-   * the RGB channels.
+   *         the RGB channels.
    */
   public static ImageProcessorCommand apply(String[] args) {
     if (args.length != Command.RGB_SPLIT.requiredArgs()) {

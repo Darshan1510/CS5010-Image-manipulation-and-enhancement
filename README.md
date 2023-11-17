@@ -1,3 +1,69 @@
+# CS5010-More-image-manipulation-and-enhancement
+
+## Description
+
+This is built on top of [Image manipulation and enhancement](#cs5010-image-manipulation-and-enhancement)
+
+New requirements were:
+
+* **Compress Images:** Support the ability to create a compression version of an image. This must be supported by the 
+script command "compress percentage image-name dest-image-name". Percentages between 0 and 100 are considered valid.
+* **Histogram:** Support the ability to produce an image that represents the histogram of a given image. The size 
+of this image should be 256x256. It should contain the histograms for the red, green and blue channels as line graphs.
+* **Color correct:** Support the ability to color-correct an image by aligning the meaningful peaks of its histogram
+* **Levels adjust:** Support the ability to adjust levels of an image. This must be supported by the script command 
+"levels-adjust b m w image-name dest-image-name" where b, m and w are the three relevant black, mid and white values respectively. These values should be ascending in that order, and should be within 0 and 255 for this command to work correctly.
+* **Split view:** Support the ability to specify a vertical line to generate a split view of operations. The operations that must support this are blur, sharpen, sepia, greyscale, color correction and levels adjustment. The script commands for these operations must accommodate an optional parameter for the placement of the splitting line. For example, blur can be done by "blur image-name dest-image-name" or "blur image-name dest-image split p" in that order where 'p' is a percentage of the width (e.g. 50 means place the line halfway through the width of the image). The output image should show only the relevant part suitably transformed, with the original image in the remaining part.
+* **File argument:** Support the ability to accept a script file as a command-line option. For example "-file
+  name-of-script.txt". If a valid file is provided, the program should run the script and exit. If
+  the program is run without any command line options, then it should allow interactive entry of
+  script commands as before.
+* Retain support for all previous operations and script commands.
+
+We have advanced our implementation in accordance with Object-Oriented Programming (OOP) and Model-View-Controller (MVC) principles, incorporating enhancements based on new feature set. 
+The modifications made to our existing code will be elucidated and justified below.
+
+## New implementations
+
+### Supporting new operations.
+
+* To accommodate the introduction of new operations, we devised an interface named `ExtendedImageProcessor` that extends the existing `ImageProcessor`. This extension encompasses all functionalities present in the original version.
+* A corresponding implementation of this interface, named `ExtendedImageProcessorImpl`, was developed. In this process, we extended the `ImageProcessorImpl` class to incorporate the new interface.
+* The interface introduced new method signatures, including `color-correct`, `compress`, `histogram`, and `levels-adjust`. These methods require the name of the existing image and specify the name under which the resulting image should be stored.
+* We also enhanced the system to support `split view operations` for commands such as `blur`, `sharpen`, `sepia`, `greyscale`, `color correction`, and `levels adjustment`. Users can activate this feature by including the `split` keyword and specifying the percentage of the width in the script.
+* We added the new version of our 
+* To adapt to these changes, our `ImageController` now accepts this new model as an argument. This adjustment is crucial as the program's interface is evolving, introducing novel operations. This update ensures the smooth integration of these changes into the existing system.
+
+### Model
+
+New classes added :
+
+- `ImageModelV2`: Created this interface to add `compress`, `color-correct` and `levels-adjust` operation on image.
+- `RGBImageV2`: This class implements the `ImageModelV2` interface, and it implements
+  the logic to preform the compress, color-correct and levels-adjust operations with given parameter value.
+
+## Controller
+
+New classes added :
+
+- `Compress`: We introduced a new class to facilitate the interaction between the controller and the model, given that the provider utilizes a command design pattern.
+- `LevelAdjust`: We introduced a new class to facilitate the interaction between the controller and the model, given that the provider utilizes a command design pattern.
+- `ColorCorrect`: We introduced a new class to facilitate the interaction between the controller and the model, given that the provider utilizes a command design pattern.
+- `Histogram`: We introduced a new class to facilitate the interaction between the controller and the model, given that the provider utilizes a command design pattern.
+
+Changes in old classes :
+
+- `MessageUtil`: Added message for invalid number of arguments.
+- `Command`: Added `COMPRESS`, `LEVELADJUST`, `HISTOGRAM` and `COLORCORRECT` enums to perform validation for script command for new operations.
+- `ImageController`: Added a new commands to the map and also updated the code to work with the new model `ExtendedImageProcessor`.
+- Updated previous classes for `Blur`, `Sharpen`, `LumaComponent`, `IntensityComponent`, `ValueComponent` and `Sepia` to work with split view operations.
+
+
+## Main class
+
+- `SimpleImageController`: The model has been updated from `ImageProcessor` to `ExtendedImageProcessor`. 
+We also added the `getController` method. The controller, based on the provided arguments, will determine the approach for executing the operations.
+
 # CS5010-Image-manipulation-and-enhancement
 
 ## Description:
@@ -14,8 +80,10 @@ for image manipulation and transformation.
   application.
 * **Save Images:** Save the current state of an image as an ImageModel in a specified format.
 * **Color Transformations:** Apply color transformation matrices to change the colors of images.
-* **Grayscale Conversion:** Convert images to grayscale using different color components (e.g., RED,
-  GREEN, BLUE).
+* **Greyscale Conversion:** Convert images to greyscale using different components (e.g., Value,
+  Intensity, Luma).
+* **Component extraction:** Convert images to a specific component. (e.g., RED,
+    GREEN, BLUE).
 * **Brightness Adjustment:** Adjust pixel values to brighten or darken images.
 * **Filtering:** Apply custom filters to images for effects like blurring, sharpening, and edge
   detection.
@@ -243,7 +311,7 @@ horizontal-flip paris-vertical paris-vertical-horizontal
 save res/paris-vertical-horizontal.png paris-vertical-horizontal
 ```
 
-###### Generates a greyscale image based on the red component
+###### Generates a component image based on the red component
 
 ```
 red-component paris paris-red
@@ -255,7 +323,7 @@ red-component paris paris-red
 save res/paris-red.png paris-red
 ```
 
-###### Generates a greyscale image based on the green component
+###### Generates a component image based on the green component
 
 ```
 green-component paris paris-green
@@ -315,7 +383,7 @@ intensity-component paris paris-intensity
 save res/paris-intensity.png paris-intensity
 ```
 
-###### Divides an image into its individual red, green, and blue greyscale components.
+###### Divides an image into its individual red, green, and blue components.
 
 ```
 rgb-split paris paris-red paris-green paris-blue
@@ -329,7 +397,7 @@ save res/paris-split-green.png paris-green
 save res/paris-split-blue.png paris-blue
 ```
 
-###### Merges three greyscale images using their red, green, and blue components.
+###### Merges three component images using their red, green, and blue components.
 
 ```
 rgb-combine paris-combined paris-red paris-green paris-blue

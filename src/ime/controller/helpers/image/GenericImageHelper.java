@@ -1,7 +1,7 @@
 package ime.controller.helpers.image;
 
 
-import java.awt.*;
+import java.awt.Color;
 import java.awt.image.BufferedImage;
 import java.awt.image.WritableRaster;
 import java.io.ByteArrayInputStream;

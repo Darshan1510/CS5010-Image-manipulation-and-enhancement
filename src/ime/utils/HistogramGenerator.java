@@ -1,6 +1,7 @@
 package ime.utils;
 
-import java.awt.*;
+import java.awt.Graphics2D;
+import java.awt.Color;
 import java.awt.image.BufferedImage;
 
 import ime.model.image.ImageModel;
@@ -71,7 +72,8 @@ public class HistogramGenerator {
 
     int lastY = histogramImage.getHeight();
     for (int i = 0; i < frequencies.length; i++) {
-      int y = histogramImage.getHeight() - (frequencies[i] * histogramImage.getHeight() / maxFrequency);
+      int y = histogramImage.getHeight()
+              - (frequencies[i] * histogramImage.getHeight() / maxFrequency);
       g.drawLine(i, lastY, i, y);
       lastY = y;
     }
@@ -83,7 +85,7 @@ public class HistogramGenerator {
    * @param arrays Arrays for which the maximum frequency is determined.
    * @return The maximum frequency.
    */
-  public static int findMaxFrequency(int[]... arrays) {
+  private static int findMaxFrequency(int[]... arrays) {
     int max = 0;
     for (int[] array : arrays) {
       for (int value : array) {

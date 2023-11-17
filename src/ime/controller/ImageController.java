@@ -115,7 +115,8 @@ public class ImageController implements ImageControllerInterface {
 
         // Every script has at least 2 arguments including command.
         if (parsedScript.length < 2) {
-          throw new InputMismatchException("Invalid command!");
+          throw new InputMismatchException("Every script command must have " +
+                  "2 arguments including command");
         }
 
         String command = parsedScript[0];

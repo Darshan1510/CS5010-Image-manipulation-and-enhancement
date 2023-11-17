@@ -3,8 +3,8 @@
 ### To run the script file in command-line
 
 * Open terminal/cmd at the location of jar file : `res` ->
-  `ImageProcessing.jar`<br>
-* Run `java -jar ImageProcessing.jar -file scriptV1.txt`
+  `ImageManipulator.jar`<br>
+* Run `java -jar ImageManipulator.jar -file scriptV1.txt`
 
 The above step runs all the commands that are supported by the applications and operates
 on the paris image and saves all the resulting images in the res folder.
@@ -14,8 +14,8 @@ on the paris image and saves all the resulting images in the res folder.
 #### Method 1. To run the project from jar file.
 
 * open terminal/cmd at location where the jar file is present : `res` ->
-  `ImageProcessing.jar`<br>
-* Run `java -jar ImageProcessing.jar`
+  `ImageManipulator.jar`<br>
+* Run `java -jar ImageManipulator.jar`
 
 #### Method 2. To run the project in IDE or code.
 

@@ -51,6 +51,12 @@ public enum Command {
   public String command() {
     return command;
   }
+
+  /**
+   * Get the required arguments string associated with this enum value.
+   *
+   * @return The number of required args.
+   */
   public int requiredArgs() {
     return requiredArgs;
   }

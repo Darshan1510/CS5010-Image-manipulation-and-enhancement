@@ -37,7 +37,7 @@ public class Brighten implements ImageProcessorCommand {
    *
    * @param args args provided by the user to perform the operation.
    * @return A Brighten command with the specified brightness increment, input and destination
-   * image names.
+   *         image names.
    */
   public static ImageProcessorCommand apply(String[] args) {
     if (args.length != Command.BRIGHTEN.requiredArgs()) {

@@ -1,8 +1,11 @@
 package ime.model.image;
 
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
 import java.util.function.Function;
-
-import ime.utils.ImageProcessorUtil;
 
 import static ime.utils.HistogramGenerator.getFrequencies;
 
@@ -110,23 +113,23 @@ public class RGBImageV2 extends RGBImage implements ImageModelV2 {
    * @return The fitted value calculated using the quadratic equation.
    */
   private int fittingProcess(int black, int mid, int white, int signal) {
-    double A = Math.pow(black, 2) * (mid - white) - black * (Math.pow(mid, 2)
+    double calculateA = Math.pow(black, 2) * (mid - white) - black * (Math.pow(mid, 2)
             - Math.pow(white, 2)) + white * Math.pow(mid, 2) - mid * Math.pow(white, 2);
 
-    double Aa = -black * (128 - 255) + 128 * white - 255 * mid;
+    double calculateAa = -black * (128 - 255) + 128 * white - 255 * mid;
 
-    double Ab = Math.pow(black, 2) * (128 - 255) + 255 * Math.pow(mid, 2)
+    double calculateAb = Math.pow(black, 2) * (128 - 255) + 255 * Math.pow(mid, 2)
             - 128 * Math.pow(white, 2);
 
 
-    double Ac = Math.pow(black, 2) * (255 * mid - 128 * white)
+    double calculateAc = Math.pow(black, 2) * (255 * mid - 128 * white)
             - black * (255 * Math.pow(mid, 2) - 128 * Math.pow(white, 2));
 
-    double a = Aa / A;
+    double a = calculateAa / calculateA;
 
-    double b = Ab / A;
+    double b = calculateAb / calculateA;
 
-    double c = Ac / A;
+    double c = calculateAc / calculateA;
 
     return (int) (a * Math.pow(signal, 2) + b * signal + c);
   }
@@ -162,11 +165,11 @@ public class RGBImageV2 extends RGBImage implements ImageModelV2 {
     int width = channel[0].length;
 
     // 2D Haar wavelet transform
-    double[][] transformedImage = ImageProcessorUtil.haarTransform2D(channel, width);
+    double[][] transformedImage = haarTransform2D(channel, width);
 
     // Thresholding
-    double[] uniqueValues = ImageProcessorUtil.getUniqueValues(transformedImage);
-    double threshold = ImageProcessorUtil.findThreshold(uniqueValues, percentage);
+    double[] uniqueValues = getUniqueValues(transformedImage);
+    double threshold = findThreshold(uniqueValues, percentage);
 
     for (int i = 0; i < height; i++) {
       for (int j = 0; j < width; j++) {
@@ -177,7 +180,7 @@ public class RGBImageV2 extends RGBImage implements ImageModelV2 {
     }
 
     // Inverting the 2D Haar wavelet transform
-    transformedImage = ImageProcessorUtil.inverseHaarTransform2D(transformedImage, width);
+    transformedImage = inverseHaarTransform2D(transformedImage, width);
 
     return transformedImage;
   }
@@ -186,14 +189,15 @@ public class RGBImageV2 extends RGBImage implements ImageModelV2 {
    * Compresses the RGB channels of an image using Haar wavelet transformation and thresholding.
    *
    * <p>The method pads each channel, applies the 2D Haar wavelet transform, performs thresholding
-   * based on the specified compression percentage, and then inversely transforms and unpads the channels
-   * to reconstruct the compressed image.</p>
+   * based on the specified compression percentage, and then inversely transforms and unpads
+   * the channels to reconstruct the compressed image.</p>
    *
    * @param reds The red channel of the original image.
    * @param greens The green channel of the original image.
    * @param blues The blue channel of the original image.
    * @param percentage The compression percentage (between 0 and 100).
-   * @return An array of three 2D arrays representing the compressed red, green, and blue channels, respectively.
+   * @return An array of three 2D arrays representing the compressed red, green, and blue channels,
+   *         respectively.
    */
   private double[][][] compressRGBChannels(double[][] reds, double[][] greens,
                                                  double[][] blues, double percentage) {
@@ -201,12 +205,12 @@ public class RGBImageV2 extends RGBImage implements ImageModelV2 {
     int height = this.getHeight();
 
     // Calculate the padded size based on the maximum of width and height
-    int paddedSize = ImageProcessorUtil.padSize(Math.max(width, height));
+    int paddedSize = padSize(Math.max(width, height));
 
     // Pad each RGB channel
-    double[][] paddedReds = ImageProcessorUtil.padChannel(reds, paddedSize);
-    double[][] paddedGreens = ImageProcessorUtil.padChannel(greens, paddedSize);
-    double[][] paddedBlues = ImageProcessorUtil.padChannel(blues, paddedSize);
+    double[][] paddedReds = padChannel(reds, paddedSize);
+    double[][] paddedGreens = padChannel(greens, paddedSize);
+    double[][] paddedBlues = padChannel(blues, paddedSize);
 
     // Calculate the compression percentage for the Haar wavelet transformation
     double compressionPercentage = percentage / 100;
@@ -217,14 +221,216 @@ public class RGBImageV2 extends RGBImage implements ImageModelV2 {
     double[][] compressedBlues = compressChannel(paddedBlues, compressionPercentage);
 
     // Unpad each compressed channel to obtain the original size
-    double[][] unpaddedReds = ImageProcessorUtil.unpadChannel(compressedReds, height, width);
-    double[][] unpaddedGreens =
-            ImageProcessorUtil.unpadChannel(compressedGreens, height, width);
-    double[][] unpaddedBlues = ImageProcessorUtil.unpadChannel(compressedBlues, height, width);
+    double[][] unpaddedReds = unpadChannel(compressedReds, height, width);
+    double[][] unpaddedGreens = unpadChannel(compressedGreens, height, width);
+    double[][] unpaddedBlues = unpadChannel(compressedBlues, height, width);
 
     // Return the result as a 3D array representing the compressed RGB channels
     return new double[][][]{unpaddedReds, unpaddedGreens, unpaddedBlues};
   }
 
+  /**
+   * Pads a 2D channel array to a specified size.
+   *
+   * @param channel    The original channel array to pad.
+   * @param paddedSize The size to which the channel should be padded.
+   * @return The padded channel array.
+   */
+  private double[][] padChannel(double[][] channel, int paddedSize) {
+    double[][] paddedChannel = new double[paddedSize][paddedSize];
+    for (int i = 0; i < channel.length; i++) {
+      System.arraycopy(channel[i], 0, paddedChannel[i], 0, channel[i].length);
+    }
+    return paddedChannel;
+  }
+
+  /**
+   * Unpads a padded channel array to its original dimensions.
+   *
+   * @param paddedImage    The padded channel array to unpad.
+   * @param originalHeight The original height of the channel.
+   * @param originalWidth  The original width of the channel.
+   * @return The unpadded channel array.
+   */
+  private double[][] unpadChannel(double[][] paddedImage, int originalHeight,
+                                        int originalWidth) {
+    double[][] originalImage = new double[originalHeight][originalWidth];
+
+    for (int i = 0; i < originalHeight; i++) {
+      System.arraycopy(paddedImage[i], 0, originalImage[i], 0, originalWidth);
+    }
+
+    return originalImage;
+  }
+
+  /**
+   * Determines the size to which a channel should be padded (nearest power of two).
+   *
+   * @param size The original size of the channel.
+   * @return The padded size.
+   */
+  private int padSize(int size) {
+    int paddedSize = 1;
+    while (paddedSize < size) {
+      paddedSize *= 2;
+    }
+    return paddedSize;
+  }
+
+  /**
+   * Applies the 2D Haar wavelet transform to an input matrix.
+   *
+   * @param x The input matrix.
+   * @param s The size of the matrix.
+   * @return The transformed matrix.
+   */
+  private double[][] haarTransform2D(double[][] x, int s) {
+    int c = s;
+
+    while (c > 1) {
+      for (int i = 0; i < s; i++) {
+        double[] row = new double[c];
+        System.arraycopy(x[i], 0, row, 0, c);
+        row = transformSequence1D(row);
+        System.arraycopy(row, 0, x[i], 0, c);
+      }
+
+      for (int j = 0; j < s; j++) {
+        double[] column = new double[c];
+        for (int i = 0; i < c; i++) {
+          column[i] = x[i][j];
+        }
+        column = transformSequence1D(column);
+        for (int i = 0; i < c; i++) {
+          x[i][j] = column[i];
+        }
+      }
+
+      c = c / 2;
+    }
+
+    return x;
+  }
+
+  /**
+   * Applies the inverse Haar wavelet transform to a transformed sequence.
+   *
+   * @param s The transformed sequence.
+   * @return The inverted sequence.
+   */
+  private double[][] inverseHaarTransform2D(double[][] x, int s) {
+    int c = 2;
+
+    while (c <= s) {
+      for (int j = 0; j < s; j++) {
+        double[] column = new double[c];
+        for (int i = 0; i < c; i++) {
+          column[i] = x[i][j];
+        }
+        column = inverseTransform1D(column);
+        for (int i = 0; i < c; i++) {
+          x[i][j] = column[i];
+        }
+      }
+
+      for (int i = 0; i < s; i++) {
+        double[] row = new double[c];
+        System.arraycopy(x[i], 0, row, 0, c);
+        row = inverseTransform1D(row);
+        System.arraycopy(row, 0, x[i], 0, c);
+      }
+
+      c = c * 2;
+    }
+
+    return x;
+  }
+
+  /**
+   * Applies the Haar wavelet transform to a sequence of values.
+   *
+   * @param s The input sequence.
+   * @return The transformed sequence.
+   */
+  private double[] transformSequence1D(double[] s) {
+    List<Double> avg = new ArrayList<>();
+    List<Double> diff = new ArrayList<>();
+
+    for (int i = 0; i < s.length; i += 2) {
+      double a = s[i];
+      double b = s[i + 1];
+      double av = (a + b) / Math.sqrt(2);
+      double di = (a - b) / Math.sqrt(2);
+      avg.add(av);
+      diff.add(di);
+    }
+
+    List<Double> result = new ArrayList<>(avg);
+    result.addAll(diff);
+
+    return result.stream().mapToDouble(Double::doubleValue).toArray();
+  }
+
+  /**
+   * Applies the inverse Haar wavelet transform to a transformed sequence.
+   *
+   * @param s The transformed sequence.
+   * @return The inverted sequence.
+   */
+  private double[] inverseTransform1D(double[] s) {
+    double[] avg = Arrays.copyOfRange(s, 0, s.length / 2);
+    double[] diff = Arrays.copyOfRange(s, s.length / 2, s.length);
+
+    List<Double> result = new ArrayList<>();
+    for (int i = 0, j = 0; i < avg.length; i++, j++) {
+      double a = avg[i];
+      double b = diff[j];
+      double av = (a + b) / Math.sqrt(2);
+      double di = (a - b) / Math.sqrt(2);
+      result.add(av);
+      result.add(di);
+    }
+
+    return result.stream().mapToDouble(Double::doubleValue).toArray();
+  }
+
+  /**
+   * Extracts unique non-zero values from a 2D matrix.
+   *
+   * @param image The input matrix.
+   * @return An array containing unique non-zero values.
+   */
+  private double[] getUniqueValues(double[][] image) {
+    Set<Double> uniqueValues = new HashSet<>();
+
+    for (double[] row : image) {
+      for (double value : row) {
+        if (value != 0.0) {
+          uniqueValues.add(Math.abs(value));
+        }
+      }
+    }
+
+    return uniqueValues.stream().mapToDouble(Double::doubleValue).toArray();
+  }
+
+  /**
+   * Finds the threshold for channel compression based on a given percentage of unique values.
+   *
+   * @param values     The array of unique values.
+   * @param percentage The percentage of values to keep.
+   * @return The calculated threshold.
+   */
+  private double findThreshold(double[] values, double percentage) {
+    int numToReset = (int) (values.length * percentage);
+    if (numToReset < 1) {
+      return 0.0;
+    }
+
+    // Sort the unique values
+    Arrays.sort(values);
+
+    return values[numToReset - 1];
+  }
 
 }
