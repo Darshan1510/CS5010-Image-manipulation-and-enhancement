@@ -1,5 +1,7 @@
 package ime.utils;
 
+import java.util.InputMismatchException;
+
 /**
  * The ImageProcessorUtil class provides utility methods and constants for image processing
  * operations.
@@ -33,4 +35,17 @@ public class ImageProcessorUtil {
           {0.125, 0.25, 0.125},
           {0.0625, 0.125, 0.0625}};
 
+  public static float getWidthPercentage(String percentage) {
+    try {
+      float widthPercentage = Float.parseFloat(percentage);
+
+      if (widthPercentage < 0 || widthPercentage > 100) {
+        throw new InputMismatchException();
+      }
+      return widthPercentage;
+    } catch (InputMismatchException ex) {
+      throw new InputMismatchException("Invalid value of width percentage. " +
+              "it should be between 0 to 100");
+    }
+  }
 }

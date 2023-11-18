@@ -107,7 +107,7 @@ public class ImageProcessorImpl implements ImageProcessor {
       if (!split.equals("split")) {
         throw new InputMismatchException("Invalid args for Split view for Sepia.");
       }
-      float widthPercentage = Float.parseFloat(args[3]);
+      float widthPercentage = ImageProcessorUtil.getWidthPercentage(args[3]);
       filteredImage = this.split(currentImage, filteredImage, widthPercentage);
     }
 
@@ -155,7 +155,7 @@ public class ImageProcessorImpl implements ImageProcessor {
       if (!split.equals("split")) {
         throw new InputMismatchException("Invalid args for Split view for Luma.");
       }
-      float widthPercentage = Float.parseFloat(args[3]);
+      float widthPercentage = ImageProcessorUtil.getWidthPercentage(args[3]);
       filteredImage = this.split(currentImage, filteredImage, widthPercentage);
     }
 
@@ -179,7 +179,7 @@ public class ImageProcessorImpl implements ImageProcessor {
       if (!split.equals("split")) {
         throw new InputMismatchException("Invalid args for Split view for Luma.");
       }
-      float widthPercentage = Float.parseFloat(args[3]);
+      float widthPercentage = ImageProcessorUtil.getWidthPercentage(args[3]);
       filteredImage = this.split(currentImage, filteredImage, widthPercentage);
     }
 
@@ -203,7 +203,7 @@ public class ImageProcessorImpl implements ImageProcessor {
       if (!split.equals("split")) {
         throw new InputMismatchException("Invalid args for Split view for Luma.");
       }
-      float widthPercentage = Float.parseFloat(args[3]);
+      float widthPercentage = ImageProcessorUtil.getWidthPercentage(args[3]);
       filteredImage = this.split(currentImage, filteredImage, widthPercentage);
     }
 
@@ -240,7 +240,7 @@ public class ImageProcessorImpl implements ImageProcessor {
       if (!split.equals("split")) {
         throw new InputMismatchException("Invalid args for Split view for Sharpen.");
       }
-      float widthPercentage = Float.parseFloat(args[3]);
+      float widthPercentage = ImageProcessorUtil.getWidthPercentage(args[3]);
       filteredImage = this.split(currentImage, filteredImage, widthPercentage);
     }
 
@@ -266,7 +266,7 @@ public class ImageProcessorImpl implements ImageProcessor {
       if (!split.equals("split")) {
         throw new InputMismatchException("Invalid args for Split view for Blur.");
       }
-      float widthPercentage = Float.parseFloat(args[3]);
+      float widthPercentage = ImageProcessorUtil.getWidthPercentage(args[3]);
       filteredImage = this.split(currentImage, filteredImage, widthPercentage);
     }
 

@@ -9,6 +9,7 @@ import ime.model.image.RGBImage;
 import ime.model.image.RGBImageV2;
 import ime.model.image.RGBPixel;
 import ime.utils.HistogramGenerator;
+import ime.utils.ImageProcessorUtil;
 
 /**
  * Implementation class for the ExtendedImageProcessor interface, extending the base
@@ -40,7 +41,7 @@ public class ExtendedImageProcessorImpl extends ImageProcessorImpl
       if (!split.equals("split")) {
         throw new InputMismatchException("Invalid args for Split view for Color correct.");
       }
-      float widthPercentage = Float.parseFloat(args[3]);
+      float widthPercentage = ImageProcessorUtil.getWidthPercentage(args[3]);
       filteredImage = this.split(sourceImg, filteredImage, widthPercentage);
     }
 
@@ -93,7 +94,7 @@ public class ExtendedImageProcessorImpl extends ImageProcessorImpl
       if (!split.equals("split")) {
         throw new InputMismatchException("Invalid args for Split view for Levels adjust.");
       }
-      float widthPercentage = Float.parseFloat(args[6]);
+      float widthPercentage = ImageProcessorUtil.getWidthPercentage(args[6]);
       filteredImage = this.split(currentImage, filteredImage, widthPercentage);
     }
 
