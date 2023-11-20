@@ -35,6 +35,11 @@ public class ImageProcessorUtil {
           {0.125, 0.25, 0.125},
           {0.0625, 0.125, 0.0625}};
 
+  /**
+   * To get the width percentage for the split operation.
+   * @param percentage width percentage to split of string type.
+   * @return converted percentage in the float.
+   */
   public static float getWidthPercentage(String percentage) {
     try {
       float widthPercentage = Float.parseFloat(percentage);

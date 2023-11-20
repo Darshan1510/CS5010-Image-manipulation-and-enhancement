@@ -9,7 +9,6 @@ import java.util.InputMismatchException;
 
 import ime.controller.helpers.image.ImageHelperFactory;
 import ime.controller.helpers.image.ImageHelperFactoryImpl;
-import ime.model.image.ImageModel;
 
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.fail;
@@ -22,17 +21,15 @@ public class ExtendedImageProcessorImplTest {
   private ExtendedImageProcessorImpl processor;
 
   private final ImageHelperFactory factory = new ImageHelperFactoryImpl();
-  private String filePath;
-  private ImageModel image;
+  private String filepath;
 
   @Before
   public void setUp() {
     try {
-      filePath = "test_images/paris-test.ppm";
+      filepath = "test_images/paris-test.ppm";
       processor = new ExtendedImageProcessorImpl();
-      InputStream inputStream = factory.getImageHelper(filePath).readImage(filePath);
+      InputStream inputStream = factory.getImageHelper(filepath).readImage(filepath);
       processor.load("paris", inputStream);
-      image = processor.getImage("paris");
     } catch (Exception e) {
       fail("Failed to instantiate the PPM image");
     }
@@ -44,7 +41,7 @@ public class ExtendedImageProcessorImplTest {
     int m = 255;
     int w = 280;
     String[] args = {String.valueOf(b), String.valueOf(m), String.valueOf(w),
-            "paris", "paris-adjust"};
+                     "paris", "paris-adjust"};
     processor.levelsAdjust(args);
   }
 
@@ -54,7 +51,7 @@ public class ExtendedImageProcessorImplTest {
     int m = 95;
     int w = 255;
     String[] args = {String.valueOf(b), String.valueOf(m), String.valueOf(w),
-            "paris", "paris-adjust"};
+                     "paris", "paris-adjust"};
     processor.levelsAdjust(args);
   }
 
@@ -63,7 +60,7 @@ public class ExtendedImageProcessorImplTest {
     int m = 95;
     int w = 255;
     String[] args = {"invalid-val", String.valueOf(m), String.valueOf(w),
-            "paris", "paris-adjust"};
+                     "paris", "paris-adjust"};
     processor.levelsAdjust(args);
   }
 
@@ -73,7 +70,7 @@ public class ExtendedImageProcessorImplTest {
     int m = 180;
     int w = 120;
     String[] args = {String.valueOf(b), String.valueOf(m), String.valueOf(w),
-            "paris", "paris-adjust"};
+                     "paris", "paris-adjust"};
     processor.levelsAdjust(args);
   }
 
@@ -107,7 +104,7 @@ public class ExtendedImageProcessorImplTest {
     int m = 180;
     int w = 120;
     String[] args = {String.valueOf(b), String.valueOf(m), String.valueOf(w),
-            "paris", "paris-adjust", "Splitting", String.valueOf(50)};
+                     "paris", "paris-adjust", "Splitting", String.valueOf(50)};
     processor.levelsAdjust(args);
   }
 
@@ -131,7 +128,6 @@ public class ExtendedImageProcessorImplTest {
 
   @Test
   public void testProcessorForAllOperations() throws IOException {
-    String filepath = "res/paris-small.png";
     InputStream inputStream = new ImageHelperFactoryImpl()
             .getImageHelper(filepath).readImage(filepath);
 
@@ -156,7 +152,7 @@ public class ExtendedImageProcessorImplTest {
     assertNotNull(processor.getImage("paris-cc"));
 
     String[] levelsAdjustment = {String.valueOf(20), String.valueOf(100), String.valueOf(255),
-            "paris", "paris-adjust"};
+                                 "paris", "paris-adjust"};
     processor.levelsAdjust(levelsAdjustment);
     assertNotNull(processor.getImage("paris-adjust"));
 

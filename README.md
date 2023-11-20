@@ -21,7 +21,7 @@ of this image should be 256x256. It should contain the histograms for the red, g
 * Retain support for all previous operations and script commands.
 
 We have advanced our implementation in accordance with Object-Oriented Programming (OOP) and Model-View-Controller (MVC) principles, incorporating enhancements based on new feature set. 
-The modifications made to our existing code will be elucidated and justified below.
+The modifications made to our existing code will be elucidated and justified below. All the features are completed.
 
 ## New implementations
 
