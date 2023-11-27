@@ -1,0 +1,247 @@
+package ime.controller;
+
+import java.io.IOException;
+import java.util.InputMismatchException;
+
+import ime.controller.commands.BlueComponent;
+import ime.controller.commands.Blur;
+import ime.controller.commands.Brighten;
+import ime.controller.commands.ColorCorrect;
+import ime.controller.commands.Compress;
+import ime.controller.commands.GreenComponent;
+import ime.controller.commands.Histogram;
+import ime.controller.commands.HorizontalFlip;
+import ime.controller.commands.ImageProcessorCommand;
+import ime.controller.commands.IntensityComponent;
+import ime.controller.commands.LevelAdjust;
+import ime.controller.commands.Load;
+import ime.controller.commands.LumaComponent;
+import ime.controller.commands.RGBCombine;
+import ime.controller.commands.RGBSplit;
+import ime.controller.commands.RedComponent;
+import ime.controller.commands.Save;
+import ime.controller.commands.Sepia;
+import ime.controller.commands.Sharpen;
+import ime.controller.commands.ValueComponent;
+import ime.controller.commands.VerticalFlip;
+import ime.controller.enums.Command;
+import ime.model.ExtendedImageProcessor;
+import ime.view.IView;
+
+public class ViewController implements Features {
+
+  private final ExtendedImageProcessor processor;
+  private final String currentImage;
+  private final String splitView;
+  private final String histogram;
+  private final IView view;
+
+  public ViewController(ExtendedImageProcessor processor, IView view) {
+    this.processor = processor;
+    this.view = view;
+    view.addFeatures(this);
+    this.currentImage = "current-image";
+    this.splitView = "split-image";
+    this.histogram = "histogram";
+  }
+
+  private void refreshView() throws IOException {
+    view.refreshView(currentImage, histogram);
+  }
+
+  private void processCommand(ImageProcessorCommand command) throws IOException {
+    try {
+      command.process(processor);
+      ImageProcessorCommand histogramCmd = new Histogram(currentImage, histogram);
+      histogramCmd.process(processor);
+      refreshView();
+    } catch (IllegalArgumentException | InputMismatchException e) {
+      view.showErrorMessage(e.getMessage());
+    }
+  }
+
+
+  private void load(String filepath, String imageName) throws IOException {
+    processCommand(new Load(filepath, imageName));
+  }
+
+  @Override
+  public void load(String filepath) throws IOException {
+    load(filepath, currentImage);
+  }
+
+  private void save(String filepath, String imageName) throws IOException {
+    ImageProcessorCommand save = new Save(filepath, imageName);
+    save.process(processor);
+  }
+
+  @Override
+  public void save(String filepath) throws IOException {
+    this.save(filepath, currentImage);
+  }
+
+  @Override
+  public void brighten(int scale) throws IOException {
+    processCommand(new Brighten(scale, currentImage, currentImage));
+  }
+
+  @Override
+  public void verticalFlip() throws IOException {
+    processCommand(new VerticalFlip(currentImage, currentImage));
+  }
+
+  @Override
+  public void horizontalFlip() throws IOException {
+    processCommand(new HorizontalFlip(currentImage, currentImage));
+  }
+
+  @Override
+  public void colorCorrect() throws IOException {
+    String[] args = {currentImage, currentImage};
+    processCommand(new ColorCorrect(args));
+  }
+
+  @Override
+  public void levelAdjust(int b, int m, int w) throws IOException {
+    String[] args = {String.valueOf(b), String.valueOf(m), String.valueOf(w),
+            currentImage, currentImage};
+    processCommand(new LevelAdjust(args));
+  }
+
+  @Override
+  public void compress(double percentage) throws IOException {
+    processCommand(new Compress(percentage, currentImage, currentImage));
+  }
+
+  @Override
+  public void redComponent() throws IOException {
+    String[] args = {currentImage, currentImage};
+    processCommand(new RedComponent(args));
+  }
+
+  @Override
+  public void blueComponent() throws IOException {
+    String[] args = {currentImage, currentImage};
+    processCommand(new BlueComponent(args));
+  }
+
+  @Override
+  public void greenComponent() throws IOException {
+    String[] args = {currentImage, currentImage};
+    processCommand(new GreenComponent(args));
+  }
+
+  @Override
+  public void lumaGreyscale() throws IOException {
+    String[] args = {currentImage, currentImage};
+    processCommand(new LumaComponent(args));
+  }
+
+  @Override
+  public void valueGreyscale() throws IOException {
+    String[] args = {currentImage, currentImage};
+    processCommand(new ValueComponent(args));
+  }
+
+  @Override
+  public void intensityGreyscale() throws IOException {
+    String[] args = {currentImage, currentImage};
+    processCommand(new IntensityComponent(args));
+  }
+
+  @Override
+  public void blur() throws IOException {
+    String[] args = {currentImage, currentImage};
+    processCommand(new Blur(args));
+  }
+
+  @Override
+  public void sharpen() throws IOException {
+    String[] args = {currentImage, currentImage};
+    processCommand(new Sharpen(args));
+  }
+
+  @Override
+  public void sepia() throws IOException {
+    String[] args = {currentImage, currentImage};
+    processCommand(new Sepia(args));
+  }
+
+  private void loadInternally(String filepath, String imageName) throws IOException {
+    new Load(filepath, imageName).process(processor);
+  }
+
+  @Override
+  public void rgbCombine(String redImageFile, String greenImageFile, String blueImageFile) throws IOException {
+    String red = "red-" + currentImage;
+    String green = "green-" + currentImage;
+    String blue = "blue-" + currentImage;
+
+    loadInternally(redImageFile, red);
+    loadInternally(greenImageFile, green);
+    loadInternally(blueImageFile, blue);
+
+    processCommand(new RGBCombine(currentImage, red, green, blue));
+  }
+
+  @Override
+  public void split(Command command, double percentage) throws IOException {
+    String[] args = {currentImage, splitView, "split", String.valueOf(percentage)};
+    ImageProcessorCommand cmd;
+    switch (command) {
+      case BLUR:
+        cmd = new Blur(args);
+        break;
+      case SHARPEN:
+        cmd = new Sharpen(args);
+        break;
+      case SEPIA:
+        cmd = new Sepia(args);
+        break;
+      case LUMA_COMPONENT:
+        cmd = new LumaComponent(args);
+        break;
+      case INTENSITY_COMPONENT:
+        cmd = new IntensityComponent(args);
+        break;
+      case COLOR_CORRECT:
+        cmd = new ColorCorrect(args);
+        break;
+      case VALUE_COMPONENT:
+        cmd = new ValueComponent(args);
+        break;
+      default:
+        throw new IllegalArgumentException("Invalid Split view operation");
+    }
+    cmd.process(processor);
+    view.splitView(splitView);
+  }
+
+  @Override
+  public void reloadImage() throws IOException {
+    this.refreshView();
+  }
+
+  @Override
+  public void rgbSplit(String redFilePath, String greenFilePath, String blueFilePath)
+          throws IOException {
+    String red = currentImage + "-red";
+    String green = currentImage + "-green";
+    String blue = currentImage + "-blue";
+
+    // Splitting the image into RGB images.
+    ImageProcessorCommand rgbSplit = new RGBSplit(currentImage, red, green, blue);
+    rgbSplit.process(processor);
+
+    // Save the files.
+    save(redFilePath, red);
+    save(greenFilePath, green);
+    save(blueFilePath, blue);
+  }
+
+  @Override
+  public void exitProgram() {
+    System.exit(0);
+  }
+
+}

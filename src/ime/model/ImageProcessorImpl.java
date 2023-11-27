@@ -177,7 +177,7 @@ public class ImageProcessorImpl implements ImageProcessor {
     if (args.length > 2) {
       String split = args[2];
       if (!split.equals("split")) {
-        throw new InputMismatchException("Invalid args for Split view for Luma.");
+        throw new InputMismatchException("Invalid args for Split view for Value.");
       }
       float widthPercentage = ImageProcessorUtil.getWidthPercentage(args[3]);
       filteredImage = this.split(currentImage, filteredImage, widthPercentage);
@@ -201,7 +201,7 @@ public class ImageProcessorImpl implements ImageProcessor {
     if (args.length > 2) {
       String split = args[2];
       if (!split.equals("split")) {
-        throw new InputMismatchException("Invalid args for Split view for Luma.");
+        throw new InputMismatchException("Invalid args for Split view for intensity.");
       }
       float widthPercentage = ImageProcessorUtil.getWidthPercentage(args[3]);
       filteredImage = this.split(currentImage, filteredImage, widthPercentage);

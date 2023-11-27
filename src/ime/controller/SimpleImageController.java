@@ -7,6 +7,9 @@ import java.io.StringReader;
 
 import ime.model.ExtendedImageProcessor;
 import ime.model.ExtendedImageProcessorImpl;
+import ime.model.ViewModelImpl;
+import ime.view.ImageManipulatorView;
+import ime.view.IView;
 
 /**
  * The SimpleImageController class serves as a simple entry point for executing
@@ -27,30 +30,23 @@ public class SimpleImageController {
    */
   public static void main(String[] args) throws IOException {
     ExtendedImageProcessor imageProcessor = new ExtendedImageProcessorImpl();
-    ImageControllerInterface controller = getController(args);
-    controller.execute(imageProcessor);
-  }
-
-  /**
-   * This method determines the appropriate ImageControllerInterface based on the input arguments.
-   * If the arguments indicate the use of the "-file" option, it creates an
-   * ImageControllerInterface with a suitable input stream for script execution; otherwise, it
-   * creates an ImageControllerInterface for interactive command-line input.
-   *
-   * @param args The input arguments passed to the method. It is expected to contain information
-   *             about the input source, such as the "-file" option.
-   * @return An instance of ImageControllerInterface configured based on the specified conditions.
-   */
-  private static ImageControllerInterface getController(String[] args) {
+    ImageControllerInterface controller;
     if (args != null && args.length == 2 && (args[0].equals("-file") || args[0].equals("-f"))) {
       // If the "-file" option is present, create an ImageControllerInterface for script execution.
       Reader in = new StringReader("run " + args[1] + "\nq");
-      return new ImageController(in, System.out);
-    } else {
-      // If the conditions are not met or if args is null, create an ImageControllerInterface
+      controller = new ImageController(in, System.out);
+      controller.execute(imageProcessor);
+    } else if (args != null && args.length == 1 && (args[0].equals("-text")
+            || args[0].equals("-t"))) {
       // for interactive command-line input.
-      return new ImageController(new InputStreamReader(System.in), System.out);
+      controller = new ImageController(new InputStreamReader(System.in), System.out);
+      controller.execute(imageProcessor);
+    } else {
+      IView view = new ImageManipulatorView("Image Manipulation Software",
+              new ViewModelImpl(imageProcessor));
+      new ViewController(imageProcessor, view);
     }
+
 
   }
 

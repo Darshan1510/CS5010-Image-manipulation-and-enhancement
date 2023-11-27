@@ -19,4 +19,28 @@ public class MessageUtil {
             + command.command() + " required Args: "
             + command.requiredArgs();
   }
+
+  /**
+   * Retrieves an error message indicating the inability to perform a specific operation.
+   * This message is typically displayed when attempting an operation that requires a valid image,
+   * and there is currently no valid image loaded.
+   *
+   * @return A String containing the error message suggesting to try again after loading a valid image.
+   */
+  public static String getPerformOperationErrorMessage() {
+    return "Unable to perform an operation. "
+            + "Please try again after loading a valid image";
+  }
+
+  /**
+   * Retrieves an error message indicating that a specified operation could not be performed
+   * due to an invalid file path. This message is displayed when the operation requires a valid
+   * file path, and the provided path is considered invalid.
+   *
+   * @return A String containing the error message suggesting to try again with a valid file path.
+   */
+  public static String getInvalidFilePathErrorMessage() {
+    return "Unable to perform an operation. Please provide a valid file path";
+  }
+
 }
