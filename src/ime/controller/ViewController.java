@@ -2,6 +2,7 @@ package ime.controller;
 
 import java.io.IOException;
 import java.util.InputMismatchException;
+import java.util.stream.Stream;
 
 import ime.controller.commands.BlueComponent;
 import ime.controller.commands.Blur;
@@ -185,8 +186,10 @@ public class ViewController implements Features {
   }
 
   @Override
-  public void split(Command command, double percentage) throws IOException {
-    String[] args = {currentImage, splitView, "split", String.valueOf(percentage)};
+  public void split(Command command, String[] splitArgs) throws IOException {
+    String[] basicArgs = {currentImage, splitView};
+    String[] args = Stream.of(basicArgs, splitArgs).flatMap(Stream::of)
+            .toArray(String[]::new);
     ImageProcessorCommand cmd;
     switch (command) {
       case BLUR:
@@ -209,6 +212,9 @@ public class ViewController implements Features {
         break;
       case VALUE_COMPONENT:
         cmd = new ValueComponent(args);
+        break;
+      case LEVEL_ADJUST:
+        cmd = new LevelAdjust(args);
         break;
       default:
         throw new IllegalArgumentException("Invalid Split view operation");

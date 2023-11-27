@@ -42,7 +42,7 @@ public class SimpleImageController {
       controller = new ImageController(new InputStreamReader(System.in), System.out);
       controller.execute(imageProcessor);
     } else {
-      IView view = new ImageManipulatorView("Image Manipulation Software",
+      IView view = new ImageManipulatorView("PixelPulse",
               new ViewModelImpl(imageProcessor));
       new ViewController(imageProcessor, view);
     }
