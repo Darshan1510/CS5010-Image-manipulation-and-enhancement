@@ -266,6 +266,8 @@ public class ViewController implements Features {
         cmd = new ValueComponent(args);
         break;
       case LEVEL_ADJUST:
+        args = new String[]{splitArgs[0], splitArgs[1], splitArgs[2], currentImage, splitView
+                , splitArgs[3], splitArgs[4]};
         cmd = new LevelAdjust(args);
         break;
       default:

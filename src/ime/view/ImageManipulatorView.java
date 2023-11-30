@@ -74,7 +74,6 @@ public class ImageManipulatorView extends JFrame implements IView {
   private String selectedComponent;
   private String selectedFilter;
   private String selectedGreyscale;
-
   private final JButton splitPreviewButton;
   private final JTextField splitPreviewPercentageValue;
   private final JPanel splitPreviewPanel;
@@ -285,7 +284,7 @@ public class ImageManipulatorView extends JFrame implements IView {
     basicOperationsPanelConstraints.weighty = 1;
     basicOperationsPanelConstraints.insets = new Insets(3, 3, 3, 3);
 
-    brightnessValue = new JTextField("Enter value", 3);
+    brightnessValue = new JTextField("0", 3);
     basicOperationsPanelConstraints.gridx = 0;
     basicOperationsPanelConstraints.gridy = 1;
     basicOperationsPanel.add(brightnessValue, basicOperationsPanelConstraints);
@@ -296,7 +295,7 @@ public class ImageManipulatorView extends JFrame implements IView {
     basicOperationsPanelConstraints.gridy = 1;
     basicOperationsPanel.add(brightenButton, basicOperationsPanelConstraints);
 
-    compressValue = new JTextField("Enter value", 3);
+    compressValue = new JTextField("0", 3);
     basicOperationsPanelConstraints.gridx = 0;
     basicOperationsPanelConstraints.gridy = 2;
     basicOperationsPanel.add(compressValue, basicOperationsPanelConstraints);
@@ -995,9 +994,6 @@ public class ImageManipulatorView extends JFrame implements IView {
             String[] finalArgs = Stream.of(leveAdjustArgs, args).flatMap(Stream::of)
                     .toArray(String[]::new);
             features.split(Command.LEVEL_ADJUST, finalArgs);
-            blackLevelAdjustValue.setText("");
-            midLevelAdjustValue.setText("");
-            whiteLevelAdjustValue.setText("");
           } catch (NumberFormatException e) {
             showErrorMessage("Invalid black, mid or white value. It should be a numeric value");
             blackLevelAdjustValue.setText("");
