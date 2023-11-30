@@ -1,3 +1,97 @@
+## Graphical User interface of the application and functionalities.
+
+#### To run the GUI
+
+* Open terminal/cmd at the location of jar file : `res` ->
+  `ImageManipulator.jar`<br>
+* Run `java -jar ImageManipulator.jar`
+
+The above step opens graphical user interface for image processing and manipulation.
+
+#### Method 2. To run the project in IDE or code.
+
+* In `src`
+* Open file `SimpleImageController.java`
+* Run the `public static void main` method
+
+### Features
+
+- Load and save image files in JPG, PNG, and PPM formats.
+- Basic image manipulation operations such as adjusting brightness, sepia, compression, color corrections, 
+horizontal and vertical flips.
+- RGB split and combine operations.
+- Color Transformation and Filter operations, such as greyscale conversion, component extraction, and filter such as blur, sharpen.
+- Level adjust operation for adjusting the level of the image with black, mid and white values.
+- Displaying live histogram of the currently shown image.
+
+### Usage
+
+1. To load an image, click on File > Open, select an image file from the file dialog, and click
+   Open.
+2. The loaded image will be displayed in the right panel, and its histogram in the left panel at the bottom.
+3. To manipulate the image, use the buttons in the Basic Operations panel, or the dropdowns in
+   the Color transform and filter panel or level adjust operation panel.
+4. To save the manipulated image, click on File > Save As, and choose a destination and format for
+   the file.
+5. To exit the application, click on File > Exit.
+
+Please refer the screenshot below for more details.
+
+![Screenshot](https://i.imgur.com/XamcPbv.png)
+
+#### Image View Panel
+
+The right-side image view panel in our application dynamically displays the loaded image and 
+continuously updates in real-time as users make edits.
+
+#### Basic Operations and Level adjust operations
+
+![Basic Operations & Level Adjust](https://i.imgur.com/DYbf30l.png)
+The basic operations panel facilitates image editing through fundamental operations. The brightness adjustment value should be entered numerically into the text box. 
+Clicking the button brightens (for positive values) or darkens (for negative values) the image accordingly. 
+Horizontal and vertical flips are executed by clicking their respective buttons. 
+The panel also supports additional operations such as sepia and color correction.
+Users can enter the desired compression percentage in the text field. Clicking the button initiates 
+the compression operation, reducing the image file size based on the specified percentage.
+
+Furthermore, the RGB Split and RGB Combine functionalities enable users to split an image or 
+combine three images of the same dimensions. For splitting, users input three distinct file locations 
+to specify where to save the split images. Conversely, for combining, users must select three different 
+file types for merging. Failure to comply with these requirements will result in an error.
+
+The Level Adjust panel provides a dedicated space for fine-tuning the levels of the input image. Users can input specific values for black, mid, and white in their respective text fields. 
+Upon entering these values, users can click the "Level Adjust" button to execute the adjustment operation. 
+This operation modifies the black, mid, and white levels of the image, allowing users to customize the visual balance according to their preferences.
+
+#### Image Histogram Panel
+
+The histogram panel, situated at the bottom-left of our application, provides a real-time display 
+of the image's live histogram.
+
+#### Color Transform and filter operations
+
+![Color transform and filter Operations](https://i.imgur.com/YpvIUBQ.png)
+
+The color transformation and filter operations panel supports the greyscale variants (Value, Luma,
+Intensity), components (Red, Green, Blue) and filters (blur and sharpen). To apply operations, choose the options from the
+dropdown menu and click the execute button for respective operations.
+
+#### Split preview
+
+![Split preview](https://i.imgur.com/9qooOQe.png)
+
+Certain operations support a split preview feature. When performing an operation with split preview capability, the split preview panel becomes visible in the top-left corner. 
+Users can input the percentage of the image to be split and click the "View" button to preview the applied operation. 
+The user has the option to either apply the operation to the entire image using the "Apply" button or cancel the current operation, reverting the image back to its original state.
+
+###### Supported operations by split preview
+* Blur
+* Sharpen
+* Sepia
+* Greyscale - Luma, Value, Intensity
+* Color correction
+* Level Adjustment
+
 ## Commands that are supported by our application and its usage.
 
 ### To run the script file in command-line
@@ -15,13 +109,7 @@ on the paris image and saves all the resulting images in the res folder.
 
 * open terminal/cmd at location where the jar file is present : `res` ->
   `ImageManipulator.jar`<br>
-* Run `java -jar ImageManipulator.jar`
-
-#### Method 2. To run the project in IDE or code.
-
-* In `src`
-* Open file `SimpleImageController.java`
-* Run the `public static void main` method
+* Run `java -jar ImageManipulator.jar -text`
 
 ##### Command to run a set of commands in a file.
 

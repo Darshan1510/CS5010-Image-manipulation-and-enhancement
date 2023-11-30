@@ -1,3 +1,104 @@
+# GRIME: Graphical Image Manipulation and Enhancement (PixelPulse)
+
+## Problem statement
+
+This is built on top of [More Image Manipulation and Enhancement](#CS5010-More-image-manipulation-and-enhancement)
+
+New requirements were:
+
+* You must use Java Swing to build your graphical user interface. Besides the code examples from
+  lecture, the provided code example illustrates some other features of Swing that you may find
+  useful.
+* The GUI should show the image that is currently being worked on. The image may be bigger than
+  the area allocated to it in your graphical user interface. In this case, the user should be able
+  to scroll the image. Any changes to the current image as a result of the image operations should
+  be visible in the GUI.
+* The histogram of the visible image should be visible as a line chart on the
+  screen at all times. If the image is manipulated, the histogram should automatically refresh. The
+  histogram should show the red, green, blue and intensity components.
+* The user interface must expose all the required features of the program (flips, component
+  visualization, greyscale, blurring, sharpening , sepia, color correction, level adjustment, and compression).
+* When saving an image as a **PNG/PPM/JPG**, it should save what the user is currently seeing.
+* The user should be able to specify suitably the image to be loaded and saved that the user is
+  going to process. That is, the program cannot assume a hardcoded file or folder to load and save.
+* Any error conditions should be suitably displayed to the user, through pop-up messages or
+  clearly visible text as appropriate.
+* The layout of the UI should be reasonable. Things should be in proper proportion, and laid out
+  in a reasonable manner. Buttons/text fields/labels that are oversize, or haphazardly arranged,
+  even if functional, will result in a point deduction.
+* Each user interaction or user input must be reasonably user-friendly (e.g. making the user type
+  the path to a file is poor UI design). We do not expect snazzy, sophisticated user-friendly
+  programs. Our standard is: can a user unfamiliar with your code and technical documentation
+  operate the program correctly without reading your code and technical documentation?
+
+## New implementations
+
+### View
+
+This application offers a Graphical User Interface (GUI) that empowers users to manipulate and enhance their images. 
+In its current version, the application incorporates the following features:
+
+* Loading and saving images in formats PPM, PNG, JPG
+* Brighten, Darken, Horizontal Flip, Vertical Flip
+* Greyscale, Sepia, Blur, Sharpen, Component extraction
+* Level Adjustment, Compression, Color correction
+* Live histogram of the image
+
+The View component `ImageManipulatorView` is a class that extends the JFrame class from Java Swing and incorporates a variety of Swing components to 
+construct the graphical user interface (GUI). Here is a concise overview of the Swing components utilized:
+
+* `JMenuBar`: This component serves as a menu bar, capable of containing menus, each of which can, in turn, contain menu items.
+* `JMenu`: Representing a menu component, it can house menu items or even sub-menus.
+* `JMenuItem`: Functioning as a clickable menu item, it triggers a specific action upon user interaction.
+* `JPanel`: As a container component, it accommodates other components and can utilize a layout manager.
+* `GridBagLayout`:  This layout manager organizes components in a grid of cells, each cell having adjustable sizes.
+* `BoxLayout`: Offering flexibility, this layout manager organizes components either vertically or horizontally.
+* `BorderFactory`: A factory class that simplifies the creation of borders for components.
+* `JScrollPane`: This component provides scrollbars for larger components, ensuring visibility within a defined area.
+* `JLabel`: As a display component, it presents either text or images.
+* `JButton`: A clickable component that triggers a specified action.
+* `JTextField`: Enabling user text input, this component allows the entry of textual information.
+* `JComboBox`: Facilitating item selection, this component allows users to choose from a list of items.
+* `TitledBorder`: This border type includes a title, enhancing the visual representation of a component.
+* `Insets`: This class specifies margins for a component, influencing its spacing and layout.
+
+The utilization of `GridBagLayout`, `BoxLayout`, and `BorderLayout` is driven by the objective of crafting a versatile and responsive user interface. 
+These layout managers offer flexibility and dynamism, enabling the interface to adapt seamlessly to diverse screen sizes and window dimensions.
+
+The view offers various operations that the controller can invoke, including:
+
+1. Refreshing the screen when new changes are made.
+2. Presenting an error message to the user regarding any operation.
+3. Granting access to the supported features of our program to the view.
+
+### View Model.
+
+The current design incorporates a ViewModel, leveraging the power of composition through an adapter. 
+Now, when the view requires representing updated data, it can directly query the model. 
+The new ViewModel serves as an adapter to our main model, offering methods tailored to benefit the view.
+
+This updated ViewModel reads the old model and furnishes processed data as required by the view. 
+It introduces a valuable methods—providing image which is essential for the model's presentation.
+
+The extensibility of this implementation is evident, allowing easy extension or the creation of a new adapter 
+using its interface to cater to future requirements of the view.
+
+## Design changes
+
+No modifications were made to our existing code; none of the existing code was altered.
+
+### Screenshot of the program with a loaded image
+
+![Screenshot](https://i.imgur.com/XamcPbv.png)
+
+### Updated Class Diagram
+
+![GRIME Class Diagram](https://i.imgur.com/nyE0YXJ.png)
+
+##### All the previously supported methods remain intact, thanks to the principles of Object-Oriented Programming (OOP) and the Model-View-Controller (MVC) pattern.
+
+Read below for the documentation of previous version.
+
 # CS5010-More-image-manipulation-and-enhancement
 
 ## Description
@@ -63,6 +164,8 @@ Changes in old classes :
 
 - `SimpleImageController`: The model has been updated from `ImageProcessor` to `ExtendedImageProcessor`. 
 We also added the `getController` method. The controller, based on the provided arguments, will determine the approach for executing the operations.
+
+Read below for the documentation of previous version.
 
 # CS5010-Image-manipulation-and-enhancement
 
