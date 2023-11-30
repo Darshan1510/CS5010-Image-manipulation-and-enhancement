@@ -1,7 +1,6 @@
 package ime.view;
 
 import java.awt.*;
-import java.awt.event.ActionEvent;
 import java.io.File;
 import java.io.IOException;
 import java.util.InputMismatchException;
@@ -15,6 +14,17 @@ import ime.controller.enums.Command;
 import ime.model.ViewModel;
 import ime.utils.MessageUtil;
 
+/**
+ * Graphical user interface (GUI) class representing an image manipulator view.
+ *
+ * <p>This class extends the {@code JFrame} to create a window for displaying and interacting with
+ * image manipulation features. It implements the {@code IView} interface to ensure compatibility
+ * with the application's view system.</p>
+ *
+ * <p>The {@code ImageManipulatorView} serves as the user interface for image manipulation,
+ * providing a platform for users to visualize and engage with various image processing operations.
+ * </p>
+ */
 public class ImageManipulatorView extends JFrame implements IView {
 
   private final ViewModel model;
@@ -26,17 +36,13 @@ public class ImageManipulatorView extends JFrame implements IView {
   private final String LUMA_COMPONENT = "Luma";
   private final String BLUR = "Blur";
   private final String SHARPEN = "Sharpen";
-
   private final String SEPIA = "Sepia";
   private final String LEVEL_ADJUST = "Level Adjust";
-
   private final String COLOR_CORRECT = "Color Correct";
 
   // View elements
   private final JPanel imagePanel;
   private final JLabel imageLabel;
-
-  private final JLabel splitPercentageLabel;
 
   private final JLabel histogramLabel;
   private final JMenuItem openItem;
@@ -51,18 +57,6 @@ public class ImageManipulatorView extends JFrame implements IView {
   private final JButton horizontalFlipButton;
   private final JButton verticalFlipButton;
   private final JButton brightenButton;
-
-  private final JRadioButton lumaSplitRadioButton;
-  private final JRadioButton valueSplitRadioButton;
-  private final JRadioButton intensitySplitRadioButton;
-  private final JRadioButton blurSplitRadioButton;
-  private final JRadioButton sharpenSplitRadioButton;
-  private final JRadioButton sepiaSplitRadioButton;
-  private final JRadioButton colorCorrectSplitRadioButton;
-  private final JRadioButton levelAdjustSplitRadioButton;
-
-  private final ButtonGroup splitRadioButtonGroup;
-
   private final FileNameExtensionFilter filter;
   private final JComboBox<String> filterTypes;
 
@@ -76,18 +70,28 @@ public class ImageManipulatorView extends JFrame implements IView {
   private final JTextField blackLevelAdjustValue;
   private final JTextField midLevelAdjustValue;
   private final JTextField whiteLevelAdjustValue;
-  private final JTextField blackLevelAdjustSplitValue;
-  private final JTextField midLevelAdjustSplitValue;
-  private final JTextField whiteLevelAdjustSplitValue;
-  private final JTextField splitPercentageValue;
-  private final JToggleButton splitToggleButton;
-  private final JButton splitButton;
   private final JPanel mainPanel;
   private String selectedComponent;
   private String selectedFilter;
   private String selectedGreyscale;
+
+  private final JButton splitPreviewButton;
+  private final JTextField splitPreviewPercentageValue;
+  private final JPanel splitPreviewPanel;
+  private final JLabel splitPreviewOperation;
+
+  private final JButton applyFilterButton;
+  private final JButton cancelFilterButton;
   private Command currectCommand;
 
+  /**
+   * Constructs an {@code ImageManipulatorView} with the specified caption, associated
+   * view model and UI components
+   *
+   * @param caption The caption/title of the image manipulator view.
+   * @param model   The {@code ViewModel} associated with the view for managing image-related
+   *                operations.
+   */
   public ImageManipulatorView(String caption, ViewModel model) {
     super(caption);
     this.model = model;
@@ -95,7 +99,7 @@ public class ImageManipulatorView extends JFrame implements IView {
     filter = new FileNameExtensionFilter("JPG, PNG, & PPM Images",
             "jpg", "png", "ppm");
 
-    // View items
+    // View components
     JMenuBar menuBar = new JMenuBar();
 
     JMenu fileMenu = new JMenu("File");
@@ -149,104 +153,44 @@ public class ImageManipulatorView extends JFrame implements IView {
     JPanel operationPanel = new JPanel();
     operationPanel.setLayout(new BoxLayout(operationPanel, BoxLayout.Y_AXIS));
 
-    JPanel splitViewPanel = new JPanel(new GridBagLayout());
-    splitViewPanel.setBorder(BorderFactory.createTitledBorder("Split view"));
-    GridBagConstraints splitViewPanelConstraints = new GridBagConstraints();
-    splitViewPanelConstraints.anchor = GridBagConstraints.CENTER;
-    splitViewPanelConstraints.fill = GridBagConstraints.HORIZONTAL;
-    splitViewPanelConstraints.weightx = 1;
-    splitViewPanelConstraints.weighty = 1;
-    splitViewPanelConstraints.insets = new Insets(3, 3, 3, 3);
+    splitPreviewPanel = new JPanel(new GridBagLayout());
+    splitPreviewPanel.setBorder(BorderFactory.createTitledBorder("Split preview"));
+    GridBagConstraints splitPreviewPanelConstraints = new GridBagConstraints();
+    splitPreviewPanelConstraints.anchor = GridBagConstraints.CENTER;
+    splitPreviewPanelConstraints.fill = GridBagConstraints.HORIZONTAL;
+    splitPreviewPanelConstraints.weightx = 1;
+    splitPreviewPanelConstraints.weighty = 1;
+    splitPreviewPanelConstraints.insets = new Insets(3, 3, 3, 3);
 
-    splitToggleButton = new JToggleButton("Enable");
-    splitToggleButton.setToolTipText("Enable split");
+    splitPreviewPercentageValue = new JTextField("0", 3);
+    splitPreviewPanelConstraints.gridx = 0;
+    splitPreviewPanelConstraints.gridy = 0;
+    splitPreviewPanel.add(splitPreviewPercentageValue, splitPreviewPanelConstraints);
 
-    splitViewPanel.add(splitToggleButton, splitViewPanelConstraints);
+    splitPreviewButton = new JButton("View");
+    splitPreviewButton.setToolTipText("Apply split");
+    splitPreviewPanelConstraints.gridx = 1;
+    splitPreviewPanelConstraints.gridy = 0;
+    splitPreviewPanel.add(splitPreviewButton, splitPreviewPanelConstraints);
 
-    splitPercentageLabel = new JLabel("Split percentage:");
-    splitViewPanelConstraints.gridx = 1;
-    splitViewPanelConstraints.gridy = 0;
-    splitViewPanel.add(splitPercentageLabel, splitViewPanelConstraints);
+    applyFilterButton = new JButton("Apply");
+    applyFilterButton.setToolTipText("Apply the current operation on entire image.");
+    splitPreviewPanelConstraints.gridx = 2;
+    splitPreviewPanelConstraints.gridy = 0;
+    splitPreviewPanel.add(applyFilterButton, splitPreviewPanelConstraints);
 
-    splitPercentageValue = new JTextField("50", 3);
-    splitViewPanelConstraints.gridx = 2;
-    splitViewPanelConstraints.gridy = 0;
-    splitViewPanel.add(splitPercentageValue, splitViewPanelConstraints);
+    cancelFilterButton = new JButton("Cancel");
+    cancelFilterButton.setToolTipText("Cancel the current operation.");
+    splitPreviewPanelConstraints.gridx = 3;
+    splitPreviewPanelConstraints.gridy = 0;
+    splitPreviewPanel.add(cancelFilterButton, splitPreviewPanelConstraints);
 
-    lumaSplitRadioButton = new JRadioButton(LUMA_COMPONENT);
-    splitViewPanelConstraints.gridx = 0;
-    splitViewPanelConstraints.gridy = 1;
-    lumaSplitRadioButton.setSelected(true);
-    splitViewPanel.add(lumaSplitRadioButton, splitViewPanelConstraints);
+    splitPreviewOperation = new JLabel("Current operation: ");
+    splitPreviewPanelConstraints.gridx = 0;
+    splitPreviewPanelConstraints.gridy = 1;
+    splitPreviewPanel.add(splitPreviewOperation, splitPreviewPanelConstraints);
 
-    valueSplitRadioButton = new JRadioButton(VALUE_COMPONENT);
-    splitViewPanelConstraints.gridx = 1;
-    splitViewPanelConstraints.gridy = 1;
-    splitViewPanel.add(valueSplitRadioButton, splitViewPanelConstraints);
-
-    intensitySplitRadioButton = new JRadioButton(INTENSITY_COMPONENT);
-    splitViewPanelConstraints.gridx = 2;
-    splitViewPanelConstraints.gridy = 1;
-    splitViewPanel.add(intensitySplitRadioButton, splitViewPanelConstraints);
-
-    blurSplitRadioButton = new JRadioButton(BLUR);
-    splitViewPanelConstraints.gridx = 3;
-    splitViewPanelConstraints.gridy = 1;
-    splitViewPanel.add(blurSplitRadioButton, splitViewPanelConstraints);
-
-    blackLevelAdjustSplitValue = new JTextField("Enter black", 3);
-    splitViewPanelConstraints.gridx = 0;
-    splitViewPanelConstraints.gridy = 2;
-    splitViewPanel.add(blackLevelAdjustSplitValue, splitViewPanelConstraints);
-
-    midLevelAdjustSplitValue = new JTextField("Enter mid", 3);
-    splitViewPanelConstraints.gridx = 1;
-    splitViewPanelConstraints.gridy = 2;
-    splitViewPanel.add(midLevelAdjustSplitValue, splitViewPanelConstraints);
-
-    whiteLevelAdjustSplitValue = new JTextField("Enter white", 3);
-    splitViewPanelConstraints.gridx = 2;
-    splitViewPanelConstraints.gridy = 2;
-    splitViewPanel.add(whiteLevelAdjustSplitValue, splitViewPanelConstraints);
-
-    levelAdjustSplitRadioButton = new JRadioButton(LEVEL_ADJUST);
-    splitViewPanelConstraints.gridx = 3;
-    splitViewPanelConstraints.gridy = 2;
-    splitViewPanel.add(levelAdjustSplitRadioButton, splitViewPanelConstraints);
-
-    sharpenSplitRadioButton = new JRadioButton(SHARPEN);
-    splitViewPanelConstraints.gridx = 0;
-    splitViewPanelConstraints.gridy = 3;
-    splitViewPanel.add(sharpenSplitRadioButton, splitViewPanelConstraints);
-
-    sepiaSplitRadioButton = new JRadioButton(SEPIA);
-    splitViewPanelConstraints.gridx = 1;
-    splitViewPanelConstraints.gridy = 3;
-    splitViewPanel.add(sepiaSplitRadioButton, splitViewPanelConstraints);
-
-    colorCorrectSplitRadioButton = new JRadioButton(COLOR_CORRECT);
-    splitViewPanelConstraints.gridx = 2;
-    splitViewPanelConstraints.gridy = 3;
-    splitViewPanel.add(colorCorrectSplitRadioButton, splitViewPanelConstraints);
-
-    // add radio buttons into the group
-    splitRadioButtonGroup = new ButtonGroup();
-    splitRadioButtonGroup.add(lumaSplitRadioButton);
-    splitRadioButtonGroup.add(valueSplitRadioButton);
-    splitRadioButtonGroup.add(intensitySplitRadioButton);
-    splitRadioButtonGroup.add(blurSplitRadioButton);
-    splitRadioButtonGroup.add(levelAdjustSplitRadioButton);
-    splitRadioButtonGroup.add(sharpenSplitRadioButton);
-    splitRadioButtonGroup.add(sepiaSplitRadioButton);
-    splitRadioButtonGroup.add(colorCorrectSplitRadioButton);
-
-    splitButton = new JButton("View");
-    splitButton.setToolTipText("Apply split");
-    splitViewPanelConstraints.gridx = 3;
-    splitViewPanelConstraints.gridy = 3;
-    splitViewPanel.add(splitButton, splitViewPanelConstraints);
-
-    operationPanel.add(splitViewPanel);
+    operationPanel.add(splitPreviewPanel);
 
     JPanel colorTransformAndFilterPanel = new JPanel();
     colorTransformAndFilterPanel.setBorder(
@@ -271,7 +215,6 @@ public class ImageManipulatorView extends JFrame implements IView {
             LUMA_COMPONENT, INTENSITY_COMPONENT, VALUE_COMPONENT});
     greyscaleTypes.setToolTipText("Select Greyscale");
 
-    // Add action listener to track the change
     greyscaleTypes.addActionListener(e -> this.selectedGreyscale =
             (String) greyscaleTypes.getSelectedItem());
 
@@ -294,7 +237,6 @@ public class ImageManipulatorView extends JFrame implements IView {
             RED_COMPONENT, GREEN_COMPONENT, BLUE_COMPONENT});
     componentTypes.setToolTipText("Select Component");
 
-    // Add action listener to track the change
     componentTypes.addActionListener(e -> this.selectedComponent =
             (String) componentTypes.getSelectedItem());
 
@@ -316,7 +258,6 @@ public class ImageManipulatorView extends JFrame implements IView {
     filterTypes = new JComboBox<>(new String[]{"Select Filter", BLUR, SHARPEN});
     filterTypes.setToolTipText("Select Filter");
 
-    // Add action listener to track the change
     filterTypes.addActionListener(e -> this.selectedFilter =
             (String) filterTypes.getSelectedItem());
 
@@ -401,7 +342,6 @@ public class ImageManipulatorView extends JFrame implements IView {
     basicOperationsPanelConstraints.gridx = 1;
     basicOperationsPanelConstraints.gridy = 5;
     basicOperationsPanel.add(colorCorrectButton, basicOperationsPanelConstraints);
-
     operationPanel.add(basicOperationsPanel);
 
     JPanel levelAdjustPanel = new JPanel(new GridBagLayout());
@@ -437,9 +377,7 @@ public class ImageManipulatorView extends JFrame implements IView {
     operationPanel.add(levelAdjustPanel, BorderLayout.AFTER_LAST_LINE);
 
     this.enableOperationButtons(false);
-    this.enableSplitOperationButton(false);
-    this.visibleSplitOperationButton(false);
-    splitToggleButton.setEnabled(false);
+    this.enableSplitPreview(false);
 
     leftScreen.add(operationPanel);
 
@@ -480,7 +418,6 @@ public class ImageManipulatorView extends JFrame implements IView {
     rightScreen.add(scroller, BorderLayout.CENTER);
 
     // Main image
-
     imageLabel = new JLabel("Please load an image\n" + " File > Open…");
     imagePanel.add(imageLabel);
 
@@ -499,38 +436,12 @@ public class ImageManipulatorView extends JFrame implements IView {
     setVisible(true);
   }
 
-  private void enableSplitOperationButton(boolean enable) {
-    splitPercentageValue.setEnabled(enable);
-    splitButton.setEnabled(enable);
-    lumaSplitRadioButton.setEnabled(enable);
-    valueSplitRadioButton.setEnabled(enable);
-    intensitySplitRadioButton.setEnabled(enable);
-    blurSplitRadioButton.setEnabled(enable);
-    blackLevelAdjustSplitValue.setEnabled(enable);
-    whiteLevelAdjustSplitValue.setEnabled(enable);
-    midLevelAdjustSplitValue.setEnabled(enable);
-    levelAdjustSplitRadioButton.setEnabled(enable);
-    colorCorrectSplitRadioButton.setEnabled(enable);
-    sharpenSplitRadioButton.setEnabled(enable);
-    sepiaSplitRadioButton.setEnabled(enable);
-    splitPercentageLabel.setEnabled(enable);
-  }
-
-  private void visibleSplitOperationButton(boolean visible) {
-    splitPercentageValue.setVisible(visible);
-    splitButton.setVisible(visible);
-    lumaSplitRadioButton.setVisible(visible);
-    valueSplitRadioButton.setVisible(visible);
-    intensitySplitRadioButton.setVisible(visible);
-    blurSplitRadioButton.setVisible(visible);
-    blackLevelAdjustSplitValue.setVisible(visible);
-    whiteLevelAdjustSplitValue.setVisible(visible);
-    midLevelAdjustSplitValue.setVisible(visible);
-    levelAdjustSplitRadioButton.setVisible(visible);
-    colorCorrectSplitRadioButton.setVisible(visible);
-    sharpenSplitRadioButton.setVisible(visible);
-    sepiaSplitRadioButton.setVisible(visible);
-    splitPercentageLabel.setVisible(visible);
+  private void enableSplitPreview(boolean enable) {
+    splitPreviewPanel.setVisible(enable);
+    splitPreviewPercentageValue.setEnabled(enable);
+    splitPreviewButton.setEnabled(enable);
+    applyFilterButton.setEnabled(enable);
+    splitPreviewOperation.setEnabled(enable);
   }
 
   private void enableOperationButtons(boolean enable) {
@@ -592,6 +503,11 @@ public class ImageManipulatorView extends JFrame implements IView {
     }
   }
 
+  /**
+   * Performs the image manipulation operation based on the selected component type.
+   *
+   * @param features The {@code Features} interface providing image manipulation operations.
+   */
   private void component(Features features) {
     try {
       switch (selectedComponent) {
@@ -607,13 +523,18 @@ public class ImageManipulatorView extends JFrame implements IView {
         default:
           throw new InputMismatchException();
       }
-      componentTypes.setSelectedItem(" Select Component ");
+      componentTypes.setSelectedItem("Select Component");
     } catch (IOException | InputMismatchException | NullPointerException e) {
       showErrorMessage("Please select a valid Component");
-      componentTypes.setSelectedItem("=== Select Component ===");
+      componentTypes.setSelectedItem("Select Component");
     }
   }
 
+  /**
+   * Performs the image manipulation operation based on the selected filter type.
+   *
+   * @param features The {@code Features} interface providing image manipulation operations.
+   */
   private void filter(Features features) {
     try {
       switch (selectedFilter) {
@@ -626,13 +547,18 @@ public class ImageManipulatorView extends JFrame implements IView {
         default:
           throw new InputMismatchException();
       }
-      filterTypes.setSelectedItem(" Select Filter ");
+      filterTypes.setSelectedItem("Select Filter");
     } catch (IOException | InputMismatchException | NullPointerException e) {
       showErrorMessage("Please select a valid filter");
-      filterTypes.setSelectedItem(" Select Filter ");
+      filterTypes.setSelectedItem("Select Filter");
     }
   }
 
+  /**
+   * Loads an image using a file chooser dialog and triggers the corresponding operation.
+   *
+   * @param features The {@code Features} interface providing image manipulation operations.
+   */
   private void loadImage(Features features) {
     final JFileChooser fChooser = new JFileChooser();
     fChooser.setFileFilter(filter);
@@ -647,7 +573,6 @@ public class ImageManipulatorView extends JFrame implements IView {
         // Enabling all the buttons for operations
         this.enableOperationButtons(true);
 
-        splitToggleButton.setEnabled(true);
         displaySuccessMessage(mainPanel, "Successfully loaded the image.");
       } catch (IOException | InputMismatchException e) {
         showErrorMessage("Please provide the valid file in input!");
@@ -681,6 +606,12 @@ public class ImageManipulatorView extends JFrame implements IView {
     return "";
   }
 
+  /**
+   * Combines the red, green, and blue component images into a single RGB image.
+   * This operation requires three images representing the red, green, and blue components.
+   *
+   * @param features The {@code Features} interface providing image manipulation operations.
+   */
   private void rgbCombine(Features features) {
     String message = "This operation requires 3 images which are red, green and "
             + "blue component images respectively that you want to combine.";
@@ -699,7 +630,7 @@ public class ImageManipulatorView extends JFrame implements IView {
       }
     }
 
-    // After receiving all the required paths, we will call rgbCombine from the features
+    //performing rgbCombine
     if (!filepathRed.isEmpty() && !filepathGreen.isEmpty() && !filepathBlue.isEmpty()) {
       try {
         features.rgbCombine(filepathRed, filepathGreen, filepathBlue);
@@ -711,9 +642,17 @@ public class ImageManipulatorView extends JFrame implements IView {
     }
   }
 
+  /**
+   * Opens a file saver dialog with the provided default filename and returns the selected
+   * filepath.
+   *
+   * @param defaultFilename The default filename for the file saver dialog.
+   * @return The selected filepath from the file saver dialog.
+   */
   private String openFileSaver(String defaultFilename) {
     JFileChooser fileChooser = new JFileChooser();
     fileChooser.setFileFilter(filter);
+
     // Setting the default file name
     File defaultFile = new File(defaultFilename);
     fileChooser.setSelectedFile(defaultFile);
@@ -724,6 +663,13 @@ public class ImageManipulatorView extends JFrame implements IView {
     return "";
   }
 
+  /**
+   * Splits the image into red, green, and blue components and saves them at specified locations.
+   * This operation requires three locations for the splits to be saved, corresponding to red,
+   * green, and blue components.
+   *
+   * @param features The {@code Features} interface providing image manipulation operations.
+   */
   private void rgbSplit(Features features) {
     String message = "This operation requires 3 locations for the splits to "
             + "be saved, for red, green and blue splits respectively.";
@@ -742,7 +688,6 @@ public class ImageManipulatorView extends JFrame implements IView {
       }
     }
 
-    // After receiving all the required paths, we will call rgbSplit from the features
     if (!filepathRed.isEmpty() && !filepathGreen.isEmpty() && !filepathBlue.isEmpty()) {
       try {
         features.rgbSplit(filepathRed, filepathGreen, filepathBlue);
@@ -756,11 +701,24 @@ public class ImageManipulatorView extends JFrame implements IView {
     }
   }
 
+  /**
+   * Displays a success message dialog with the provided information message.
+   *
+   * @param parentFrame The parent component for the success message dialog.
+   * @param informMessage The information message to display in the success message dialog.
+   */
   private void displaySuccessMessage(Component parentFrame, String informMessage) {
     JOptionPane.showMessageDialog(parentFrame, informMessage, "Success",
             JOptionPane.INFORMATION_MESSAGE);
   }
 
+  /**
+   * Displays a file chooser dialog to save the image and invokes the corresponding save
+   * operation in the provided {@code Features} object. Shows success or error messages based on
+   * the result.
+   *
+   * @param features The {@code Features} interface providing image manipulation operations.
+   */
   private void saveImage(Features features) {
     final JFileChooser fChooser = new JFileChooser();
     int retValue = fChooser.showSaveDialog(this);
@@ -777,6 +735,12 @@ public class ImageManipulatorView extends JFrame implements IView {
     }
   }
 
+  /**
+   * Applies the sepia filter to the image using the provided {@code Features} object. Shows
+   * success or error messages based on the result.
+   *
+   * @param features The {@code Features} interface providing image manipulation operations.
+   */
   private void sepia(Features features) {
     try {
       features.sepia();
@@ -785,6 +749,12 @@ public class ImageManipulatorView extends JFrame implements IView {
     }
   }
 
+  /**
+   * Applies the selected greyscale transformation to the image using the provided
+   * {@code Features} object. Shows success or error messages based on the result.
+   *
+   * @param features The {@code Features} interface providing image manipulation operations.
+   */
   private void greyscale(Features features) {
     try {
       switch (selectedGreyscale) {
@@ -800,13 +770,19 @@ public class ImageManipulatorView extends JFrame implements IView {
         default:
           throw new InputMismatchException();
       }
-      filterTypes.setSelectedItem("=== Select Greyscale ===");
+      greyscaleTypes.setSelectedItem("Select Greyscale");
     } catch (IOException | InputMismatchException | NullPointerException e) {
       showErrorMessage("Please select a valid Greyscale");
-      filterTypes.setSelectedItem("=== Select Greyscale ===");
+      greyscaleTypes.setSelectedItem("Select Greyscale");
     }
   }
 
+  /**
+   * Flips the image horizontally using the provided {@code Features} object.
+   * Shows success or error messages based on the result.
+   *
+   * @param features The {@code Features} interface providing image manipulation operations.
+   */
   private void horizontalFlip(Features features) {
     try {
       features.horizontalFlip();
@@ -815,6 +791,12 @@ public class ImageManipulatorView extends JFrame implements IView {
     }
   }
 
+  /**
+   * Flips the image vertically using the provided {@code Features} object.
+   * Shows success or error messages based on the result.
+   *
+   * @param features The {@code Features} interface providing image manipulation operations.
+   */
   private void verticalFlip(Features features) {
     try {
       features.verticalFlip();
@@ -823,6 +805,12 @@ public class ImageManipulatorView extends JFrame implements IView {
     }
   }
 
+  /**
+   * Adjusts the brightness of the image using the provided {@code Features} object.
+   * Shows success or error messages based on the result.
+   *
+   * @param features The {@code Features} interface providing image manipulation operations.
+   */
   private void brighten(Features features) {
     try {
       int value = Integer.parseInt(brightnessValue.getText());
@@ -837,6 +825,12 @@ public class ImageManipulatorView extends JFrame implements IView {
     }
   }
 
+  /**
+   * Compresses the image based on the specified compression value using the provided
+   * {@code Features} object. Shows success or error messages based on the result.
+   *
+   * @param features The {@code Features} interface providing image manipulation operations.
+   */
   private void compress(Features features) {
     try {
       double value = Double.parseDouble(compressValue.getText());
@@ -851,6 +845,12 @@ public class ImageManipulatorView extends JFrame implements IView {
     }
   }
 
+  /**
+   * Corrects the color of the image using the provided {@code Features} object.
+   * Shows success or error messages based on the result.
+   *
+   * @param features The {@code Features} interface providing image manipulation operations.
+   */
   private void colorCorrect(Features features) {
     try {
       features.colorCorrect();
@@ -859,6 +859,12 @@ public class ImageManipulatorView extends JFrame implements IView {
     }
   }
 
+  /**
+   * Adjusts the black, mid, and white levels of the image using the provided {@code Features}
+   * object. Shows success or error messages based on the result.
+   *
+   * @param features The {@code Features} interface providing image manipulation operations.
+   */
   private void levelAdjust(Features features) {
     try {
       int black = Integer.parseInt(blackLevelAdjustValue.getText());
@@ -875,82 +881,211 @@ public class ImageManipulatorView extends JFrame implements IView {
       whiteLevelAdjustValue.setText("");
     } catch (NumberFormatException e) {
       showErrorMessage("Invalid black, mid or white value. It should be a numeric value");
-      compressValue.setText("");
+      blackLevelAdjustValue.setText("");
+      midLevelAdjustValue.setText("");
+      whiteLevelAdjustValue.setText("");
     }
   }
 
-  private void split(Features features) {
+  /**
+   * Previews the selected filter operation using the provided {@code Features} object.
+   * Shows success or error messages based on the result.
+   *
+   * @param features The {@code Features} interface providing image manipulation operations.
+   */
+  private void previewFilter(Features features) {
+    try {
+      switch (selectedFilter) {
+        case BLUR:
+          this.previewSplit(Command.BLUR, features);
+          break;
+        case SHARPEN:
+          this.previewSplit(Command.SHARPEN, features);
+          break;
+        default:
+          throw new InputMismatchException();
+      }
+      //filterTypes.setSelectedItem("Select Filter");
+    } catch (InputMismatchException | NullPointerException e) {
+      showErrorMessage("Please select a valid filter");
+      filterTypes.setSelectedItem(" Select Filter ");
+    }
+  }
+
+  /**
+   * Previews the selected greyscale operation using the provided {@code Features} object.
+   * Shows success or error messages based on the result.
+   *
+   * @param features The {@code Features} interface providing image manipulation operations.
+   */
+  private void previewGreyscale(Features features) {
+    try {
+      switch (selectedGreyscale) {
+        case VALUE_COMPONENT:
+          this.previewSplit(Command.VALUE_COMPONENT, features);
+          break;
+        case INTENSITY_COMPONENT:
+          this.previewSplit(Command.INTENSITY_COMPONENT, features);
+          break;
+        case LUMA_COMPONENT:
+          this.previewSplit(Command.LUMA_COMPONENT, features);
+          break;
+        default:
+          throw new InputMismatchException();
+      }
+      //greyscaleTypes.setSelectedItem("Select Greyscale");
+    } catch (InputMismatchException | NullPointerException e) {
+      showErrorMessage("Please select a valid Greyscale");
+      greyscaleTypes.setSelectedItem("Select Greyscale");
+    }
+  }
+
+  /**
+   * Initiates the split preview operation based on the specified filter command. Sets up the
+   * user interface for split view, gathers necessary input, and calls the corresponding method in
+   * the provided {@code Features} object.
+   *
+   * @param command  The filter command for split preview.
+   * @param features The {@code Features} interface providing image manipulation operations.
+   */
+  private void previewSplit(Command command, Features features) {
+    this.enableOperationButtons(false);
+    this.enableSplitPreview(true);
+
+    double value = 0;
+    try {
+      value = Double.parseDouble(splitPreviewPercentageValue.getText());
+    } catch (NumberFormatException e) {
+      showErrorMessage("Invalid Percentage value. It should be a numeric value");
+    }
 
     try {
-      double value = Double.parseDouble(splitPercentageValue.getText());
       String[] args = new String[]{"split", String.valueOf(value)};
-      ;
-      if (lumaSplitRadioButton.isSelected()) {
-        features.split(Command.LUMA_COMPONENT, args);
-      } else if (valueSplitRadioButton.isSelected()) {
-        features.split(Command.VALUE_COMPONENT, args);
-      } else if (intensitySplitRadioButton.isSelected()) {
-        features.split(Command.INTENSITY_COMPONENT, args);
-      } else if (blurSplitRadioButton.isSelected()) {
-        features.split(Command.BLUR, args);
-      } else if (sharpenSplitRadioButton.isSelected()) {
-        features.split(Command.SHARPEN, args);
-      } else if (sepiaSplitRadioButton.isSelected()) {
-        features.split(Command.SEPIA, args);
-      } else if (colorCorrectSplitRadioButton.isSelected()) {
-        features.split(Command.COLOR_CORRECT, args);
-      } else if (levelAdjustSplitRadioButton.isSelected()) {
-        int black = Integer.parseInt(blackLevelAdjustSplitValue.getText());
-        int mid = Integer.parseInt(midLevelAdjustSplitValue.getText());
-        int white = Integer.parseInt(whiteLevelAdjustSplitValue.getText());
-        String[] leveAdjustArgs = new String[]{String.valueOf(black), String.valueOf(mid),
-                String.valueOf(white)};
-        String[] finalArgs = Stream.of(leveAdjustArgs, args).flatMap(Stream::of)
-                .toArray(String[]::new);
-        features.split(Command.LEVEL_ADJUST, finalArgs);
-        blackLevelAdjustSplitValue.setText("");
-        midLevelAdjustSplitValue.setText("");
-        whiteLevelAdjustSplitValue.setText("");
-      } else {
-        throw new InputMismatchException("Invalid split view operation");
+      this.currectCommand = command;
+      splitPreviewOperation.setText("Current Operation: " + command.command());
+      switch (command) {
+        case BLUR:
+          features.split(Command.BLUR, args);
+          break;
+        case SHARPEN:
+          features.split(Command.SHARPEN, args);
+          break;
+        case SEPIA:
+          features.split(Command.SEPIA, args);
+          break;
+        case LUMA_COMPONENT:
+          features.split(Command.LUMA_COMPONENT, args);
+          break;
+        case INTENSITY_COMPONENT:
+          features.split(Command.INTENSITY_COMPONENT, args);
+          break;
+        case COLOR_CORRECT:
+          features.split(Command.COLOR_CORRECT, args);
+          break;
+        case VALUE_COMPONENT:
+          features.split(Command.VALUE_COMPONENT, args);
+          break;
+        case LEVEL_ADJUST:
+          try {
+            int black = Integer.parseInt(blackLevelAdjustValue.getText());
+            int mid = Integer.parseInt(midLevelAdjustValue.getText());
+            int white = Integer.parseInt(whiteLevelAdjustValue.getText());
+            String[] leveAdjustArgs = new String[]{String.valueOf(black), String.valueOf(mid),
+                    String.valueOf(white)};
+            String[] finalArgs = Stream.of(leveAdjustArgs, args).flatMap(Stream::of)
+                    .toArray(String[]::new);
+            features.split(Command.LEVEL_ADJUST, finalArgs);
+            blackLevelAdjustValue.setText("");
+            midLevelAdjustValue.setText("");
+            whiteLevelAdjustValue.setText("");
+          } catch (NumberFormatException e) {
+            showErrorMessage("Invalid black, mid or white value. It should be a numeric value");
+            blackLevelAdjustValue.setText("");
+            midLevelAdjustValue.setText("");
+            whiteLevelAdjustValue.setText("");
+            this.enableOperationButtons(true);
+            this.enableSplitPreview(false);
+          }
+          break;
+        default:
+          throw new InputMismatchException("Invalid Split view operation");
       }
     } catch (IOException | InputMismatchException e) {
+      showErrorMessage(MessageUtil.getPerformOperationErrorMessage());
+      this.enableOperationButtons(true);
+      this.enableSplitPreview(false);
+    }
+  }
+
+  /**
+   * Applies the current filter operation based on the last split preview command. Calls the
+   * corresponding method in the provided {@code Features} object, then resets relevant flags and
+   * controls.
+   *
+   * @param features The {@code Features} interface providing image manipulation operations.
+   */
+  private void applyFilter(Features features) {
+    try {
+      switch (currectCommand) {
+        case BLUR:
+        case SHARPEN:
+          this.filter(features);
+          break;
+        case SEPIA:
+          this.sepia(features);
+          break;
+        case LUMA_COMPONENT:
+        case VALUE_COMPONENT:
+        case INTENSITY_COMPONENT:
+          this.greyscale(features);
+          break;
+        case COLOR_CORRECT:
+          this.colorCorrect(features);
+          break;
+        case LEVEL_ADJUST:
+          this.levelAdjust(features);
+          break;
+        default:
+          throw new InputMismatchException("Invalid Split view operation");
+      }
+      this.enableOperationButtons(true);
+      this.enableSplitPreview(false);
+    } catch (InputMismatchException e) {
       showErrorMessage(MessageUtil.getPerformOperationErrorMessage());
     } catch (NumberFormatException e) {
       showErrorMessage("Invalid Percentage value. It should be a numeric value");
     }
   }
 
-  private double getSplitPercentage() {
+  /**
+   * Cancels the ongoing filter operation. Resets relevant flags, enables operation buttons, and
+   * sets default values for filter and greyscale types. Additionally, reloads the original image.
+   *
+   * @param features The {@code Features} interface providing image manipulation operations.
+   */
+  private void cancelFilter(Features features) {
     try {
-      double value = Double.parseDouble(splitPercentageValue.getText());
-      splitPercentageValue.setText("");
-      return value;
-    } catch (NumberFormatException e) {
-      showErrorMessage("Invalid split percentage value. It should be a numeric value");
-      splitPercentageValue.setText("");
-    }
-    return 0;
-  }
+      this.currectCommand = null;
+      this.enableOperationButtons(true);
+      this.enableSplitPreview(false);
 
-  private void toggleSplitView(ActionEvent event, Features features) {
-    try {
-      AbstractButton abstractButton = (AbstractButton) event.getSource();
-      // return true or false according to the selection or deselection of the button
-      boolean selected = abstractButton.getModel().isSelected();
-      if (selected) {
-        this.enableOperationButtons(false);
-        this.visibleSplitOperationButton(true);
-        this.enableSplitOperationButton(true);
-      } else {
-        this.visibleSplitOperationButton(false);
-        this.enableSplitOperationButton(false);
-        this.enableOperationButtons(true);
-        features.reloadImage();
-      }
+      //set defaults
+      filterTypes.setSelectedItem("Select Filter");
+      greyscaleTypes.setSelectedItem("Select Greyscale");
+      features.reloadImage();
     } catch (IOException | InputMismatchException e) {
       showErrorMessage(MessageUtil.getPerformOperationErrorMessage());
     }
+  }
+
+  /**
+   * Updates the split preview based on the current filter command. Calls the corresponding method
+   * in the provided {@code Features} object.
+   *
+   * @param features The {@code Features} interface providing image manipulation operations.
+   */
+  private void updateSplitPreview(Features features) {
+    this.previewSplit(currectCommand, features);
   }
 
   @Override
@@ -959,7 +1094,7 @@ public class ImageManipulatorView extends JFrame implements IView {
 
     componentExecuteButton.addActionListener(event -> component(features));
 
-    filterTypesButton.addActionListener(event -> filter(features));
+    filterTypesButton.addActionListener(event -> previewFilter(features));
 
     horizontalFlipButton.addActionListener(event -> horizontalFlip(features));
 
@@ -975,19 +1110,21 @@ public class ImageManipulatorView extends JFrame implements IView {
 
     saveItem.addActionListener(event -> saveImage(features));
 
-    sepiaButton.addActionListener(event -> sepia(features));
+    sepiaButton.addActionListener(event -> previewSplit(Command.SEPIA, features));
 
     compressButton.addActionListener(event -> compress(features));
 
-    levelAdjustButton.addActionListener(event -> levelAdjust(features));
+    levelAdjustButton.addActionListener(event -> previewSplit(Command.LEVEL_ADJUST, features));
 
-    colorCorrectButton.addActionListener(event -> colorCorrect(features));
+    colorCorrectButton.addActionListener(event -> previewSplit(Command.COLOR_CORRECT, features));
 
-    greyscaleExecuteButton.addActionListener(event -> greyscale(features));
+    greyscaleExecuteButton.addActionListener(event -> previewGreyscale(features));
 
-    splitToggleButton.addActionListener(event -> toggleSplitView(event, features));
+    splitPreviewButton.addActionListener(event -> updateSplitPreview(features));
 
-    splitButton.addActionListener(event -> split(features));
+    applyFilterButton.addActionListener(event -> applyFilter(features));
+
+    cancelFilterButton.addActionListener(event -> cancelFilter(features));
   }
 
   @Override

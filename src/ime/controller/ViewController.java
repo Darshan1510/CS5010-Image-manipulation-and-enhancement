@@ -29,6 +29,18 @@ import ime.controller.enums.Command;
 import ime.model.ExtendedImageProcessor;
 import ime.view.IView;
 
+/**
+ * Controller class responsible for managing image processing features and coordinating
+ * interactions between the user interface (view) and the
+ * underlying {@code ExtendedImageProcessor}.
+ *
+ * <p>The class implements the {@code Features} interface, providing methods for loading images
+ * and displaying results. It utilizes an {@code ExtendedImageProcessor} for image processing
+ * operations and updates an associated view accordingly.</p>
+ *
+ * <p>Internally, the controller maintains information about the current image, split view,
+ * and histogram to facilitate feature updates and view refreshing.</p>
+ */
 public class ViewController implements Features {
 
   private final ExtendedImageProcessor processor;
@@ -37,6 +49,13 @@ public class ViewController implements Features {
   private final String histogram;
   private final IView view;
 
+  /**
+   * Constructs a {@code ViewController} with the specified {@code ExtendedImageProcessor} and view.
+   * Initializes information about the current image, split view, and histogram.
+   *
+   * @param processor The {@code ExtendedImageProcessor} used for image processing operations.
+   * @param view      The associated view for displaying processed images and features.
+   */
   public ViewController(ExtendedImageProcessor processor, IView view) {
     this.processor = processor;
     this.view = view;
@@ -46,10 +65,22 @@ public class ViewController implements Features {
     this.histogram = "histogram";
   }
 
+  /**
+   * Refreshes the view by updating the current image and histogram display.
+   *
+   * @throws IOException If an I/O error occurs during the view refresh.
+   */
   private void refreshView() throws IOException {
     view.refreshView(currentImage, histogram);
   }
 
+  /**
+   * Processes the given command using the underlying {@code ExtendedImageProcessor},
+   * updates the histogram, and refreshes the view.
+   *
+   * @param command The image processing command to be executed.
+   * @throws IOException If an I/O error occurs during command processing or view refresh.
+   */
   private void processCommand(ImageProcessorCommand command) throws IOException {
     try {
       command.process(processor);
@@ -61,7 +92,13 @@ public class ViewController implements Features {
     }
   }
 
-
+  /**
+   * Loads an image from the specified filepath and assigns it the given imageName.
+   *
+   * @param filepath  The filepath of the image to be loaded.
+   * @param imageName The name to be assigned to the loaded image.
+   * @throws IOException If an I/O error occurs during image loading or view refresh.
+   */
   private void load(String filepath, String imageName) throws IOException {
     processCommand(new Load(filepath, imageName));
   }
@@ -71,6 +108,13 @@ public class ViewController implements Features {
     load(filepath, currentImage);
   }
 
+  /**
+   * Saves the current image to the specified filepath with the given imageName.
+   *
+   * @param filepath  The filepath where the image will be saved.
+   * @param imageName The name to be assigned to the saved image.
+   * @throws IOException If an I/O error occurs during image saving.
+   */
   private void save(String filepath, String imageName) throws IOException {
     ImageProcessorCommand save = new Save(filepath, imageName);
     save.process(processor);
@@ -168,6 +212,14 @@ public class ViewController implements Features {
     processCommand(new Sepia(args));
   }
 
+  /**
+   * Internal method for loading an image from the specified filepath and processing it
+   * using the underlying {@code ExtendedImageProcessor}.
+   *
+   * @param filepath  The filepath of the image to be loaded.
+   * @param imageName The name to be assigned to the loaded image.
+   * @throws IOException If an I/O error occurs during image loading or processing.
+   */
   private void loadInternally(String filepath, String imageName) throws IOException {
     new Load(filepath, imageName).process(processor);
   }

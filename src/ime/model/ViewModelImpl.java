@@ -7,6 +7,25 @@ import java.io.IOException;
 import java.io.OutputStream;
 import java.util.Scanner;
 
+/**
+ * Implementation of the {@code ViewModel} interface, responsible for managing image processing
+ * and providing access to the processed image.
+ *
+ * <p>The class uses an {@code ExtendedImageProcessor} for image processing operations.
+ * It processes an image using the {@code processImage} method, allowing subsequent access to
+ * the processed image using the {@code getImage} method.</p>
+ *
+ * <p>The processed image is represented as an instance of the {@code Image} interface.</p>
+ *
+ * <p>This class also includes an internal check, {@code isImageReady}, to ensure that other
+ * methods are called only after the image has been processed using the {@code processImage}
+ * method. If the image is not ready, an {@code IllegalStateException} is thrown, indicating that
+ * the {@code processImage} method should be called first.</p>
+ *
+ * <p>Note: The image processing is performed by the underlying {@code ExtendedImageProcessor}
+ * implementation, and this class is designed to provide a high-level interface for interacting
+ * with the processed image.</p>
+ */
 public class ViewModelImpl implements ViewModel {
 
   private final ExtendedImageProcessor processor;
@@ -14,11 +33,25 @@ public class ViewModelImpl implements ViewModel {
 
   private boolean imageReady;
 
+  /**
+   * Constructs a {@code ViewModelImpl} with the specified {@code ExtendedImageProcessor}.
+   * The constructed object manages image processing and provides access to the processed image.
+   * The initial state is set to indicate that the processed image is not yet ready.
+   *
+   * @param processor The {@code ExtendedImageProcessor} used for image processing operations.
+   */
   public ViewModelImpl(ExtendedImageProcessor processor) {
     this.processor = processor;
     this.imageReady = false;
   }
 
+  /**
+   * Processes the specified image using the underlying {@code ExtendedImageProcessor}.
+   * After processing, the image becomes accessible through the {@code getImage} method.
+   *
+   * @param imageName The name of the image to be processed.
+   * @throws IOException If an I/O error occurs during the image processing.
+   */
   @Override
   public void processImage(String imageName) throws IOException {
     OutputStream outputStream = this.processor.save(imageName);
@@ -64,6 +97,13 @@ public class ViewModelImpl implements ViewModel {
   }
 
 
+  /**
+   * Retrieves the processed image.
+   *
+   * @return The processed image as an instance of the {@code Image} interface.
+   * @throws IllegalStateException If the image is not ready, indicating that the
+   *                               {@code processImage} method should be called first.
+   */
   @Override
   public Image getImage() {
     this.isImageReady();

@@ -3,7 +3,15 @@ package ime.model.image;
 import java.util.function.Function;
 
 /**
- * The ImageModel interface represents an image and provides methods for image-related operations.
+ * Interface representing an image model with basic properties and operations.
+ *
+ * <p>This interface provides methods to retrieve information about the image, such as its height,
+ * width, maximum pixel value, and individual pixel values at specified positions. Additionally, it
+ * includes operations for horizontal and vertical flipping, applying filters with specified
+ * kernels, and transforming the image based on a provided transformation function.</p>
+ *
+ * <p>The image is represented by an array of {@code PixelModel} objects, and various operations
+ * can be applied to create new images with modified properties or pixel values.</p>
  */
 public interface ImageModel {
 

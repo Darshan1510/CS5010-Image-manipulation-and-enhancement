@@ -18,7 +18,7 @@ public class ImageHelperFactoryImpl implements ImageHelperFactory {
         break;
       case "jpg":
       case "png":
-      case "jpeg":
+      case "jpe g":
         imageHelper = new GenericImageHelper();
         break;
       default:
