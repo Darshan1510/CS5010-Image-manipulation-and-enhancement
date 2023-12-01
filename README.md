@@ -6,33 +6,26 @@ This is built on top of [More Image Manipulation and Enhancement](#CS5010-More-i
 
 New requirements were:
 
-* You must use Java Swing to build your graphical user interface. Besides the code examples from
-  lecture, the provided code example illustrates some other features of Swing that you may find
-  useful.
-* The GUI should show the image that is currently being worked on. The image may be bigger than
-  the area allocated to it in your graphical user interface. In this case, the user should be able
-  to scroll the image. Any changes to the current image as a result of the image operations should
-  be visible in the GUI.
-* The histogram of the visible image should be visible as a line chart on the
-  screen at all times. If the image is manipulated, the histogram should automatically refresh. The
-  histogram should show the red, green, blue and intensity components.
-* The user interface must expose all the required features of the program (flips, component
-  visualization, greyscale, blurring, sharpening , sepia, color correction, level adjustment, and compression).
-* When saving an image as a **PNG/PPM/JPG**, it should save what the user is currently seeing.
-* The user should be able to specify suitably the image to be loaded and saved that the user is
+* The graphical user interface (GUI) is built using Java Swing.
+* The GUI shows the image that is currently being worked on. The image may be bigger than
+  the area allocated to it in your graphical user interface. In this case, the user is able
+  to scroll the image. Any changes to the current image as a result of the image operations are
+  visible in the GUI.
+* The histogram of the visible image is visible as a line chart on the screen at all times. If the
+  image is manipulated, the histogram should automatically refresh. The histogram should show the
+  red, green, blue and intensity components.
+* The user interface exposes all the required features of the program that are: flips, component
+  visualization, greyscale, blurring, sharpening , sepia, color correction, level adjustment, and
+  compression.
+* When saving an image as a **PNG/PPM/JPG**, it saves what the user is currently seeing.
+* The user is able to specify suitably the image to be loaded and saved that the user is
   going to process. That is, the program cannot assume a hardcoded file or folder to load and save.
-* Any error conditions should be suitably displayed to the user, through pop-up messages or
-  clearly visible text as appropriate.
+* Any error conditions are suitably displayed to the user as they occur, through pop-up messages.
 * The split view functionality for blur, sharpen, sepia, greyscale, color correction and levels
   adjustment allows user to look at a preview before applying the changes, and then if the user is
   satisfied with the results, the user can click on "apply" to make changes in the image.
 * The layout of the UI should be reasonable. Things should be in proper proportion, and laid out
-  in a reasonable manner. Buttons/text fields/labels that are oversize, or haphazardly arranged,
-  even if functional, will result in a point deduction.
-* Each user interaction or user input must be reasonably user-friendly (e.g. making the user type
-  the path to a file is poor UI design). We do not expect snazzy, sophisticated user-friendly
-  programs. Our standard is: can a user unfamiliar with your code and technical documentation
-  operate the program correctly without reading your code and technical documentation?
+  in a reasonable manner.
 
 ## New implementations
 
