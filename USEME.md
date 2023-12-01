@@ -10,9 +10,9 @@ The above step opens graphical user interface for image processing and manipulat
 
 #### Method 2. To run the project in IDE or code.
 
-* In `src`
+* In `src` -> `ime` -> `controller`
 * Open file `SimpleImageController.java`
-* Run the `public static void main` method
+* Run the `public static void main(String[] args)` method
 
 ### Features
 
@@ -103,7 +103,7 @@ The user has the option to either apply the operation to the entire image using 
 The above step runs all the commands that are supported by the applications and operates
 on the paris image and saves all the resulting images in the res folder.
 
-### Running the project interactively.
+### Running the project interactively using text commands.
 
 #### Method 1. To run the project from jar file.
 

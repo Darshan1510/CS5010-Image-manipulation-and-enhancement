@@ -23,6 +23,9 @@ New requirements were:
   going to process. That is, the program cannot assume a hardcoded file or folder to load and save.
 * Any error conditions should be suitably displayed to the user, through pop-up messages or
   clearly visible text as appropriate.
+* The split view functionality for blur, sharpen, sepia, greyscale, color correction and levels
+  adjustment allows user to look at a preview before applying the changes, and then if the user is
+  satisfied with the results, the user can click on "apply" to make changes in the image.
 * The layout of the UI should be reasonable. Things should be in proper proportion, and laid out
   in a reasonable manner. Buttons/text fields/labels that are oversize, or haphazardly arranged,
   even if functional, will result in a point deduction.
@@ -43,6 +46,8 @@ In its current version, the application incorporates the following features:
 * Greyscale, Sepia, Blur, Sharpen, Component extraction
 * Level Adjustment, Compression, Color correction
 * Live histogram of the image
+* A preview available as a split view for the following functionalities: blur, sharpen, sepia,
+  greyscale, color correction and levels adjustment
 
 The View component `ImageManipulatorView` is a class that extends the JFrame class from Java Swing and incorporates a variety of Swing components to 
 construct the graphical user interface (GUI). Here is a concise overview of the Swing components utilized:

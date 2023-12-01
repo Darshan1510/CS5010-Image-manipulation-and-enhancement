@@ -25,7 +25,8 @@ public class MessageUtil {
    * This message is typically displayed when attempting an operation that requires a valid image,
    * and there is currently no valid image loaded.
    *
-   * @return A String containing the error message suggesting to try again after loading a valid image.
+   * @return A String containing the error message suggesting to try again after loading
+   *         a valid image.
    */
   public static String getPerformOperationErrorMessage() {
     return "Unable to perform an operation. "

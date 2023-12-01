@@ -1,12 +1,31 @@
 package ime.view;
 
-import java.awt.*;
+import java.awt.GridBagLayout;
+import java.awt.GridBagConstraints;
+import java.awt.BorderLayout;
+import java.awt.Insets;
+import java.awt.Dimension;
+import java.awt.Component;
+import java.awt.Image;
 import java.io.File;
 import java.io.IOException;
 import java.util.InputMismatchException;
 import java.util.stream.Stream;
-
-import javax.swing.*;
+import javax.swing.BoxLayout;
+import javax.swing.JFrame;
+import javax.swing.JMenuItem;
+import javax.swing.JButton;
+import javax.swing.JPanel;
+import javax.swing.JLabel;
+import javax.swing.JComboBox;
+import javax.swing.JTextField;
+import javax.swing.JMenuBar;
+import javax.swing.JMenu;
+import javax.swing.BorderFactory;
+import javax.swing.JScrollPane;
+import javax.swing.JOptionPane;
+import javax.swing.ImageIcon;
+import javax.swing.JFileChooser;
 import javax.swing.filechooser.FileNameExtensionFilter;
 
 import ime.controller.Features;
@@ -36,9 +55,6 @@ public class ImageManipulatorView extends JFrame implements IView {
   private final String LUMA_COMPONENT = "Luma";
   private final String BLUR = "Blur";
   private final String SHARPEN = "Sharpen";
-  private final String SEPIA = "Sepia";
-  private final String LEVEL_ADJUST = "Level Adjust";
-  private final String COLOR_CORRECT = "Color Correct";
 
   // View elements
   private final JPanel imagePanel;
@@ -85,7 +101,7 @@ public class ImageManipulatorView extends JFrame implements IView {
 
   /**
    * Constructs an {@code ImageManipulatorView} with the specified caption, associated
-   * view model and UI components
+   * view model and UI components.
    *
    * @param caption The caption/title of the image manipulator view.
    * @param model   The {@code ViewModel} associated with the view for managing image-related
@@ -211,7 +227,7 @@ public class ImageManipulatorView extends JFrame implements IView {
     colorTransformAndFilterControlsPanel.add(greyscaleTypesLabel, controlsPanelConstraints);
 
     greyscaleTypes = new JComboBox<>(new String[]{"Select Greyscale",
-            LUMA_COMPONENT, INTENSITY_COMPONENT, VALUE_COMPONENT});
+        LUMA_COMPONENT, INTENSITY_COMPONENT, VALUE_COMPONENT});
     greyscaleTypes.setToolTipText("Select Greyscale");
 
     greyscaleTypes.addActionListener(e -> this.selectedGreyscale =
@@ -233,7 +249,7 @@ public class ImageManipulatorView extends JFrame implements IView {
     colorTransformAndFilterControlsPanel.add(componentTypesLabel, controlsPanelConstraints);
 
     componentTypes = new JComboBox<>(new String[]{"Select Component",
-            RED_COMPONENT, GREEN_COMPONENT, BLUE_COMPONENT});
+        RED_COMPONENT, GREEN_COMPONENT, BLUE_COMPONENT});
     componentTypes.setToolTipText("Select Component");
 
     componentTypes.addActionListener(e -> this.selectedComponent =

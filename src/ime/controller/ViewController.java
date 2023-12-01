@@ -149,7 +149,7 @@ public class ViewController implements Features {
   @Override
   public void levelAdjust(int b, int m, int w) throws IOException {
     String[] args = {String.valueOf(b), String.valueOf(m), String.valueOf(w),
-            currentImage, currentImage};
+                     currentImage, currentImage};
     processCommand(new LevelAdjust(args));
   }
 
@@ -225,7 +225,8 @@ public class ViewController implements Features {
   }
 
   @Override
-  public void rgbCombine(String redImageFile, String greenImageFile, String blueImageFile) throws IOException {
+  public void rgbCombine(String redImageFile, String greenImageFile, String blueImageFile)
+          throws IOException {
     String red = "red-" + currentImage;
     String green = "green-" + currentImage;
     String blue = "blue-" + currentImage;
@@ -266,8 +267,8 @@ public class ViewController implements Features {
         cmd = new ValueComponent(args);
         break;
       case LEVEL_ADJUST:
-        args = new String[]{splitArgs[0], splitArgs[1], splitArgs[2], currentImage, splitView
-                , splitArgs[3], splitArgs[4]};
+        args = new String[]{splitArgs[0], splitArgs[1], splitArgs[2], currentImage, splitView,
+                            splitArgs[3], splitArgs[4]};
         cmd = new LevelAdjust(args);
         break;
       default:
